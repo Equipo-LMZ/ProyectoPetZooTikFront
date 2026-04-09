@@ -34,7 +34,8 @@ jobs:
 
       - name: Construir la aplicación (Build)
         run: |
-          npx ng build --base-href /ProyectoPetZooTikFront/
+          npx ng build --base-href /
+          echo "petzootik.site" > dist/ProyectoPetZooTikFront/browser/CNAME
           cp dist/ProyectoPetZooTikFront/browser/index.html dist/ProyectoPetZooTikFront/browser/404.html
 
       - name: Subir el artefacto
