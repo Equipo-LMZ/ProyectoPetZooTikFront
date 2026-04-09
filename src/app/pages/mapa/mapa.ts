@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-mapa',
   imports: [],
+  standalone: true,
   templateUrl: './mapa.html',
   styleUrl: './mapa.css',
 })
