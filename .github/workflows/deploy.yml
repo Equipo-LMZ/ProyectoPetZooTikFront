@@ -38,7 +38,7 @@ jobs:
       - name: Subir el artefacto
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist/ProyectoPetZooTikFront
+          path: dist/ProyectoPetZooTikFront/browser
 
       - name: Desplegar en GitHub Pages
         id: deployment
