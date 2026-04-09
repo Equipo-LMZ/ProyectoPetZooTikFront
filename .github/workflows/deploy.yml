@@ -33,7 +33,7 @@ jobs:
         run: npm install
 
       - name: Construir la aplicación (Build)
-        run: npx ng build --base-href /ProyectoPetZooTikFront/
+        run: npx ng build --base-href /proyecto-pet-zoo-tik-front/
 
       - name: Subir el artefacto
         uses: actions/upload-pages-artifact@v3
