@@ -1,35 +1,52 @@
 import { Routes } from '@angular/router';
 
-import { Inicio } from './pages/inicio/inicio';
-import { Mascotas } from './pages/mascotas/mascotas';
-import { DetalleMascota } from './pages/detalle-mascota/detalle-mascota';
-import { Mapa } from './pages/mapa/mapa';
-import { PanelRescatista } from './pages/panel-rescatista/panel-rescatista';
-import { GestionAnimales } from './pages/gestion-animales/gestion-animales';
-import { Chat } from './pages/chat/chat';
-import { Peticiones } from './pages/peticiones/peticiones';
-import { NotFound404 } from './pages/not-found-404/not-found-404';
-
-// RUTAS
 export const routes: Routes = [
-  // Rutas Publicas
-  { path: '', component: Inicio },
-  { path: 'mascotas', component: Mascotas },
-  { path: 'detalle-mascota/:id', component: DetalleMascota },
-  { path: 'mapa', component: Mapa },
+  // Rutas Públicas
+  { 
+    path: '', 
+    loadComponent: () => import('./pages/inicio/inicio').then(m => m.Inicio) 
+  },
+  { 
+    path: 'mascotas', 
+    loadComponent: () => import('./pages/mascotas/mascotas').then(m => m.Mascotas) 
+  },
+  { 
+    path: 'detalle-mascota/:id', 
+    loadComponent: () => import('./pages/detalle-mascota/detalle-mascota').then(m => m.DetalleMascota) 
+  },
+  { 
+    path: 'mapa', 
+    loadComponent: () => import('./pages/mapa/mapa').then(m => m.Mapa) 
+  },
+  {
+    path: 'adoptar',
+    loadComponent: () => import('./pages/adoptar/adoptar').then(m => m.Adoptar)
+  },
 
   // Rutas Privadas (Panel del Rescatista)
   {
     path: 'panel',
-    component: PanelRescatista,
+    loadComponent: () => import('./pages/panel-rescatista/panel-rescatista').then(m => m.PanelRescatista),
     children: [
-      { path: 'crud', component: GestionAnimales },
-      { path: 'chats', component: Chat },
-      { path: 'peticiones', component: Peticiones },
+      { 
+        path: 'crud', 
+        loadComponent: () => import('./pages/gestion-animales/gestion-animales').then(m => m.GestionAnimales) 
+      },
+      { 
+        path: 'chats', 
+        loadComponent: () => import('./pages/chat/chat').then(m => m.Chat) 
+      },
+      { 
+        path: 'peticiones', 
+        loadComponent: () => import('./pages/peticiones/peticiones').then(m => m.Peticiones) 
+      },
       { path: '', redirectTo: 'crud', pathMatch: 'full' }
     ]
   },
 
   // Ruta 404
-  { path: '**', component: NotFound404 }
+  { 
+    path: '**', 
+    loadComponent: () => import('./pages/not-found-404/not-found-404').then(m => m.NotFound404) 
+  }
 ];
