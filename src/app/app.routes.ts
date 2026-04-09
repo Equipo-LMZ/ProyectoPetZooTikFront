@@ -18,6 +18,10 @@ export const routes: Routes = [
     path: 'mapa', 
     loadComponent: () => import('./pages/mapa/mapa').then(m => m.Mapa) 
   },
+  {
+    path: 'adoptar',
+    loadComponent: () => import('./pages/adoptar/adoptar').then(m => m.Adoptar)
+  },
 
   // Rutas Privadas (Panel del Rescatista)
   {
