@@ -1,1 +1,68 @@
 <p>modal-registro works!</p>
+<section class="section-registro">
+  <div class="container-registro">
+    <header class="header-registro">
+      <h2 class="title-registro">Crear Cuenta</h2>
+      <p class="text-registro">Únete a nuestra comunidad de rescate</p>
+    </header>
+
+    <form #registroForm="ngForm" (ngSubmit)="onRegister(registroForm)" class="form-registro">
+      <div class="div-registro">
+        <label for="nombre" class="label-registro">Nombre completo:</label>
+        <input
+          type="text"
+          id="nombre"
+          name="nombre"
+          class="input-registro"
+          [(ngModel)]="nuevoUsuario.nombre"
+          #nombre="ngModel"
+          required
+        />
+        @if (nombre.invalid && (nombre.dirty || nombre.touched)) {
+          <small class="text-registro">El nombre es necesario para tu perfil.</small>
+        }
+      </div>
+
+      <div class="div-registro">
+        <label for="correo" class="label-registro">Correo electrónico:</label>
+        <input
+          type="email"
+          id="correo"
+          name="correo"
+          class="input-registro"
+          [(ngModel)]="nuevoUsuario.correo"
+          #correo="ngModel"
+          required
+          email
+        />
+        @if (correo.invalid && (correo.dirty || correo.touched)) {
+          <small class="text-registro">Ingresa un formato de correo válido.</small>
+        }
+      </div>
+
+      <div class="div-registro">
+        <label for="contrasena" class="label-registro">Contraseña:</label>
+        <input
+          type="password"
+          id="contrasena"
+          name="contrasena"
+          class="input-registro"
+          [(ngModel)]="nuevoUsuario.contrasena"
+          #contrasena="ngModel"
+          required
+          minlength="6"
+        />
+        @if (contrasena.invalid && (contrasena.dirty || contrasena.touched)) {
+          <small class="text-registro">La contraseña debe tener al menos 6 caracteres.</small>
+        }
+      </div>
+
+      <footer class="footer-registro">
+        <button type="submit" class="button-registro" [disabled]="registroForm.invalid">
+          Registrarme
+        </button>
+        <button type="button" class="button-registro">Cancelar</button>
+      </footer>
+    </form>
+  </div>
+</section>
