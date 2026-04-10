@@ -1,1 +1,49 @@
 <p>modal-login works!</p>
+<div class="container-inicio-sesion">
+  <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)" class="form-inicio-sesion">
+    <header class="header-inicio-sesion">
+      <h2 class="title-inicio-sesion">Ingreso al Sistema</h2>
+    </header>
+
+    <div class="div-inicio-sesion">
+      <label for="correo" class="label-inicio-sesion">Correo Electrónico:</label>
+      <input
+        type="email"
+        id="correo"
+        name="correo"
+        class="input-inicio-sesion"
+        [(ngModel)]="credenciales.correo"
+        #correo="ngModel"
+        required
+        email
+      />
+
+      @if (correo.invalid && (correo.dirty || correo.touched)) {
+        <span class="text-inicio-sesion">Por favor, ingresa un correo válido.</span>
+      }
+    </div>
+
+    <div class="div-inicio-sesion">
+      <label for="contrasena" class="label-inicio-sesion">Contraseña:</label>
+      <input
+        type="password"
+        id="contrasena"
+        name="contrasena"
+        class="input-inicio-sesion"
+        [(ngModel)]="credenciales.contrasena"
+        #contrasena="ngModel"
+        required
+      />
+
+      @if (contrasena.invalid && (contrasena.dirty || contrasena.touched)) {
+        <span class="text-inicio-sesion">La contraseña es obligatoria.</span>
+      }
+    </div>
+
+    <footer class="footer-inicio-sesion">
+      <button type="submit" class="button-inicio-sesion" [disabled]="loginForm.invalid">
+        Iniciar Sesión
+      </button>
+    </footer>
+  </form>
+</div>
