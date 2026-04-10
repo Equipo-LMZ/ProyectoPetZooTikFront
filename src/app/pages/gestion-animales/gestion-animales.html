@@ -1,1 +1,137 @@
-<p>gestion-animales works!</p>
+<section class="section-gestion">
+  <div class="container-gestion">
+    <header class="header-gestion">
+      <h2 class="title-gestion">Panel de Gestión de Animales</h2>
+      <button type="button" class="button-gestion" (click)="abrirFormularioNuevo()">
+        + Registrar Mascota
+      </button>
+    </header>
+
+    <div class="div-gestion">
+      <table class="table-gestion">
+        <thead class="thead-gestion">
+          <tr class="tr-gestion">
+            <th class="th-gestion">Nombre</th>
+            <th class="th-gestion">Tipo</th>
+            <th class="th-gestion">Ubicación Actual</th>
+            <th class="th-gestion">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="tbody-gestion">
+          @for (animal of listaMascotas; track animal.id) {
+            <tr class="tr-gestion">
+              <td class="td-gestion">{{ animal.nombre }}</td>
+              <td class="td-gestion">{{ animal.tipoAnimal }}</td>
+              <td class="td-gestion">{{ animal.ubicacionActual }}</td>
+              <td class="td-gestion">
+                <button type="button" class="button-gestion" (click)="editarMascota(animal)">
+                  Editar
+                </button>
+                <button type="button" class="button-gestion" (click)="eliminarMascota(animal.id)">
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr class="tr-gestion">
+              <td colspan="4" class="td-gestion">No hay animales registrados en el sistema.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (mostrarFormulario) {
+      <div class="container-gestion">
+        <form [formGroup]="mascotaForm" (ngSubmit)="guardarMascota()" class="form-gestion">
+          <h3 class="subtitle-gestion">
+            {{ editando ? 'Actualizar Información' : 'Nuevo Registro de Mascota' }}
+          </h3>
+
+          <div class="div-gestion">
+            <label class="label-gestion">Fotografía del animal:</label>
+            <input type="file" (change)="onFileChange($event)" class="input-gestion" />
+            @if (mascotaForm.get('imagen')?.touched && mascotaForm.get('imagen')?.invalid) {
+              <small class="text-gestion">La imagen es obligatoria para el expediente.</small>
+            }
+          </div>
+
+          <div class="div-gestion">
+            <label for="nombre" class="label-gestion">Nombre:</label>
+            <input
+              id="nombre"
+              type="text"
+              formControlName="nombre"
+              class="input-gestion"
+              placeholder="Ej: Firulais"
+            />
+            @if (mascotaForm.get('nombre')?.touched && mascotaForm.get('nombre')?.invalid) {
+              <small class="text-gestion">El nombre debe tener al menos 3 caracteres.</small>
+            }
+          </div>
+
+          <div class="div-gestion">
+            <label for="tipo" class="label-gestion">Tipo de Animal:</label>
+            <select id="tipo" formControlName="tipoAnimal" class="select-gestion">
+              <option value="">Seleccione especie...</option>
+              <option value="Perro">Perro</option>
+              <option value="Gato">Gato</option>
+              <option value="Ave">Ave</option>
+              <option value="Otro">Otro</option>
+            </select>
+            @if (mascotaForm.get('tipoAnimal')?.touched && mascotaForm.get('tipoAnimal')?.invalid) {
+              <small class="text-gestion">Seleccione un tipo de animal.</small>
+            }
+          </div>
+
+          <div class="div-gestion">
+            <label for="descripcion" class="label-gestion">Descripción / Historia:</label>
+            <textarea
+              id="descripcion"
+              formControlName="descripcion"
+              class="textarea-gestion"
+              placeholder="Breve historia o rasgos..."
+            ></textarea>
+            @if (
+              mascotaForm.get('descripcion')?.touched && mascotaForm.get('descripcion')?.invalid
+            ) {
+              <small class="text-gestion">Máximo 200 caracteres permitidos.</small>
+            }
+          </div>
+
+          <div class="div-gestion">
+            <label for="lugar" class="label-gestion">Lugar de Rescate:</label>
+            <input
+              id="lugar"
+              type="text"
+              formControlName="lugarRescate"
+              class="input-gestion"
+              placeholder="Ej: Parque Central"
+            />
+          </div>
+
+          <div class="div-gestion">
+            <label for="ubicacion" class="label-gestion"
+              >Ubicación Actual (Refugio/Hogar temporal):</label
+            >
+            <input
+              id="ubicacion"
+              type="text"
+              formControlName="ubicacionActual"
+              class="input-gestion"
+            />
+          </div>
+
+          <footer class="footer-gestion">
+            <button type="submit" class="button-gestion" [disabled]="mascotaForm.invalid">
+              {{ editando ? 'Guardar Cambios' : 'Registrar Mascota' }}
+            </button>
+            <button type="button" class="button-gestion" (click)="mostrarFormulario = false">
+              Cancelar
+            </button>
+          </footer>
+        </form>
+      </div>
+    }
+  </div>
+</section>
