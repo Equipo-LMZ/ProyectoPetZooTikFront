@@ -1,1 +1,26 @@
 <p>mapa works!</p>
+<section class="section-prueba">
+  <div class="container-prueba">
+    <header class="header-prueba">
+      <h2 class="title-prueba">Test de Conexión Backend</h2>
+    </header>
+
+    <div class="div-prueba">
+      <button class="button-prueba" (click)="testearBackend()">Ejecutar Petición GET</button>
+    </div>
+
+    @if (datosRecibidos) {
+      <div class="div-prueba">
+        <h3 class="subtitle-prueba">Datos Recibidos:</h3>
+        <p class="text-prueba"><strong>ID:</strong> {{ datosRecibidos.idUsuario }}</p>
+        <p class="text-prueba"><strong>Nombre:</strong> {{ datosRecibidos.nombreUsuario }}</p>
+      </div>
+    }
+
+    @if (errorStatus) {
+      <div class="div-prueba">
+        <p class="text-prueba" style="color: red">Hubo un problema: {{ errorStatus }}</p>
+      </div>
+    }
+  </div>
+</section>
