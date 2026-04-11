@@ -15,8 +15,8 @@ import { ModalCandidatura } from '../../components/modal-candidatura/modal-candi
 })
 export class Inicio {
   mostrarHelicoptero = signal<boolean>(true);
-  
   faseAnimacion = signal<number>(0);
+  seleccionActual = signal<number>(0);
 
   constructor(private router: Router) {}
 
@@ -29,6 +29,22 @@ export class Inicio {
     setTimeout(() => {
       this.faseAnimacion.set(2);
     }, 300);
+  }
+
+  setHover(opcion: number) {
+    this.seleccionActual.set(opcion);
+  }
+
+  ejecutarAccion() {
+    const seleccion = this.seleccionActual();
+    
+    if (seleccion === 1) {
+      console.log('Abrir Modal Iniciar Sesión');
+    } else if (seleccion === 2) {
+      console.log('Abrir Modal Registro');
+    } else {
+      this.entrarComoInvitado();
+    }
   }
 
   irAlMapa() {
