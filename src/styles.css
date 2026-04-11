@@ -1,3 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss';
+
+/* mascotas.css */
+:root {
+  --color-escritorio: #1a1a1a; /* Fondo oscuro de la mesa */
+  --color-papel: #b8b8b8; /* Gris base del periódico */
+  --color-tinta: #050505; /* Negro de imprenta */
+  --color-mancha-tinta: rgba(0, 0, 0, 0.12);
+  --color-papel-brillo: rgba(255, 255, 255, 0.05);
+}

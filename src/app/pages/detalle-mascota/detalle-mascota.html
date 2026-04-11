@@ -1,1 +1,56 @@
-<p>detalle-mascota works!</p>
+<div class="div-escritorio md:p-responsive">
+  <nav class="nav-regreso">
+    <a routerLink="/mascotas" class="link-regreso"> ← Regresar a la Gaceta </a>
+  </nav>
+
+  @if (animal()) {
+    <section class="section-expediente">
+      <div class="textura"></div>
+
+      <div class="contenido-expediente md:contenido-expediente-lg">
+        <header class="header-expediente">
+          <div>
+            <h1 class="titulo-expediente">
+              {{ animal()?.nombre }}
+            </h1>
+            <p class="folio-expediente">Expediente Oficial de Rescate: #00{{ animal()?.id }}</p>
+          </div>
+
+          <div class="sello-clasificado md:visible">Adoptable</div>
+        </header>
+
+        <div class="layout-expediente md:layout-expediente-2col">
+          <div class="columna-izq">
+            <div class="card-imagen">
+              <img [src]="animal()?.imagen" class="img-expediente" />
+              <p class="caption-img">Evidencia_Visual_01.png</p>
+            </div>
+
+            <div class="meta-expediente">
+              <p><strong>ESTADO:</strong> EN ESPERA DE HOGAR</p>
+            </div>
+          </div>
+
+          <div class="columna-der">
+            <div class="bloque-descripcion">
+              <h3>Descripción del Sujeto:</h3>
+              <p class="text-descripcion">
+                {{ animal()?.descripcion }}
+              </p>
+            </div>
+
+            <div class="datos-expediente">
+              <p><strong>ESPECIE:</strong> {{ animal()?.tipoAnimal }}</p>
+              <p><strong>LUGAR_HALLAZGO:</strong> {{ animal()?.lugarRescate }}</p>
+              <p><strong>UBICACIÓN_ACTUAL:</strong> {{ animal()?.ubicacionActual }}</p>
+            </div>
+
+            <button class="btn-adopcion">SOLICITAR ADOPCIÓN</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  } @else {
+    <div class="loading-expediente">Buscando expediente en los archivos...</div>
+  }
+</div>

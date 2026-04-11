@@ -1,54 +1,80 @@
-<p>adoptar works!</p>
-<section class="section-adopcion">
-  <div class="container-adopcion">
-    <header class="header-adopcion">
-      <h2 class="title-adopcion">Formulario de Adopción</h2>
-    </header>
+<div class="div-escritorio">
+  <section class="section-adopcion">
+    <div class="div-textura-papel"></div>
 
-    <form [formGroup]="adopcionForm" (ngSubmit)="enviarSolicitud()" class="form-adopcion">
-      <div class="div-adopcion">
-        <label for="nombre" class="label-adopcion">Nombre Completo:</label>
-        <input id="nombre" type="text" formControlName="nombreCompleto" class="input-adopcion" />
+    <div class="container-adopcion">
+      <header class="header-adopcion">
+        <h2 class="title-adopcion">Solicitud de Adopción</h2>
+        <p class="text-serial">DOC_REF: PX-2026-VALLEY</p>
+      </header>
 
-        <label for="direccion" class="label-adopcion">Dirección Actual:</label>
-        <input id="direccion" type="text" formControlName="direccion" class="input-adopcion" />
-      </div>
-
-      <div class="div-adopcion">
-        <label for="motivo" class="label-adopcion">¿Por qué quieres adoptar?</label>
-        <textarea id="motivo" formControlName="motivoAdopcion" class="textarea-adopcion"></textarea>
-      </div>
-
-      <hr class="hr-adopcion" />
-
-      <div formArrayName="respuestasCuestionario" class="div-adopcion">
-        <h3 class="subtitle-adopcion">Cuestionario de Compromiso</h3>
-
-        @for (preguntaControl of cuestionarioArray.controls; track $index) {
-          <div [formGroupName]="$index" class="div-adopcion">
-            <label class="label-adopcion"> {{ $index + 1 }}. {{ preguntasBase[$index] }} </label>
-
-            <textarea
-              formControlName="respuesta"
-              class="textarea-adopcion"
-              placeholder="Escribe tu respuesta aquí..."
-            >
-            </textarea>
-
-            @if (
-              preguntaControl.get('respuesta')?.touched && preguntaControl.get('respuesta')?.invalid
-            ) {
-              <small class="text-adopcion">Este campo es obligatorio para la evaluación.</small>
-            }
+      <form [formGroup]="adopcionForm" (ngSubmit)="enviarSolicitud()" class="form-adopcion">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="div-campo">
+            <label for="nombre" class="label-adopcion">Nombre Completo:</label>
+            <input
+              id="nombre"
+              type="text"
+              formControlName="nombreCompleto"
+              class="input-adopcion"
+              placeholder="NOMBRE DEL SOLICITANTE"
+            />
           </div>
-        }
-      </div>
 
-      <footer class="footer-adopcion">
-        <button type="submit" [disabled]="adopcionForm.invalid" class="button-adopcion">
-          Finalizar Solicitud
-        </button>
-      </footer>
-    </form>
-  </div>
-</section>
+          <div class="div-campo">
+            <label for="direccion" class="label-adopcion">Dirección Actual:</label>
+            <input
+              id="direccion"
+              type="text"
+              formControlName="direccion"
+              class="input-adopcion"
+              placeholder="CALLE, NUMERO, CIUDAD"
+            />
+          </div>
+        </div>
+
+        <div class="div-campo mt-8">
+          <label for="motivo" class="label-adopcion">Motivo de la Solicitud:</label>
+          <textarea
+            id="motivo"
+            formControlName="motivoAdopcion"
+            class="textarea-adopcion"
+            placeholder="EXPLIQUE BREVEMENTE SUS RAZONES..."
+          ></textarea>
+        </div>
+
+        <div class="hr-pixel"></div>
+
+        <div formArrayName="respuestasCuestionario" class="div-cuestionario">
+          <h3 class="subtitle-adopcion">Cuestionario de Compromiso</h3>
+
+          @for (preguntaControl of cuestionarioArray.controls; track $index) {
+            <div [formGroupName]="$index" class="div-pregunta">
+              <label class="label-pregunta"> {{ $index + 1 }}. {{ preguntasBase[$index] }} </label>
+
+              <textarea
+                formControlName="respuesta"
+                class="textarea-pregunta"
+                placeholder="ESCRIBA SU RESPUESTA AQUÍ..."
+              ></textarea>
+
+              @if (
+                preguntaControl.get('respuesta')?.touched &&
+                preguntaControl.get('respuesta')?.invalid
+              ) {
+                <span class="error-pixel">* CAMPO REQUERIDO PARA EVALUACIÓN</span>
+              }
+            </div>
+          }
+        </div>
+
+        <footer class="footer-adopcion">
+          <button type="submit" [disabled]="adopcionForm.invalid" class="button-adopcion">
+            ENVIAR SOLICITUD OFICIAL
+          </button>
+          <p class="text-legal">Al enviar, usted acepta los términos y condiciones del refugio.</p>
+        </footer>
+      </form>
+    </div>
+  </section>
+</div>
