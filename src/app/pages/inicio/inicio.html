@@ -1,9 +1,98 @@
-<p>inicio works!</p>
-<br />
-<app-modal-login></app-modal-login>
-<br />
-<hr />
-<app-modal-registro></app-modal-registro>
-<br />
-<hr />
-<app-modal-candidatura></app-modal-candidatura>
+<main class="relative w-full h-screen overflow-hidden bg-slate-900" (click)="avanzarEscena()">
+
+  <section 
+    class="absolute inset-0 w-full h-full flex flex-col items-center justify-center z-20 transition-opacity duration-1000 ease-in-out"
+    [ngClass]="{
+      'opacity-100 pointer-events-auto': escenaActual() === 1,
+      'opacity-0 pointer-events-none': escenaActual() === 2
+    }">
+    
+    <div class="absolute inset-0 w-full h-full pointer-events-none">
+      
+      <img src="assets/parallax/fondo.png" alt="Cielo atardecer" 
+           class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-[1200ms] ease-in-out"
+           [ngClass]="{
+             'translate-y-0': faseAnimacion() === 0,
+             'translate-y-[1%]': faseAnimacion() === 1,
+             '-translate-y-[15%]': faseAnimacion() === 2
+           }">
+      
+      <img src="assets/parallax/montanas.png" alt="Montañas lejanas" 
+           class="absolute inset-0 w-full h-full object-cover z-10 transition-transform duration-[1200ms] ease-in-out"
+           [ngClass]="{
+             'translate-y-0': faseAnimacion() === 0,
+             'translate-y-[3%]': faseAnimacion() === 1,
+             '-translate-y-[30%]': faseAnimacion() === 2
+           }">
+      
+      <img src="assets/parallax/pinos-medios.png" alt="Pinos medios" 
+           class="absolute inset-0 w-full h-full object-cover z-20 transition-transform duration-[1200ms] ease-in-out"
+           [ngClass]="{
+             'translate-y-0': faseAnimacion() === 0,
+             'translate-y-[6%]': faseAnimacion() === 1,
+             '-translate-y-[70%]': faseAnimacion() === 2
+           }">
+      
+      <img src="assets/parallax/pinos-frente.png" alt="Pinos en primer plano" 
+           class="absolute inset-0 w-full h-full object-cover z-30 transition-transform duration-[1200ms] ease-in-out"
+           [ngClass]="{
+             'translate-y-0 scale-100': faseAnimacion() === 0,
+             'translate-y-[10%] scale-100': faseAnimacion() === 1,
+             '-translate-y-[130%] scale-110': faseAnimacion() === 2
+           }">
+    </div>
+
+    @if (mostrarHelicoptero()) {
+      <button 
+        (click)="irAlMapa(); $event.stopPropagation()" 
+        class="absolute top-12 right-[20%] z-50 transition-all duration-300 ease-in-out hover:scale-110"
+        [ngClass]="{
+          'opacity-100 scale-100': faseAnimacion() === 0,
+          'opacity-0 scale-50': faseAnimacion() !== 0
+        }">
+        <img 
+          src="assets/parallax/helicoptero.png" 
+          alt="Helicóptero de rescate" 
+          class="w-48 md:w-64 animate-flotar drop-shadow-lg"
+        >
+        <span class="absolute -bottom-4 right-0 bg-white/10 text-white text-xs px-2 py-0.5 rounded backdrop-blur-sm drop-shadow">Ir al Mapa 🚁</span>
+      </button>
+    }
+    
+    <p class="absolute bottom-10 z-40 text-white/70 animate-pulse text-sm font-semibold tracking-wide transition-opacity duration-300"
+       [class.opacity-0]="faseAnimacion() !== 0">
+      Haz clic para adentrarte al bosque
+    </p>
+
+  </section>
+
+  <section 
+    class="absolute inset-0 w-full h-full transition-all duration-[1200ms] ease-in-out flex items-center justify-center z-10"
+    [ngClass]="{
+      'opacity-0 translate-y-full pointer-events-none': escenaActual() === 1,
+      'opacity-100 translate-y-0 pointer-events-auto': escenaActual() === 2
+    }">
+    
+    <div class="absolute inset-0 bg-slate-900 z-0">
+      <p class="text-white text-center mt-10">Fondo del bosque interior irá aquí</p>
+    </div>
+
+    <div class="relative z-10 flex flex-col items-center gap-6 p-8 bg-black/40 backdrop-blur-md rounded-2xl border border-white/10 w-11/12 md:w-auto text-white" (click)="$event.stopPropagation()">
+      <h2 class="text-3xl font-bold">¿Quién anda ahí?</h2>
+      
+      <div class="flex flex-col sm:flex-row gap-4 w-full">
+        <button class="px-6 py-3 bg-orange-600 rounded-lg hover:bg-orange-500 font-semibold shadow-lg transition-colors">
+          Iniciar Sesión
+        </button>
+        <button class="px-6 py-3 bg-emerald-600 rounded-lg hover:bg-emerald-500 font-semibold shadow-lg transition-colors">
+          Soy Adoptante (Registro)
+        </button>
+      </div>
+
+      <button (click)="entrarComoInvitado()" class="text-sm text-gray-300 underline hover:text-white mt-4 transition-colors">
+        Continuar como invitado
+      </button>
+    </div>
+  </section>
+
+</main>
