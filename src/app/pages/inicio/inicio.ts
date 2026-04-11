@@ -14,26 +14,20 @@ import { ModalCandidatura } from '../../components/modal-candidatura/modal-candi
   styleUrl: './inicio.css',
 })
 export class Inicio {
-  escenaActual = signal<number>(1);
   mostrarHelicoptero = signal<boolean>(true);
-
+  
   faseAnimacion = signal<number>(0);
 
   constructor(private router: Router) {}
 
   avanzarEscena() {
-    if (this.faseAnimacion() !== 0 || this.escenaActual() !== 1) return;
+    if (this.faseAnimacion() !== 0) return;
 
     this.faseAnimacion.set(1);
     setTimeout(() => this.mostrarHelicoptero.set(false), 200);
 
     setTimeout(() => {
       this.faseAnimacion.set(2);
-      
-      setTimeout(() => {
-        this.escenaActual.set(2);
-      }, 600); 
-
     }, 300);
   }
 
