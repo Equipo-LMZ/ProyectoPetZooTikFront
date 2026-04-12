@@ -1,26 +1,59 @@
-<p>mapa works!</p>
-<section class="section-prueba">
-  <div class="container-prueba">
-    <header class="header-prueba">
-      <h2 class="title-prueba">Test de Conexión Backend</h2>
-    </header>
+<div class="forest-map-page">
+  <section class="map-panel">
+    <!-- Ornamentos de esquina -->
+    <span class="corner corner--tl"></span>
+    <span class="corner corner--tr"></span>
+    <span class="corner corner--bl"></span>
+    <span class="corner corner--br"></span>
 
-    <div class="div-prueba">
-      <button class="button-prueba" (click)="testearBackend()">Ejecutar Petición GET</button>
+    <div class="panel-inner">
+      <header class="map-header">
+        <p class="map-header__eyebrow">Sistema de Localización Veterinaria</p>
+        <h2 class="map-header__title">Localización de Clínicas Veterinarias</h2>
+        <p class="map-header__subtitle">Cobertura geográfica en un radio de 20 km</p>
+        <div class="map-header__rule">
+          <span class="rule-line"></span>
+          <span class="rule-diamond"></span>
+          <span class="rule-line"></span>
+        </div>
+      </header>
+
+      <div class="map-wrapper">
+        @if (cargando()) {
+          <div class="loading-overlay">
+            <div class="compass-spinner">
+              <div class="compass-needle"></div>
+            </div>
+            <p class="loading-text">Triangulando ubicaciones...</p>
+          </div>
+        }
+        <div id="map"></div>
+      </div>
+
+      <footer class="map-footer">
+        <div class="aviso-header">
+          <span class="aviso-icon-line"></span>
+          <span class="aviso-label">Protocolo de Traslado Animal</span>
+          <span class="aviso-icon-line"></span>
+        </div>
+
+        <div class="aviso-body" [class.aviso-body--oculto]="!avisoVisible()">
+          <p class="aviso-texto">{{ avisoActual() }}</p>
+        </div>
+
+        <div class="aviso-indicadores">
+          @for (aviso of avisos; track $index) {
+            <span
+              class="indicador"
+              [class.indicador--activo]="$index === avisoActualIndex()"
+            ></span>
+          }
+        </div>
+
+        <p class="map-footer__credito">
+          Datos cartográficos provistos por OpenStreetMap y Overpass API.
+        </p>
+      </footer>
     </div>
-
-    @if (datosRecibidos) {
-      <div class="div-prueba">
-        <h3 class="subtitle-prueba">Datos Recibidos:</h3>
-        <p class="text-prueba"><strong>ID:</strong> {{ datosRecibidos.idUsuario }}</p>
-        <p class="text-prueba"><strong>Nombre:</strong> {{ datosRecibidos.nombreUsuario }}</p>
-      </div>
-    }
-
-    @if (errorStatus) {
-      <div class="div-prueba">
-        <p class="text-prueba" style="color: red">Hubo un problema: {{ errorStatus }}</p>
-      </div>
-    }
-  </div>
-</section>
+  </section>
+</div>
