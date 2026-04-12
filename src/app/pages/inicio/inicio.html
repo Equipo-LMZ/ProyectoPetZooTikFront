@@ -135,6 +135,20 @@
   </div>
 
   <div class="absolute inset-0 w-full h-full pointer-events-none z-40">
+    <div class="absolute top-8 left-8 transition-all duration-500"
+         [ngClass]="{
+           'opacity-100 pointer-events-auto': faseAnimacion() === 2,
+           'opacity-0 pointer-events-none': faseAnimacion() !== 2
+         }">
+      <button (click)="regresarInicio($event)" 
+              class="cursor-pointer flex items-center gap-2 px-5 py-2.5 bg-black/30 hover:bg-black/50 backdrop-blur-md border border-white/10 rounded-full text-white transition-all active:scale-95 group">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        <span class="font-bold text-xs tracking-widest uppercase">Regresar</span>
+      </button>
+    </div>
+
     @if (mostrarHelicoptero()) {
       <button 
         (click)="irAlMapa(); $event.stopPropagation()" 

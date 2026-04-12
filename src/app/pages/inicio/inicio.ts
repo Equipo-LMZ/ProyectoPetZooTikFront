@@ -18,7 +18,6 @@ export class Inicio {
   faseAnimacion = signal<number>(0);
   seleccionActual = signal<number>(0);
   
-  // NUEVO: Control de modales
   modalAbierto = signal<'login' | 'registro' | null>(null);
 
   luciernagas = Array.from({ length: 35 }, () => ({
@@ -41,6 +40,16 @@ export class Inicio {
     }, 300);
   }
 
+    regresarInicio(event: Event) {
+    event.stopPropagation();
+    
+    this.faseAnimacion.set(0);
+    
+    setTimeout(() => {
+      this.mostrarHelicoptero.set(true);
+    }, 800);
+  }
+  
   setHover(opcion: number) {
     this.seleccionActual.set(opcion);
   }
