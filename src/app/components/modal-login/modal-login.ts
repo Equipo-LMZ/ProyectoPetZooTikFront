@@ -15,12 +15,18 @@ export class ModalLogin {
 
   isClosing = signal<boolean>(false);
 
+  mostrarPassword = signal<boolean>(false);
+
   credenciales = {
     correo: '',
     contrasena: '',
   };
 
   constructor() {}
+
+  togglePassword() {
+    this.mostrarPassword.update(v => !v);
+  }
 
   cerrarModal() {
     if (this.isClosing()) return;

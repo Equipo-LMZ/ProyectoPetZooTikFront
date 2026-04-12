@@ -15,6 +15,8 @@ export class ModalRegistro {
 
   isClosing = signal<boolean>(false);
 
+  mostrarPassword = signal<boolean>(false);
+
   // Objeto que mapea exactamente a tu JSON del curl
   nuevoUsuario = {
     nombre: '',
@@ -23,6 +25,10 @@ export class ModalRegistro {
   };
 
   constructor() {}
+
+  togglePassword() {
+    this.mostrarPassword.update(v => !v);
+  }
 
   cerrarModal() {
     if (this.isClosing()) return;
