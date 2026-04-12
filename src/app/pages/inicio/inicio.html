@@ -161,4 +161,12 @@
     </p>
   </div>
 
+  @if (modalAbierto() === 'login') {
+    <app-modal-login (cerrar)="cerrarModales()"></app-modal-login>
+  }
+
+  @if (modalAbierto() === 'registro') {
+    <app-modal-registro (cerrar)="cerrarModales()"></app-modal-registro>
+  }
+
 </main>

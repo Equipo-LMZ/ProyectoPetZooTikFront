@@ -1,49 +1,45 @@
-<p>modal-login works!</p>
-<div class="container-inicio-sesion">
-  <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)" class="form-inicio-sesion">
-    <header class="header-inicio-sesion">
-      <h2 class="title-inicio-sesion">Ingreso al Sistema</h2>
-    </header>
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 pointer-events-auto modal-overlay"
+     [ngClass]="{'closing': isClosing()}" (click)="cerrarModal()">
+  
+  <div class="relative w-[90%] max-w-md p-8 bg-[#041b30] border border-slate-700/50 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.8)] overflow-hidden modal-card" 
+       [ngClass]="{'closing': isClosing()}" (click)="$event.stopPropagation()">
+    
+    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-600 to-transparent opacity-50"></div>
 
-    <div class="div-inicio-sesion">
-      <label for="correo" class="label-inicio-sesion">Correo Electrónico:</label>
-      <input
-        type="email"
-        id="correo"
-        name="correo"
-        class="input-inicio-sesion"
-        [(ngModel)]="credenciales.correo"
-        #correo="ngModel"
-        required
-        email
-      />
+    <button (click)="cerrarModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
 
-      @if (correo.invalid && (correo.dirty || correo.touched)) {
-        <span class="text-inicio-sesion">Por favor, ingresa un correo válido.</span>
-      }
-    </div>
+    <h3 class="text-3xl font-bold text-white mb-2 tracking-wide">Iniciar Sesión</h3>
+    <p class="text-slate-400 text-sm mb-6">Bienvenido de vuelta.</p>
 
-    <div class="div-inicio-sesion">
-      <label for="contrasena" class="label-inicio-sesion">Contraseña:</label>
-      <input
-        type="password"
-        id="contrasena"
-        name="contrasena"
-        class="input-inicio-sesion"
-        [(ngModel)]="credenciales.contrasena"
-        #contrasena="ngModel"
-        required
-      />
+    <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)" class="flex flex-col gap-5">
+      <div>
+        <label for="correo" class="block text-slate-300 text-sm font-semibold mb-2">Correo Electrónico:</label>
+        <input type="email" id="correo" name="correo" placeholder="adoptante@petzootik.com" 
+               class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-600 focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600 transition-all"
+               [(ngModel)]="credenciales.correo" #correo="ngModel" required email>
+        @if (correo.invalid && (correo.dirty || correo.touched)) {
+          <span class="text-rose-400 text-xs font-semibold mt-1 block">Por favor, ingresa un correo válido.</span>
+        }
+      </div>
 
-      @if (contrasena.invalid && (contrasena.dirty || contrasena.touched)) {
-        <span class="text-inicio-sesion">La contraseña es obligatoria.</span>
-      }
-    </div>
+      <div>
+        <label for="contrasena" class="block text-slate-300 text-sm font-semibold mb-2">Contraseña:</label>
+        <input type="password" id="contrasena" name="contrasena" placeholder="••••••••" 
+               class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-600 focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600 transition-all"
+               [(ngModel)]="credenciales.contrasena" #contrasena="ngModel" required>
+        @if (contrasena.invalid && (contrasena.dirty || contrasena.touched)) {
+          <span class="text-rose-400 text-xs font-semibold mt-1 block">La contraseña es obligatoria.</span>
+        }
+      </div>
 
-    <footer class="footer-inicio-sesion">
-      <button type="submit" class="button-inicio-sesion" [disabled]="loginForm.invalid">
+      <button type="submit" [disabled]="loginForm.invalid" 
+              class="cursor-pointer mt-2 w-full py-3 rounded-xl bg-gradient-to-b from-amber-600 to-amber-800 text-white font-bold tracking-wide shadow-lg hover:scale-[1.02] active:scale-95 transition-all border border-amber-500/50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100">
         Iniciar Sesión
       </button>
-    </footer>
-  </form>
+    </form>
+  </div>
 </div>

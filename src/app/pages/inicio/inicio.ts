@@ -17,14 +17,16 @@ export class Inicio {
   mostrarHelicoptero = signal<boolean>(true);
   faseAnimacion = signal<number>(0);
   seleccionActual = signal<number>(0);
+  
+  // NUEVO: Control de modales
+  modalAbierto = signal<'login' | 'registro' | null>(null);
 
   luciernagas = Array.from({ length: 35 }, () => ({
     left: `${Math.random() * 100}%`,
     bottom: `${Math.random() * 100}%`,
-    animationDuration: `${Math.random() * 6 + 6}s`, // Duran entre 6s y 12s
-    animationDelay: `-${Math.random() * 10}s` // Retraso negativo para que empiecen desfasadas
+    animationDuration: `${Math.random() * 6 + 6}s`, 
+    animationDelay: `-${Math.random() * 10}s` 
   }));
-  
 
   constructor(private router: Router) {}
 
@@ -47,12 +49,16 @@ export class Inicio {
     const seleccion = this.seleccionActual();
     
     if (seleccion === 1) {
-      console.log('Abrir Modal Iniciar Sesión');
+      this.modalAbierto.set('login');
     } else if (seleccion === 2) {
-      console.log('Abrir Modal Registro');
+      this.modalAbierto.set('registro');
     } else {
       this.entrarComoInvitado();
     }
+  }
+
+  cerrarModales() {
+    this.modalAbierto.set(null);
   }
 
   irAlMapa() {
