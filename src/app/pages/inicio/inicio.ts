@@ -18,6 +18,14 @@ export class Inicio {
   faseAnimacion = signal<number>(0);
   seleccionActual = signal<number>(0);
 
+  luciernagas = Array.from({ length: 35 }, () => ({
+    left: `${Math.random() * 100}%`,
+    bottom: `${Math.random() * 100}%`,
+    animationDuration: `${Math.random() * 6 + 6}s`, // Duran entre 6s y 12s
+    animationDelay: `-${Math.random() * 10}s` // Retraso negativo para que empiecen desfasadas
+  }));
+  
+
   constructor(private router: Router) {}
 
   avanzarEscena() {

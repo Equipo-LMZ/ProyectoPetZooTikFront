@@ -48,6 +48,17 @@
         <img src="assets/ui/fondo-bosque.png" alt="Fondo Bosque Atardecer" 
              class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
 
+        <div class="absolute inset-0 w-full h-full pointer-events-none overflow-hidden z-0">
+          @for (luz of luciernagas; track $index) {
+            <div class="luciernaga" 
+                 [style.left]="luz.left" 
+                 [style.bottom]="luz.bottom" 
+                 [style.animation-duration]="luz.animationDuration" 
+                 [style.animation-delay]="luz.animationDelay">
+            </div>
+          }
+        </div>
+
         <h2 class="absolute top-20 text-4xl md:text-5xl font-bold text-white/90 tracking-widest uppercase drop-shadow-xl z-20">
           ¿Quién anda ahí?
         </h2>
