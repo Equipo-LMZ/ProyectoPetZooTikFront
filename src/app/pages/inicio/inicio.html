@@ -1,9 +1,186 @@
-<p>inicio works!</p>
-<br />
-<app-modal-login></app-modal-login>
-<br />
-<hr />
-<app-modal-registro></app-modal-registro>
-<br />
-<hr />
-<app-modal-candidatura></app-modal-candidatura>
+<main class="relative w-full h-screen overflow-hidden bg-slate-900" (click)="avanzarEscena()">
+
+  <img src="assets/parallax/fondo.png" alt="Cielo atardecer" 
+       class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-[1200ms] ease-in-out pointer-events-none"
+       [ngClass]="{
+         'translate-y-0': faseAnimacion() === 0,
+         'translate-y-[1%]': faseAnimacion() === 1,
+         '-translate-y-[15%]': faseAnimacion() === 2
+       }">
+  
+  <img src="assets/parallax/montanas.png" alt="Montañas lejanas" 
+       class="absolute inset-0 w-full h-full object-cover z-10 transition-transform duration-[1200ms] ease-in-out pointer-events-none"
+       [ngClass]="{
+         'translate-y-0': faseAnimacion() === 0,
+         'translate-y-[3%]': faseAnimacion() === 1,
+         '-translate-y-[30%]': faseAnimacion() === 2
+       }">
+  
+  <img src="assets/parallax/pinos-medios.png" alt="Pinos medios" 
+       class="absolute inset-0 w-full h-full object-cover z-20 transition-transform duration-[1200ms] ease-in-out pointer-events-none"
+       [ngClass]="{
+         'translate-y-0': faseAnimacion() === 0,
+         'translate-y-[6%]': faseAnimacion() === 1,
+         '-translate-y-[60%]': faseAnimacion() === 2
+       }">
+  
+  <div class="absolute top-0 left-0 w-full h-screen z-30 transition-transform duration-[1200ms] ease-in-out" 
+       [ngClass]="{
+         'translate-y-0': faseAnimacion() === 0,
+         'translate-y-[10%]': faseAnimacion() === 1,
+         '-translate-y-[100%]': faseAnimacion() === 2 
+       }">
+    
+    <img src="assets/parallax/pinos-frente.png" alt="Pinos en primer plano" 
+         class="absolute inset-0 w-full h-full object-cover pointer-events-none">
+
+    <div class="absolute top-full left-0 w-full h-screen cursor-default overflow-hidden bg-[#041b30]" 
+         (click)="$event.stopPropagation()"> 
+         
+      <div class="absolute bottom-full left-0 w-full h-[30vh] bg-gradient-to-t from-[#041b30] to-transparent pointer-events-none z-0"></div>
+
+      <div class="absolute inset-0 w-full h-full flex flex-col items-center justify-center transition-opacity duration-[800ms] ease-in-out"
+           [ngClass]="{
+             'opacity-0': faseAnimacion() === 0 || faseAnimacion() === 1,
+             'opacity-100 delay-[700ms]': faseAnimacion() === 2
+           }">
+
+        <img src="assets/ui/fondo-bosque.png" alt="Fondo Bosque Atardecer" 
+             class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
+
+        <div class="absolute inset-0 w-full h-full pointer-events-none overflow-hidden z-0">
+          @for (luz of luciernagas; track $index) {
+            <div class="luciernaga" 
+                 [style.left]="luz.left" 
+                 [style.bottom]="luz.bottom" 
+                 [style.animation-duration]="luz.animationDuration" 
+                 [style.animation-delay]="luz.animationDelay">
+            </div>
+          }
+        </div>
+
+        <h2 class="absolute top-20 text-4xl md:text-5xl font-bold text-white/90 tracking-widest uppercase drop-shadow-xl z-20">
+          ¿Quién anda ahí?
+        </h2>
+
+        <div class="relative w-full max-w-5xl flex justify-center items-end gap-10 md:gap-20 mt-12 h-[65vh] z-10">
+
+          <div class="relative group cursor-pointer flex flex-col items-center justify-end h-full w-64 md:w-[24rem]"
+               (mouseenter)="setHover(1)" 
+               (mouseleave)="setHover(0)"
+               (click)="ejecutarAccion()">
+               
+               <div class="absolute -top-[30%] left-1/2 -translate-x-1/2 w-[150%] h-[130%] bg-gradient-to-b from-white/30 via-white/5 to-transparent blur-xl pointer-events-none transition-opacity duration-500 ease-in-out"
+                    style="clip-path: polygon(30% 0, 70% 0, 100% 100%, 0% 100%);"
+                    [class.opacity-100]="seleccionActual() === 1"
+                    [class.opacity-0]="seleccionActual() !== 1">
+               </div>
+
+               <img src="assets/ui/inicio-sesion.png" alt="Iniciar Sesión" 
+                    class="relative z-10 w-full object-contain drop-shadow-2xl transition-all duration-500"
+                    [ngClass]="{
+                      'scale-105 brightness-110 drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]': seleccionActual() === 1,
+                      'brightness-50': seleccionActual() === 2,
+                      'brightness-75': seleccionActual() === 0
+                    }">
+          </div>
+
+          <div class="relative group cursor-pointer flex flex-col items-center justify-end h-full w-64 md:w-[24rem]"
+               (mouseenter)="setHover(2)" 
+               (mouseleave)="setHover(0)"
+               (click)="ejecutarAccion()">
+               
+               <div class="absolute -top-[30%] left-1/2 -translate-x-1/2 w-[150%] h-[130%] bg-gradient-to-b from-white/30 via-white/5 to-transparent blur-xl pointer-events-none transition-opacity duration-500 ease-in-out"
+                    style="clip-path: polygon(30% 0, 70% 0, 100% 100%, 0% 100%);"
+                    [class.opacity-100]="seleccionActual() === 2"
+                    [class.opacity-0]="seleccionActual() !== 2">
+               </div>
+
+               <img src="assets/ui/registrarse.png" alt="Registrarse" 
+                    class="relative z-10 w-full object-contain drop-shadow-2xl transition-all duration-500"
+                    [ngClass]="{
+                      'scale-105 brightness-110 drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]': seleccionActual() === 2,
+                      'brightness-50': seleccionActual() === 1,
+                      'brightness-75': seleccionActual() === 0
+                    }">
+          </div>
+
+        </div>
+
+        <button (click)="ejecutarAccion()" 
+                class="cursor-pointer relative mt-8 px-12 py-5 overflow-hidden group transition-all duration-300 hover:scale-105 active:scale-95 z-20
+                       bg-gradient-to-b from-amber-700 to-amber-900 
+                       border-t-2 border-amber-600 border-b-[6px] border-amber-950 
+                       rounded-2xl shadow-[0_15px_30px_rgba(0,0,0,0.6)] min-w-[300px]">
+            
+            <div class="absolute inset-0 opacity-10 pointer-events-none mix-blend-multiply" 
+                 style="background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, #000 3px, #000 4px);">
+            </div>
+            
+            <div class="absolute top-0 left-0 w-full h-1/3 bg-gradient-to-b from-white/10 to-transparent pointer-events-none"></div>
+
+            <span class="relative z-10 text-2xl font-bold text-orange-50 tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] transition-all duration-300 block text-center">
+              @if (seleccionActual() === 1) {
+                Iniciar Sesión
+              } @else if (seleccionActual() === 2) {
+                Registrarse
+              } @else {
+                Continuar como invitado
+              }
+            </span>
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="absolute inset-0 w-full h-full pointer-events-none z-40">
+    <div class="absolute top-8 left-8 transition-all duration-500"
+         [ngClass]="{
+           'opacity-100 pointer-events-auto': faseAnimacion() === 2,
+           'opacity-0 pointer-events-none': faseAnimacion() !== 2
+         }">
+      <button (click)="regresarInicio($event)" 
+              class="cursor-pointer flex items-center gap-2 px-5 py-2.5 bg-black/30 hover:bg-black/50 backdrop-blur-md border border-white/10 rounded-full text-white transition-all active:scale-95 group">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        <span class="font-bold text-xs tracking-widest uppercase">Regresar</span>
+      </button>
+    </div>
+
+    @if (mostrarHelicoptero()) {
+      <button 
+        (click)="irAlMapa(); $event.stopPropagation()" 
+        class="cursor-pointer absolute top-12 right-[20%] pointer-events-auto transition-all duration-300 ease-in-out hover:scale-110"
+        [ngClass]="{
+          'opacity-100 scale-100': faseAnimacion() === 0,
+          'opacity-0 scale-50': faseAnimacion() !== 0
+        }">
+        <img 
+          src="assets/parallax/helicoptero.png" 
+          alt="Helicóptero de rescate" 
+          class="w-48 md:w-64 animate-flotar drop-shadow-lg"
+        >
+        <span class="absolute -bottom-4 right-0 bg-white/10 text-white text-xs px-2 py-0.5 rounded backdrop-blur-sm drop-shadow">Ir al Mapa 🚁</span>
+      </button>
+    }
+    
+    <p class="absolute bottom-10 left-0 w-full text-center text-white/70 text-sm font-semibold tracking-wide transition-opacity duration-300"
+       [ngClass]="{
+         'opacity-100 animate-pulse': faseAnimacion() === 0,
+         'opacity-0 pointer-events-none': faseAnimacion() !== 0
+       }">
+      Haz clic para adentrarte al bosque
+    </p>
+  </div>
+
+  @if (modalAbierto() === 'login') {
+    <app-modal-login (cerrar)="cerrarModales()"></app-modal-login>
+  }
+
+  @if (modalAbierto() === 'registro') {
+    <app-modal-registro (cerrar)="cerrarModales()"></app-modal-registro>
+  }
+
+</main>

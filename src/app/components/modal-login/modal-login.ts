@@ -1,21 +1,42 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-modal-login',
-  imports: [FormsModule],
+  imports: [CommonModule, FormsModule],
   standalone: true,
   templateUrl: './modal-login.html',
   styleUrl: './modal-login.css',
 })
 export class ModalLogin {
-  
+
+  @Output() cerrar = new EventEmitter<void>();
+
+  isClosing = signal<boolean>(false);
+
+  mostrarPassword = signal<boolean>(false);
+
   credenciales = {
     correo: '',
     contrasena: '',
   };
 
   constructor() {}
+
+  togglePassword() {
+    this.mostrarPassword.update(v => !v);
+  }
+
+  cerrarModal() {
+    if (this.isClosing()) return;
+
+    this.isClosing.set(true);
+
+    setTimeout(() => {
+      this.cerrar.emit();
+    }, 300); 
+  }
 
   onSubmit(form: NgForm) {
     if (form.valid) {
