@@ -78,7 +78,6 @@ export class GestionAnimales implements OnInit {
     this.mascotaForm.get('imagen')?.clearValidators();
     this.mascotaForm.get('imagen')?.updateValueAndValidity();
 
-    // Si no es un tipo predefinido, lo ponemos en "Otro" y rellenamos el custom
     const tiposConocidos = ['Perro', 'Gato', 'Ave'];
     const esConocido = tiposConocidos.includes(mascota.tipoAnimal);
     
