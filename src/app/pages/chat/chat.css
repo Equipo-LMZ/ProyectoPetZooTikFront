@@ -1,4 +1,3 @@
-/* Scrollbar pequeña y sutil para la lista izquierda */
 .custom-scrollbar::-webkit-scrollbar {
   width: 5px;
 }
