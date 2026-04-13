@@ -1,0 +1,312 @@
+/* ============================================
+   SOBRE DE CORREO AÉREO - ESTILO VINTAGE 1930s
+   ============================================ */
+
+.alert-overlay {
+  background: radial-gradient(ellipse at 50% 30%, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.65) 100%);
+  backdrop-filter: blur(3px);
+}
+
+/* ---- El sobre ---- */
+.alert-card {
+  --color-papel: #f0dfa8;
+  --color-tinta: #1a0a00;
+  --color-stripe-red: #b91c1c;
+  --color-stripe-blue: #1e3a8a;
+
+  background-color: var(--color-papel);
+  /* Borde diagonal estilo Air Mail clásico */
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--color-stripe-red) 0px,
+    var(--color-stripe-red) 10px,
+    #ffffff 10px,
+    #ffffff 20px,
+    var(--color-stripe-blue) 20px,
+    var(--color-stripe-blue) 30px,
+    #ffffff 30px,
+    #ffffff 40px
+  );
+  position: relative;
+  overflow: visible;
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.1),
+    0 12px 30px rgba(0, 0, 0, 0.35),
+    0 30px 60px rgba(0, 0, 0, 0.2);
+  animation: slideDownSlam 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Área interior de papel envejecido */
+.alert-card::before {
+  content: '';
+  position: absolute;
+  inset: 14px;
+  background-color: var(--color-papel);
+  background-image:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, transparent 45%),
+    linear-gradient(315deg, rgba(139, 90, 43, 0.06) 0%, transparent 60%);
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.07);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Grano de papel sutil */
+.div-textura-papel {
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(0, 0, 0, 0.025) 3px,
+      rgba(0, 0, 0, 0.025) 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 3px,
+      rgba(0, 0, 0, 0.015) 3px,
+      rgba(0, 0, 0, 0.015) 4px
+    );
+  background-size: 4px 4px;
+  z-index: 2;
+  opacity: 0.8;
+  animation: none; /* se elimina el parpadeo agresivo */
+}
+
+/* ---- Etiqueta VIA AIR MAIL (esquina inferior izquierda) ---- */
+.via-air-mail-label {
+  position: absolute;
+  bottom: 24px;
+  left: 0;
+  z-index: 20;
+  background: var(--color-stripe-blue);
+  color: #ffffff;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 9px;
+  font-weight: bold;
+  letter-spacing: 3px;
+  padding: 5px 22px 5px 20px;
+  text-transform: uppercase;
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* ---- Sello postal (esquina superior derecha) ---- */
+.stamp-wrapper {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  z-index: 30;
+}
+
+.stamp {
+  width: 68px;
+  height: 78px;
+  background: #e8952a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 6px 4px 4px;
+  transform: rotate(2.5deg);
+  position: relative;
+  /* Simula el papel blanco entre perforación y borde del sobre */
+  box-shadow:
+    inset 0 0 10px rgba(0, 0, 0, 0.12),
+    0 0 0 5px var(--color-papel),
+    0 0 0 6px rgba(0, 0, 0, 0.18),
+    3px 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+/* Perforaciones del sello */
+.stamp::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle, var(--color-papel) 3.5px, transparent 3.5px) -7px center / 14px 14px
+      repeat-y,
+    radial-gradient(circle, var(--color-papel) 3.5px, transparent 3.5px) calc(100% + 7px) center /
+      14px 14px repeat-y,
+    radial-gradient(circle, var(--color-papel) 3.5px, transparent 3.5px) center -7px / 14px 14px
+      repeat-x,
+    radial-gradient(circle, var(--color-papel) 3.5px, transparent 3.5px) center calc(100% + 7px) /
+      14px 14px repeat-x;
+  pointer-events: none;
+}
+
+.stamp-cent {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 18px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.65);
+  line-height: 1;
+}
+
+.stamp-country {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 7px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.55);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* ---- Matasellos circular ---- */
+.postmark {
+  position: absolute;
+  top: -14px;
+  right: 44px;
+  z-index: 35;
+  width: 80px;
+  height: 80px;
+  color: var(--color-stripe-blue);
+  opacity: 0.7;
+  transform: rotate(-10deg);
+  pointer-events: none;
+  filter: url(#rough); /* bordes desgastados de tinta */
+}
+
+/* ---- Sello de avión (esquina superior izquierda) ---- */
+.plane-stamp {
+  position: absolute;
+  top: 22px;
+  left: 22px;
+  z-index: 20;
+  opacity: 0.35;
+  transform: rotate(-3deg);
+  pointer-events: none;
+}
+
+/* ---- Contenido ---- */
+.alert-content {
+  position: relative;
+  z-index: 10;
+}
+
+/* ---- Encabezado ---- */
+.alert-title {
+  font-family: 'Courier New', Courier, monospace;
+  color: var(--color-tinta);
+  letter-spacing: -0.5px;
+}
+
+.alert-doc-id {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 10px;
+  letter-spacing: 4px;
+  color: rgba(26, 10, 0, 0.45);
+  text-transform: uppercase;
+}
+
+/* ---- Descripción ---- */
+.alert-description {
+  font-family: 'Courier New', Courier, monospace;
+  color: var(--color-tinta);
+  line-height: 1.6;
+}
+
+/* ---- Botón estilo sello de caucho ---- */
+.rubber-stamp-btn {
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  font-size: 13px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  padding: 9px 24px;
+  border: 2.5px solid #8b0000;
+  color: #8b0000;
+  background: transparent;
+  transform: rotate(-1deg);
+  cursor: pointer;
+  position: relative;
+  opacity: 0.8;
+  transition: all 0.15s ease;
+  box-shadow: none;
+}
+
+.rubber-stamp-btn::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border: 1px solid rgba(139, 0, 0, 0.25);
+  pointer-events: none;
+}
+
+.rubber-stamp-btn:hover {
+  opacity: 1;
+  background: rgba(139, 0, 0, 0.04);
+  transform: rotate(-1deg) scale(1.03);
+}
+
+.rubber-stamp-btn:active {
+  transform: rotate(-1deg) scale(0.97);
+  opacity: 0.65;
+}
+
+/* ---- Separador ---- */
+.envelope-divider {
+  border: none;
+  border-top: 1px dashed rgba(26, 10, 0, 0.2);
+  margin: 4px 0;
+}
+
+/* ---- Tipos: color del sello según el tipo ---- */
+.alert-card.success .stamp {
+  background: #c8e6c9;
+}
+.alert-card.error .stamp {
+  background: #ffcdd2;
+}
+.alert-card.warning .stamp {
+  background: #fff9c4;
+}
+.alert-card.info .stamp {
+  background: #bbdefb;
+}
+.alert-card.question .stamp {
+  background: #eeeeee;
+}
+
+/* ---- Animaciones ---- */
+@keyframes slideDownSlam {
+  0% {
+    transform: scale(1.45) rotate(-5deg) translateY(-20px);
+    opacity: 0;
+  }
+  55% {
+    transform: scale(0.96) rotate(1.5deg);
+    opacity: 1;
+  }
+  75% {
+    transform: scale(1.02) rotate(-0.5deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUpFadeOut {
+  0% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.75) translateY(-70px) rotate(4deg);
+    opacity: 0;
+  }
+}
+
+.alert-card.closing {
+  animation: slideUpFadeOut 0.35s ease-in forwards;
+}
+
+/* Render retro */
+.alert-card,
+.rubber-stamp-btn {
+  image-rendering: pixelated;
+  -webkit-font-smoothing: none;
+}
