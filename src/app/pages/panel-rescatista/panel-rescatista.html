@@ -1,2 +1,88 @@
-<p>panel-rescatista works!</p>
-<app-gestion-animales></app-gestion-animales>
+<div class="min-h-screen bg-slate-100 flex flex-col md:flex-row relative animate-fade-in-up">
+  <button 
+    (click)="toggleSidebar()"
+    class="md:hidden fixed top-4 right-4 z-[60] bg-white p-3 rounded-full shadow-xl text-orange-500 hover:bg-orange-50 transition-colors">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+  </button>
+
+  <div class="flex-1 p-4 sm:p-6 md:p-8 flex justify-center items-start min-h-screen">
+    <div class="relative w-full max-w-5xl bg-[#a17a58] rounded-[1.5rem] md:rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] p-4 md:p-6 pb-8 md:pb-12 transition-all duration-500 hover:shadow-[0_25px_60px_rgba(0,0,0,0.35)] mt-12 md:mt-4">
+      
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-6 w-36 md:w-56 h-12 md:h-16 bg-gradient-to-b from-gray-200 via-gray-400 to-gray-500 rounded-lg shadow-lg z-10 flex justify-center items-center border-t border-gray-100">
+        <div class="w-20 md:w-32 h-3 bg-gray-600 rounded-full opacity-60 shadow-inner"></div>
+        <div class="absolute top-1/2 transform -translate-y-1/2 w-5 h-5 bg-gray-700/40 rounded-full right-3 md:right-4 filter blur-[1px]"></div>
+        <div class="absolute top-1/2 transform -translate-y-1/2 w-5 h-5 bg-gray-700/40 rounded-full left-3 md:left-4 filter blur-[1px]"></div>
+      </div>
+
+      <div class="bg-amber-50/95 backdrop-blur-md shadow-[inset_0_2px_15px_rgba(0,0,0,0.1)] rounded-xl min-h-[75vh] md:min-h-[85vh] p-4 sm:p-6 md:p-10 relative overflow-hidden pattern-paper"> 
+         <div class="absolute -top-6 -right-6 w-16 h-16 bg-white/40 rotate-45 shadow-sm transform translate-y-3 -translate-x-3 backdrop-blur-sm z-0"></div>
+        <div class="relative z-10 animate-fade-in">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div 
+    class="fixed inset-y-0 right-0 z-50 w-72 bg-white shadow-[-10px_0_30px_rgba(0,0,0,0.1)] transform transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] md:relative md:translate-x-0"
+    [ngClass]="{'translate-x-0': isSidebarOpen(), 'translate-x-full': !isSidebarOpen()}">
+    
+    <div class="h-full flex flex-col px-6 py-8 overflow-y-auto w-full">
+      <div class="mb-10 text-center">
+        <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-orange-200">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-orange-500" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <h2 class="text-2xl font-extrabold text-slate-800 tracking-tight">Panel Central</h2>
+        <p class="text-sm text-slate-500 font-medium mt-1">Gestión de Rescatista</p>
+      </div>
+      
+      <nav class="flex-1 space-y-3">
+        <a routerLink="crud" routerLinkActive="bg-orange-50 text-orange-600 border-r-4 border-orange-500 font-bold"
+           class="flex items-center px-4 py-3.5 rounded-l-xl hover:bg-slate-50 text-slate-600 transition-all group font-medium"
+           (click)="toggleSidebar()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-4 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+          </svg>
+          Mis Animales
+        </a>
+        
+        <a routerLink="chats" routerLinkActive="bg-orange-50 text-orange-600 border-r-4 border-orange-500 font-bold"
+           class="flex items-center px-4 py-3.5 rounded-l-xl hover:bg-slate-50 text-slate-600 transition-all group font-medium"
+           (click)="toggleSidebar()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-4 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+          </svg>
+          Conversaciones
+        </a>
+        
+        <a routerLink="peticiones" routerLinkActive="bg-orange-50 text-orange-600 border-r-4 border-orange-500 font-bold"
+           class="flex items-center px-4 py-3.5 rounded-l-xl hover:bg-slate-50 text-slate-600 transition-all group font-medium"
+           (click)="toggleSidebar()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-4 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Solicitudes
+        </a>
+      </nav>
+
+      <div class="mt-auto pt-6">
+        <a routerLink="/" class="w-full flex justify-center items-center px-4 py-3 bg-slate-900 text-white rounded-xl hover:bg-slate-800 transition-colors shadow-md hover:shadow-lg font-medium text-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Volver a Inicio
+        </a>
+      </div>
+    </div>
+  </div>
+  
+  <div 
+    *ngIf="isSidebarOpen()"
+    (click)="toggleSidebar()"
+    class="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm animate-fade-in transition-opacity"
+  ></div>
+</div>
