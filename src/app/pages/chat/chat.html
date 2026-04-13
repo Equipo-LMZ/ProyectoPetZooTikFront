@@ -1,1 +1,84 @@
-<p>chat works!</p>
+<section class="h-full flex flex-col md:flex-row gap-6 pt-4 h-[80vh] overflow-hidden">
+  
+  <div class="hidden md:flex w-1/3 flex-col h-full border-r-2 border-slate-200 pr-4">
+    
+    <header class="mb-6">
+      <h2 class="text-3xl font-black text-slate-800 tracking-tight font-serif uppercase">Mensajería</h2>
+      <p class="text-slate-600 font-medium font-serif mt-1 italic tracking-wide">Chats Entrantes</p>
+    </header>
+
+    <div class="relative mb-6">
+      <input type="text" 
+             placeholder="Buscar contacto..." 
+             (input)="actualizarFiltro($event)"
+             class="w-full bg-white/60 border-2 border-slate-300 rounded-lg px-4 py-3 pl-10 text-slate-800 focus:border-orange-500 focus:ring-0 transition-colors placeholder:text-slate-400 font-medium font-sans">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+    </div>
+
+    <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-3 pb-8">
+      @for (chat of conversacionesFiltradas; track chat.id) {
+        <button 
+          (click)="abrirChat(chat)"
+          class="w-full cursor-pointer text-left bg-white p-3 rounded-xl border-2 transition-all group flex items-start gap-4 hover:shadow-md relative overflow-hidden"
+          [ngClass]="chat.id === chatActivo?.id ? 'border-orange-400 shadow-sm bg-orange-50/30' : 'border-slate-200 hover:border-slate-300'">
+          
+          <div class="relative flex-shrink-0">
+            <img [src]="chat.avatar" [alt]="chat.nombreCandidato" class="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm">
+            @if (chat.noLeidos > 0) {
+              <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white animate-pulse">
+                {{ chat.noLeidos }}
+              </span>
+            }
+          </div>
+
+          <div class="flex-1 min-w-0">
+            <div class="flex justify-between items-center mb-0.5">
+              <h4 class="font-bold text-slate-800 truncate pr-2">{{ chat.nombreCandidato }}</h4>
+              <span class="text-[10px] text-slate-400 font-bold uppercase whitespace-nowrap">{{ chat.mensajes[chat.mensajes.length-1].hora }}</span>
+            </div>
+            
+            <p class="text-xs text-slate-500 truncate mb-1">
+              {{ chat.mensajes[chat.mensajes.length-1].texto }}
+            </p>
+            
+            <span class="inline-block bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border border-slate-200">
+              Sobre: {{ chat.animalNombre }}
+            </span>
+          </div>
+        </button>
+      } @empty {
+        <div class="text-center py-10 opacity-60">
+          <p class="text-sm font-bold text-slate-500 uppercase">Sin resultados</p>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="w-full md:w-2/3 h-full flex flex-col items-center justify-center relative p-2 md:p-6">
+    
+    @if (!chatActivo) {
+      <div class="hidden md:flex text-center opacity-60 flex-col items-center max-w-sm">
+        <div class="w-32 h-32 bg-slate-200 rounded-full flex items-center justify-center mb-6 shadow-inner">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <h3 class="text-2xl font-black text-slate-700 uppercase tracking-wide font-serif mb-2">Dispositivo Móvil</h3>
+        <p class="text-slate-500 font-medium">Seleccione una conversación en la libreta para visualizar los mensajes en su dispositivo de trabajo.</p>
+      </div>
+    }
+
+    <div class="w-full h-full justify-center pb-2" [ngClass]="chatActivo ? 'flex' : 'flex md:hidden'">
+      <app-smartphone-chat 
+        class="w-full h-full flex items-center justify-center"
+        [chatActivo]="chatActivo" 
+        [conversaciones]="conversaciones"
+        (abrirVisor)="abrirChat($event)"
+        (cerrarVisor)="cerrarChat()">
+      </app-smartphone-chat>
+    </div>
+
+  </div>
+</section>

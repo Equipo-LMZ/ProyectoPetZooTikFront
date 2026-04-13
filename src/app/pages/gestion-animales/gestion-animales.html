@@ -1,137 +1,226 @@
-<section class="section-gestion">
-  <div class="container-gestion">
-    <header class="header-gestion">
-      <h2 class="title-gestion">Panel de Gestión de Animales</h2>
-      <button type="button" class="button-gestion" (click)="abrirFormularioNuevo()">
-        + Registrar Mascota
+<section class="h-full flex flex-col pt-4">
+  <header class="flex flex-col sm:flex-row justify-between items-start sm:items-end border-b-4 border-slate-800 pb-4 mb-6">
+    <div>
+      <h2 class="text-3xl font-black text-slate-800 tracking-tight font-serif uppercase">Registro de Rescates</h2>
+      <p class="text-slate-600 font-medium font-serif mt-1 italic tracking-wide">Documento oficial de rescate</p>
+    </div>
+    
+    @if (!mostrarFormulario) {
+      <button 
+        type="button" 
+        class="cursor-pointer mt-4 sm:mt-0 flex items-center px-5 py-2.5 bg-orange-600 text-amber-50 font-bold rounded-md shadow-[4px_4px_0_0_#1e293b] hover:translate-y-1 hover:shadow-none hover:bg-orange-700 transition-all border-2 border-slate-900 active:scale-95 uppercase tracking-wide text-sm"
+        (click)="abrirFormularioNuevo()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+        </svg>
+        Añadir al Expediente
       </button>
-    </header>
-
-    <div class="div-gestion">
-      <table class="table-gestion">
-        <thead class="thead-gestion">
-          <tr class="tr-gestion">
-            <th class="th-gestion">Nombre</th>
-            <th class="th-gestion">Tipo</th>
-            <th class="th-gestion">Ubicación Actual</th>
-            <th class="th-gestion">Acciones</th>
-          </tr>
-        </thead>
-        <tbody class="tbody-gestion">
-          @for (animal of listaMascotas; track animal.id) {
-            <tr class="tr-gestion">
-              <td class="td-gestion">{{ animal.nombre }}</td>
-              <td class="td-gestion">{{ animal.tipoAnimal }}</td>
-              <td class="td-gestion">{{ animal.ubicacionActual }}</td>
-              <td class="td-gestion">
-                <button type="button" class="button-gestion" (click)="editarMascota(animal)">
-                  Editar
-                </button>
-                <button type="button" class="button-gestion" (click)="eliminarMascota(animal.id)">
-                  Eliminar
-                </button>
-              </td>
-            </tr>
-          } @empty {
-            <tr class="tr-gestion">
-              <td colspan="4" class="td-gestion">No hay animales registrados en el sistema.</td>
-            </tr>
-          }
-        </tbody>
-      </table>
+    }
+  </header>
+  @if (!mostrarFormulario) {
+  <div class="flex-1 overflow-y-auto overflow-x-hidden pr-2 pb-4 flex flex-col relative">
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 flex-1 content-start">
+      
+      @for (animal of mascotasPaginadas; track animal.id) {
+        <div class="anim-polaroid relative bg-[#fefefc] p-4 rounded-sm shadow-[2px_4px_8px_rgba(0,0,0,0.1)] transition-colors group border border-slate-200">
+          
+          <div class="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-6 bg-slate-300/50 backdrop-blur-sm -rotate-2 z-10 shadow-sm mix-blend-multiply"></div>
+          
+          <div class="aspect-square bg-slate-200 rounded-sm mb-3 overflow-hidden border border-slate-300 relative group-hover:border-orange-300 transition-colors">
+            <div class="w-full h-full flex items-center justify-center bg-slate-100 text-slate-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </div>
+            <div class="absolute bottom-2 right-2 bg-slate-900/80 backdrop-blur-sm text-white text-[10px] font-bold uppercase py-1 px-2 rounded-sm tracking-wider">
+              {{ animal.tipoAnimal }}
+            </div>
+          </div>
+          
+          <div class="font-serif">
+            <h3 class="text-xl font-black text-slate-800 mb-1 leading-tight">{{ animal.nombre }}</h3>
+            <p class="text-sm text-slate-600 italic leading-snug h-10 overflow-hidden line-clamp-2 mb-3">
+              {{ animal.descripcion }}
+            </p>
+            
+            <div class="flex items-center text-xs text-slate-500 mb-4 font-sans font-medium">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.243-4.243a8 8 0 1111.314 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              {{ animal.ubicacionActual || 'Sin asignación' }}
+            </div>
+            
+            <div class="flex justify-between items-center pt-3 border-t border-dashed border-slate-200">
+              <button type="button" class="cursor-pointer text-xs uppercase font-bold tracking-wider text-blue-600 hover:text-blue-800 transition-colors" (click)="editarMascota(animal)">Ver / Editar</button>
+              <button type="button" class="cursor-pointer text-xs uppercase font-bold tracking-wider text-red-600 hover:text-red-800 transition-colors" (click)="eliminarMascota(animal.id)">Eliminar</button>
+            </div>
+          </div>
+        </div>
+      } @empty {
+        <div class="col-span-full py-12 text-center border-4 border-dashed border-slate-200 rounded-lg">
+          <p class="text-slate-500 font-serif italic text-lg opacity-60">Ningún caso registrado en su jurisdicción.</p>
+        </div>
+      }
     </div>
 
-    @if (mostrarFormulario) {
-      <div class="container-gestion">
-        <form [formGroup]="mascotaForm" (ngSubmit)="guardarMascota()" class="form-gestion">
-          <h3 class="subtitle-gestion">
-            {{ editando ? 'Actualizar Información' : 'Nuevo Registro de Mascota' }}
-          </h3>
-
-          <div class="div-gestion">
-            <label class="label-gestion">Fotografía del animal:</label>
-            <input type="file" (change)="onFileChange($event)" class="input-gestion" />
-            @if (mascotaForm.get('imagen')?.touched && mascotaForm.get('imagen')?.invalid) {
-              <small class="text-gestion">La imagen es obligatoria para el expediente.</small>
-            }
-          </div>
-
-          <div class="div-gestion">
-            <label for="nombre" class="label-gestion">Nombre:</label>
-            <input
-              id="nombre"
-              type="text"
-              formControlName="nombre"
-              class="input-gestion"
-              placeholder="Ej: Firulais"
-            />
-            @if (mascotaForm.get('nombre')?.touched && mascotaForm.get('nombre')?.invalid) {
-              <small class="text-gestion">El nombre debe tener al menos 3 caracteres.</small>
-            }
-          </div>
-
-          <div class="div-gestion">
-            <label for="tipo" class="label-gestion">Tipo de Animal:</label>
-            <select id="tipo" formControlName="tipoAnimal" class="select-gestion">
-              <option value="">Seleccione especie...</option>
-              <option value="Perro">Perro</option>
-              <option value="Gato">Gato</option>
-              <option value="Ave">Ave</option>
-              <option value="Otro">Otro</option>
-            </select>
-            @if (mascotaForm.get('tipoAnimal')?.touched && mascotaForm.get('tipoAnimal')?.invalid) {
-              <small class="text-gestion">Seleccione un tipo de animal.</small>
-            }
-          </div>
-
-          <div class="div-gestion">
-            <label for="descripcion" class="label-gestion">Descripción / Historia:</label>
-            <textarea
-              id="descripcion"
-              formControlName="descripcion"
-              class="textarea-gestion"
-              placeholder="Breve historia o rasgos..."
-            ></textarea>
-            @if (
-              mascotaForm.get('descripcion')?.touched && mascotaForm.get('descripcion')?.invalid
-            ) {
-              <small class="text-gestion">Máximo 200 caracteres permitidos.</small>
-            }
-          </div>
-
-          <div class="div-gestion">
-            <label for="lugar" class="label-gestion">Lugar de Rescate:</label>
-            <input
-              id="lugar"
-              type="text"
-              formControlName="lugarRescate"
-              class="input-gestion"
-              placeholder="Ej: Parque Central"
-            />
-          </div>
-
-          <div class="div-gestion">
-            <label for="ubicacion" class="label-gestion"
-              >Ubicación Actual (Refugio/Hogar temporal):</label
-            >
-            <input
-              id="ubicacion"
-              type="text"
-              formControlName="ubicacionActual"
-              class="input-gestion"
-            />
-          </div>
-
-          <footer class="footer-gestion">
-            <button type="submit" class="button-gestion" [disabled]="mascotaForm.invalid">
-              {{ editando ? 'Guardar Cambios' : 'Registrar Mascota' }}
-            </button>
-            <button type="button" class="button-gestion" (click)="mostrarFormulario = false">
-              Cancelar
-            </button>
-          </footer>
-        </form>
+    @if (totalPaginas > 1) {
+    <div class="mt-6 border-t-2 border-slate-800 pt-4 flex justify-between items-center bg-transparent">
+      <button 
+        [disabled]="paginaActual === 1"
+        (click)="cambiarPagina(paginaActual - 1)"
+        class="cursor-pointer flex items-center px-4 py-2 text-slate-800 font-bold uppercase text-sm disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-200 transition-colors rounded-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+        </svg>
+        Pág. Anterior
+      </button>
+      
+      <div class="font-serif italic font-bold text-slate-600">
+        Hoja {{ paginaActual }} de {{ totalPaginas }}
       </div>
+      
+      <button 
+        [disabled]="paginaActual === totalPaginas"
+        (click)="cambiarPagina(paginaActual + 1)"
+        class="cursor-pointer flex items-center px-4 py-2 text-slate-800 font-bold uppercase text-sm disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-200 transition-colors rounded-sm">
+        Pág. Siguiente
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+        </svg>
+      </button>
+    </div>
     }
   </div>
+  }
+
+  @if (mostrarFormulario) {
+  <div class="max-w-3xl mx-auto w-full bg-white/60 p-6 md:p-10 rounded-sm border border-slate-300 shadow-[2px_2px_10px_rgba(0,0,0,0.05)] relative print-layout animate-fade-in-up">
+    
+    <div class="absolute top-4 right-4 w-20 h-20 border-4 border-red-500/20 rounded-full flex items-center justify-center transform rotate-12 pointer-events-none">
+      <span class="text-red-500/20 font-black uppercase text-xl transform -rotate-12">OFICIAL</span>
+    </div>
+
+    <h3 class="text-2xl font-bold uppercase tracking-widest text-slate-800 border-b-2 border-slate-800 inline-block mb-8">
+      Ficha de {{ editando ? 'Actualización' : 'Ingreso' }}
+    </h3>
+
+    <form [formGroup]="mascotaForm" (ngSubmit)="guardarMascota()" class="space-y-6 form-document">
+      <div class="flex flex-col gap-2">
+        <label class="font-bold text-slate-700 uppercase text-xs tracking-wider">Fotografía del Rescatado:</label>
+        <div class="flex items-center gap-4">
+          <input 
+            type="file" 
+            (change)="onFileChange($event)" 
+            class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100 cursor-pointer" />
+        </div>
+        @if (mascotaForm.get('imagen')?.touched && mascotaForm.get('imagen')?.invalid) {
+          <span class="text-red-600 text-xs font-bold uppercase mt-1">* Fotografía Obligatoria</span>
+        }
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="relative group">
+          <label for="nombre" class="font-bold text-slate-700 uppercase text-xs tracking-wider absolute -top-5 left-0">Nombre (Apodo)</label>
+          <input
+            id="nombre"
+            type="text"
+            formControlName="nombre"
+            class="w-full bg-transparent border-0 border-b-2 border-slate-400 border-dashed focus:border-slate-800 focus:ring-0 px-0 py-2 text-lg font-medium text-slate-900 transition-colors placeholder:text-slate-300"
+            placeholder="Ej: Firulais"
+          />
+          @if (mascotaForm.get('nombre')?.touched && mascotaForm.get('nombre')?.invalid) {
+            <span class="text-red-600 text-[10px] font-bold uppercase absolute -bottom-4 left-0">* Requerido (min: 3 cols)</span>
+          }
+        </div>
+
+        <div class="relative group mt-5 md:mt-0">
+          <label for="tipoAnimal" class="font-bold text-slate-700 uppercase text-xs tracking-wider absolute -top-5 left-0">Especie / Tipo</label>
+          <select 
+            id="tipoAnimal" 
+            formControlName="tipoAnimal" 
+            class="w-full bg-transparent border-0 border-b-2 border-slate-400 border-dashed focus:border-slate-800 focus:ring-0 px-0 py-2 text-lg font-medium text-slate-900 transition-colors appearance-none">
+            <option value="">Seleccione especie...</option>
+            <option value="Perro">Canino (Perro)</option>
+            <option value="Gato">Felino (Gato)</option>
+            <option value="Ave">Ave</option>
+            <option value="Otro">Otro especie de animalito</option>
+          </select>
+          @if (mascotaForm.get('tipoAnimal')?.touched && mascotaForm.get('tipoAnimal')?.invalid) {
+            <span class="text-red-600 text-[10px] font-bold uppercase absolute -bottom-4 left-0">* Especificar clase</span>
+          }
+        </div>
+        
+        @if (mascotaForm.get('tipoAnimal')?.value === 'Otro') {
+          <div class="relative group mt-5 md:mt-0 md:col-span-2">
+            <label for="otroTipoAnimal" class="font-bold text-slate-700 uppercase text-xs tracking-wider absolute -top-5 left-0">Especifique el tipo de animal</label>
+            <input
+              id="otroTipoAnimal"
+              type="text"
+              formControlName="otroTipoAnimal"
+              class="w-full bg-transparent border-0 border-b-2 border-slate-400 border-dashed focus:border-slate-800 focus:ring-0 px-0 py-2 text-lg font-medium text-slate-900 transition-colors placeholder:text-slate-300"
+              placeholder="Ej: Hurón, Reptil, etc."
+            />
+          </div>
+        }
+      </div>
+
+      <div class="relative group mt-6">
+        <label for="descripcion" class="font-bold text-slate-700 uppercase text-xs tracking-wider absolute -top-5 left-0">Observaciones Generales / Descripcion / Historia</label>
+        <textarea
+          id="descripcion"
+          formControlName="descripcion"
+          rows="3"
+          class="w-full bg-transparent border-0 border-b-2 border-slate-400 border-dashed focus:border-slate-800 focus:ring-0 px-0 py-2 text-lg text-slate-900 transition-colors resize-none placeholder:text-slate-300 leading-loose"
+          placeholder="Describa el estado, descripcion del rescatado, personalidad, etc..."
+        ></textarea>
+        @if (mascotaForm.get('descripcion')?.touched && mascotaForm.get('descripcion')?.invalid) {
+          <span class="text-red-600 text-[10px] font-bold uppercase absolute -bottom-4 left-0">* Límite excedido</span>
+        }
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+        <div class="relative group">
+          <label for="lugarRescate" class="font-bold text-slate-700 uppercase text-xs tracking-wider absolute -top-5 left-0">Lugar del Hallazgo</label>
+          <input
+            id="lugarRescate"
+            type="text"
+            formControlName="lugarRescate"
+            class="w-full bg-transparent border-0 border-b-2 border-slate-400 border-dashed focus:border-slate-800 focus:ring-0 px-0 py-2 text-lg font-medium text-slate-900 transition-colors placeholder:text-slate-300"
+            placeholder="Ej: Debajo de un puente"
+          />
+        </div>
+
+        <div class="relative group mt-5 md:mt-0">
+          <label for="ubicacionActual" class="font-bold text-slate-700 uppercase text-xs tracking-wider absolute -top-5 left-0">Lugar donde se encuentra</label>
+          <input
+            id="ubicacionActual"
+            type="text"
+            formControlName="ubicacionActual"
+            class="w-full bg-transparent border-0 border-b-2 border-slate-400 border-dashed focus:border-slate-800 focus:ring-0 px-0 py-2 text-lg font-medium text-slate-900 transition-colors placeholder:text-slate-300"
+            placeholder="Ej: Veterinarias Cañada Honda"
+          />
+        </div>
+      </div>
+
+      <div class="pt-8 flex flex-col-reverse md:flex-row justify-end gap-4 border-t-2 border-slate-800 mt-10">
+        <button 
+          type="button" 
+          class="cursor-pointer px-6 py-2.5 border-2 border-slate-800 text-slate-800 font-bold uppercase tracking-wider hover:bg-slate-100 transition-colors"
+          (click)="mostrarFormulario = false">
+          Anular
+        </button>
+        <button 
+          type="submit" 
+          [disabled]="mascotaForm.invalid"
+          class="cursor-pointer px-6 py-2.5 bg-slate-900 text-white font-bold uppercase tracking-wider hover:bg-slate-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+          {{ editando ? 'Aplicar Modificación' : 'Firmar Registro' }}
+        </button>
+      </div>
+
+    </form>
+  </div>
+  }
 </section>

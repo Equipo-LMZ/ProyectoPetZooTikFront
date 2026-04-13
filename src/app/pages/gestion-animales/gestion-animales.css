@@ -1,0 +1,79 @@
+.anim-polaroid {
+  animation: pop-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.anim-polaroid:nth-child(1) { animation-delay: 0.1s; }
+.anim-polaroid:nth-child(2) { animation-delay: 0.2s; }
+.anim-polaroid:nth-child(3) { animation-delay: 0.3s; }
+.anim-polaroid:nth-child(4) { animation-delay: 0.4s; }
+.anim-polaroid:nth-child(5) { animation-delay: 0.5s; }
+.anim-polaroid:nth-child(6) { animation-delay: 0.6s; }
+
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(30px) rotate(-5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0) rotate(0);
+  }
+}
+
+.anim-polaroid:hover {
+  animation: sway-hover 1.5s ease-in-out infinite alternate;
+  z-index: 20; 
+}
+
+@keyframes sway-hover {
+  0% {
+    transform: translateY(-6px) rotate(2deg) scale(1.02);
+    box-shadow: 4px 8px 16px rgba(0,0,0,0.15);
+  }
+  100% {
+    transform: translateY(-6px) rotate(-1deg) scale(1.02);
+    box-shadow: -2px 10px 20px rgba(0,0,0,0.12);
+  }
+}
+
+.anim-signature {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: dash 2s ease-out forwards;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.sliding-out-next {
+  animation: slide-out-left 0.25s forwards cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sliding-in-next {
+  animation: slide-in-right 0.25s forwards cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sliding-out-prev {
+  animation: slide-out-right 0.25s forwards cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sliding-in-prev {
+  animation: slide-in-left 0.25s forwards cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slide-out-left {
+  to { transform: translateX(-40px); opacity: 0; }
+}
+@keyframes slide-in-right {
+  from { transform: translateX(40px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slide-out-right {
+  to { transform: translateX(40px); opacity: 0; }
+}
+@keyframes slide-in-left {
+  from { transform: translateX(-40px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}

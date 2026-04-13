@@ -1,0 +1,30 @@
+.animate-fade-in-up {
+  animation: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out forwards;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.pattern-paper {
+  background-image: linear-gradient(rgba(147, 197, 253, 0.15) 1px, transparent 1px);
+  background-size: 100% 2.3rem;
+  background-position: 0 4.5rem; 
+  border-left: 2px solid rgba(239, 68, 68, 0.3);
+}

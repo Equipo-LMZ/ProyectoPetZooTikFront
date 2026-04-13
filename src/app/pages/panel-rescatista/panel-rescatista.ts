@@ -1,11 +1,18 @@
-import { Component } from '@angular/core';
-import { GestionAnimales } from '../gestion-animales/gestion-animales';
+import { Component, signal } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-panel-rescatista',
-  imports: [GestionAnimales],
+  imports: [RouterModule, CommonModule],
   standalone: true,
   templateUrl: './panel-rescatista.html',
   styleUrl: './panel-rescatista.css',
 })
-export class PanelRescatista {}
+export class PanelRescatista {
+  isSidebarOpen = signal(false);
+
+  toggleSidebar() {
+    this.isSidebarOpen.update(val => !val);
+  }
+}

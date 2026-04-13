@@ -1,66 +1,129 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { Animal } from '../../interfaces/animal';
 
 @Component({
   selector: 'app-gestion-animales',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule],
   standalone: true,
   templateUrl: './gestion-animales.html',
-  styleUrl: './gestion-animales.css',
 })
-export class GestionAnimales {
+export class GestionAnimales implements OnInit {
   private fb = inject(FormBuilder);
-
-  listaMascotas: Animal[] = [];
+  listaMascotas: Animal[] = [
+    { id: 1, nombre: 'Gatillo', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipoAnimal: 'Gato', lugarRescate: 'Colonia Paso Blanco', ubicacionActual: 'Veterinarias Cañada Honda', imagen: null },
+    { id: 2, nombre: 'Firulais', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipoAnimal: 'Perro', lugarRescate: 'Colonia Paso Blanco', ubicacionActual: 'Veterinarias Cañada Honda', imagen: null },
+    { id: 3, nombre: 'Michi', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipoAnimal: 'Gato', lugarRescate: 'Colonia Paso Blanco', ubicacionActual: 'Veterinarias Cañada Honda', imagen: null },
+    { id: 4, nombre: 'Firulais', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipoAnimal: 'Perro', lugarRescate: 'Colonia Paso Blanco', ubicacionActual: 'Veterinarias Cañada Honda', imagen: null },
+    { id: 5, nombre: 'Michi', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipoAnimal: 'Gato', lugarRescate: 'Colonia Paso Blanco', ubicacionActual: 'Veterinarias Cañada Honda', imagen: null },
+    { id: 6, nombre: 'Firulais', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipoAnimal: 'Perro', lugarRescate: 'Colonia Paso Blanco', ubicacionActual: 'Veterinarias Cañada Honda', imagen: null },
+    { id: 8, nombre: 'Firulais', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipoAnimal: 'Perro', lugarRescate: 'Colonia Paso Blanco', ubicacionActual: 'Veterinarias Cañada Honda', imagen: null },
+    { id: 10, nombre: 'Firulais', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipoAnimal: 'Perro', lugarRescate: 'Colonia Paso Blanco', ubicacionActual: 'Veterinarias Cañada Honda', imagen: null },
+  ];
 
   mostrarFormulario = false;
   editando = false;
+  mascotaSeleccionadaId: number | null = null;
 
-  // Formulario con validadores
+  paginaActual = 1;
+  itemsPorPagina = 6;
+
+  get totalPaginas(): number {
+    return Math.ceil(this.listaMascotas.length / this.itemsPorPagina);
+  }
+
+  get mascotasPaginadas(): Animal[] {
+    const inicio = (this.paginaActual - 1) * this.itemsPorPagina;
+    return this.listaMascotas.slice(inicio, inicio + this.itemsPorPagina);
+  }
+
+  cambiarPagina(nuevaPagina: number) {
+    if (nuevaPagina >= 1 && nuevaPagina <= this.totalPaginas && nuevaPagina !== this.paginaActual) {
+      this.paginaActual = nuevaPagina;
+    }
+  }
+
   mascotaForm = this.fb.group({
     imagen: [null, Validators.required],
     nombre: ['', [Validators.required, Validators.minLength(3)]],
     descripcion: ['', [Validators.required, Validators.maxLength(200)]],
     tipoAnimal: ['', Validators.required],
-    lugarRescate: ['', Validators.required],
-    ubicacionActual: ['', Validators.required],
+    otroTipoAnimal: [''],
+    lugarRescate: [''],
+    ubicacionActual: [''],
   });
+
+  ngOnInit() {
+    this.cargarMascotas();
+  }
+
+  cargarMascotas() {
+  }
 
   abrirFormularioNuevo() {
     this.editando = false;
+    this.mascotaSeleccionadaId = null;
     this.mascotaForm.reset();
     this.mostrarFormulario = true;
   }
 
-  // Usamos el mismo tipo 'Animal' que en la lista
   editarMascota(mascota: Animal) {
     this.editando = true;
     this.mostrarFormulario = true;
+    if (mascota.id !== undefined) {
+      this.mascotaSeleccionadaId = mascota.id;
+    }
+    
+    this.mascotaForm.get('imagen')?.clearValidators();
+    this.mascotaForm.get('imagen')?.updateValueAndValidity();
 
-    // El patchValue llenará el formulario con los datos de la mascota seleccionada
+    const tiposConocidos = ['Perro', 'Gato', 'Ave'];
+    const esConocido = tiposConocidos.includes(mascota.tipoAnimal);
+    
     this.mascotaForm.patchValue({
       nombre: mascota.nombre,
       descripcion: mascota.descripcion,
-      tipoAnimal: mascota.tipoAnimal,
+      tipoAnimal: esConocido ? mascota.tipoAnimal : 'Otro',
+      otroTipoAnimal: esConocido ? '' : mascota.tipoAnimal,
       lugarRescate: mascota.lugarRescate,
       ubicacionActual: mascota.ubicacionActual,
-      // La imagen usualmente no se "parchea" por seguridad del navegador
     });
   }
 
   eliminarMascota(id: number | undefined) {
-    // Si el ID no existe, detenemos la ejecución
     if (id === undefined) return;
-
-    // Aquí TypeScript ya sabe con seguridad que 'id' es un número
-    console.log('Eliminando mascota con ID:', id);
+    
+    console.log(`Eliminando mascota con ID: ${id}`);
     this.listaMascotas = this.listaMascotas.filter((m) => m.id !== id);
+    
+    if (this.mascotasPaginadas.length === 0 && this.paginaActual > 1) {
+      this.paginaActual--;
+    }
   }
+
   guardarMascota() {
     if (this.mascotaForm.valid) {
-      const datos = this.mascotaForm.value;
-      console.log(this.editando ? 'Actualizando animal...' : 'Creando nuevo registro...', datos);
+      const valores = this.mascotaForm.value;
+      const formData = new FormData();
+      
+      const tipoFinal = valores.tipoAnimal === 'Otro' ? valores.otroTipoAnimal : valores.tipoAnimal;
+      
+      formData.append('nombre', valores.nombre || '');
+      formData.append('especie', tipoFinal || '');
+      formData.append('rescuer_id', '1');
+      
+      const imagenFile = this.mascotaForm.get('imagen')?.value;
+      if (imagenFile) {
+        formData.append('imagen', imagenFile);
+      }
+
+      if (this.editando && this.mascotaSeleccionadaId) {
+        console.log('Actualizando datos via formData...');
+      } else {
+        console.log('Registrando nueva mascota via formData...');
+      }
+
       this.mostrarFormulario = false;
     }
   }
@@ -69,6 +132,7 @@ export class GestionAnimales {
     const file = event.target.files[0];
     if (file) {
       this.mascotaForm.patchValue({ imagen: file });
+      this.mascotaForm.get('imagen')?.updateValueAndValidity();
     }
   }
 }
