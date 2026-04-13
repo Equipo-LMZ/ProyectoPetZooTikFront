@@ -14,11 +14,30 @@ export class SmartphoneChatComponent {
   private fb = inject(FormBuilder);
 
   @Input() chatActivo: ChatThread | null = null;
+  @Input() conversaciones: ChatThread[] = [];
   @Output() cerrarVisor = new EventEmitter<void>();
+  @Output() abrirVisor = new EventEmitter<ChatThread>();
+
+  filtroBusqueda = '';
 
   mensajeForm = this.fb.group({
     nuevoMensaje: ['', Validators.required]
   });
+
+  get conversacionesFiltradas() {
+    return this.conversaciones.filter(c => 
+      c.nombreCandidato.toLowerCase().includes(this.filtroBusqueda.toLowerCase()) || 
+      c.animalNombre.toLowerCase().includes(this.filtroBusqueda.toLowerCase())
+    );
+  }
+
+  actualizarFiltro(event: any) {
+    this.filtroBusqueda = event.target.value;
+  }
+
+  seleccionarChat(chat: ChatThread) {
+    this.abrirVisor.emit(chat);
+  }
 
   cerrarChat() {
     this.cerrarVisor.emit();
