@@ -49,6 +49,7 @@ export class GestionAnimales implements OnInit {
     nombre: ['', [Validators.required, Validators.minLength(3)]],
     descripcion: ['', [Validators.required, Validators.maxLength(200)]],
     tipoAnimal: ['', Validators.required],
+    otroTipoAnimal: [''],
     lugarRescate: [''],
     ubicacionActual: [''],
   });
@@ -77,10 +78,15 @@ export class GestionAnimales implements OnInit {
     this.mascotaForm.get('imagen')?.clearValidators();
     this.mascotaForm.get('imagen')?.updateValueAndValidity();
 
+    // Si no es un tipo predefinido, lo ponemos en "Otro" y rellenamos el custom
+    const tiposConocidos = ['Perro', 'Gato', 'Ave'];
+    const esConocido = tiposConocidos.includes(mascota.tipoAnimal);
+    
     this.mascotaForm.patchValue({
       nombre: mascota.nombre,
       descripcion: mascota.descripcion,
-      tipoAnimal: mascota.tipoAnimal,
+      tipoAnimal: esConocido ? mascota.tipoAnimal : 'Otro',
+      otroTipoAnimal: esConocido ? '' : mascota.tipoAnimal,
       lugarRescate: mascota.lugarRescate,
       ubicacionActual: mascota.ubicacionActual,
     });
@@ -99,11 +105,13 @@ export class GestionAnimales implements OnInit {
 
   guardarMascota() {
     if (this.mascotaForm.valid) {
-      const formData = new FormData();
       const valores = this.mascotaForm.value;
+      const formData = new FormData();
+      
+      const tipoFinal = valores.tipoAnimal === 'Otro' ? valores.otroTipoAnimal : valores.tipoAnimal;
       
       formData.append('nombre', valores.nombre || '');
-      formData.append('especie', valores.tipoAnimal || '');
+      formData.append('especie', tipoFinal || '');
       formData.append('rescuer_id', '1');
       
       const imagenFile = this.mascotaForm.get('imagen')?.value;
