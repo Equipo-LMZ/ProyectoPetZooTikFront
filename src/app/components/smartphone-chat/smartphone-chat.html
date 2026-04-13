@@ -21,7 +21,7 @@
 
     <div class="flex-1 overflow-y-auto px-2 py-2 app-scrollbar bg-white">
       @for (chat of conversacionesFiltradas; track chat.id) {
-        <button (click)="seleccionarChat(chat)" class="w-full flex items-center p-3 gap-3 border-b border-slate-50 hover:bg-slate-50 transition-colors text-left group">
+        <button (click)="seleccionarChat(chat)" class="w-full cursor-pointer flex items-center p-3 gap-3 border-b border-slate-50 hover:bg-slate-50 transition-colors text-left group">
           <div class="relative shrink-0">
             <img [src]="chat.avatar" class="w-12 h-12 rounded-full object-cover">
             @if (chat.noLeidos > 0) {
@@ -41,7 +41,7 @@
   } @else {
     <div class="bg-white/80 backdrop-blur-md pt-10 pb-3 px-4 border-b border-slate-200 flex items-center justify-between z-20 shadow-sm sticky top-0 shrink-0">
       <div class="flex items-center gap-3">
-        <button (click)="cerrarChat()" class="p-2 -ml-2 text-blue-500 hover:text-blue-700 hover:bg-slate-100 rounded-full transition-colors md:hidden">
+        <button (click)="cerrarChat()" class="p-2 -ml-2 cursor-pointer text-blue-500 hover:text-blue-700 hover:bg-slate-100 rounded-full transition-colors md:hidden">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
           </svg>
@@ -91,7 +91,7 @@
 
     <div class="bg-[#f0f2f5] p-3 pb-8 shrink-0 z-20">
       <form [formGroup]="mensajeForm" (ngSubmit)="enviarMensaje()" class="flex items-end gap-2 relative">
-        <button type="button" class="p-3 bg-white text-slate-500 hover:text-slate-700 hover:bg-slate-50 rounded-full shadow-sm transition-all flex-shrink-0 active:scale-95">
+        <button type="button" class="p-3 bg-white cursor-pointer text-slate-500 hover:text-slate-700 hover:bg-slate-50 rounded-full shadow-sm transition-all flex-shrink-0 active:scale-95">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
           </svg>
@@ -113,7 +113,7 @@
         <button 
           type="submit" 
           [disabled]="mensajeForm.invalid"
-          class="w-12 h-12 bg-gradient-to-tr from-[#52b7e6] to-[#2e94c4] text-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+          class="w-12 h-12 bg-gradient-to-tr from-[#52b7e6] to-[#2e94c4] text-white cursor-pointer rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform rotate-90 shrink-0" viewBox="0 0 20 20" fill="currentColor">
             <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
           </svg>

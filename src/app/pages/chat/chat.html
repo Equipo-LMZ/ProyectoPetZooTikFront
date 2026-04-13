@@ -21,7 +21,7 @@
       @for (chat of conversacionesFiltradas; track chat.id) {
         <button 
           (click)="abrirChat(chat)"
-          class="w-full text-left bg-white p-3 rounded-xl border-2 transition-all group flex items-start gap-4 hover:shadow-md relative overflow-hidden"
+          class="w-full cursor-pointer text-left bg-white p-3 rounded-xl border-2 transition-all group flex items-start gap-4 hover:shadow-md relative overflow-hidden"
           [ngClass]="chat.id === chatActivo?.id ? 'border-orange-400 shadow-sm bg-orange-50/30' : 'border-slate-200 hover:border-slate-300'">
           
           <div class="relative flex-shrink-0">
