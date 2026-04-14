@@ -1,6 +1,8 @@
-import { Component, EventEmitter, Output, signal } from '@angular/core';
+import { Component, EventEmitter, Output, signal, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth';
+import { AlertsService } from '../../services/alerts-service';
 
 @Component({
   selector: 'app-modal-login',
@@ -13,8 +15,10 @@ export class ModalLogin {
 
   @Output() cerrar = new EventEmitter<void>();
 
-  isClosing = signal<boolean>(false);
+  private authService = inject(AuthService);
+  private alertsService = inject(AlertsService);
 
+  isClosing = signal<boolean>(false);
   mostrarPassword = signal<boolean>(false);
 
   credenciales = {
@@ -30,12 +34,8 @@ export class ModalLogin {
 
   cerrarModal() {
     if (this.isClosing()) return;
-
     this.isClosing.set(true);
-
-    setTimeout(() => {
-      this.cerrar.emit();
-    }, 300); 
+    setTimeout(() => {this.cerrar.emit();}, 300); 
   }
 
   onSubmit(form: NgForm) {
@@ -48,37 +48,15 @@ export class ModalLogin {
     console.log('Datos a enviar:', this.credenciales);
 
     try {
-      /* Paso 1: Intentar en endpoint de Rescatista 
-         /user/rescuers
-      */
-      const esRescatista = await this.checkRescatista();
-      console.log('Sesión iniciada como Rescatista');
+      await this.authService.login(this.credenciales);
+      this.alertsService.success('Login exitoso', 'Has iniciado sesión correctamente.');
+      this.cerrarModal();
     } catch (error: any) {
-      /* Paso 2: Si el error es 404, no es rescatista.
-         Intentamos en el endpoint de usuario normal
-      */
       if (error.status === 404) {
-        this.loginUsuarioNormal();
+        this.alertsService.error('Error al iniciar sesión', 'El usuario no existe.');
       } else {
-        console.error('Error de conexión o credenciales incorrectas');
+        this.alertsService.error('Error al iniciar sesión', 'El usuario no existe.');
       }
     }
-  }
-
-  private loginUsuarioNormal() {
-    // Aquí es donde harías el POST al endpoint de tu curl:
-    // /user/login
-    console.log('404 en Rescatista. Intentando login en /user/login...');
-
-    // Si tiene éxito, rediriges al dashboard de usuario
-    console.log('Sesión iniciada como Usuario Normal');
-  }
-
-  // Simulación del primer intento
-  private checkRescatista(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      // Simulamos que el correo no está en la base de rescatistas
-      reject({ status: 404 });
-    });
   }
 }
