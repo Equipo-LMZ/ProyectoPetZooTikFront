@@ -1,6 +1,8 @@
-import { Component, EventEmitter, Output, signal } from '@angular/core';
+import { Component, EventEmitter, Output, signal, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth';
+import { AlertsService } from '../../services/alerts-service';
 
 @Component({
   selector: 'app-modal-registro',
@@ -13,11 +15,12 @@ export class ModalRegistro {
 
   @Output() cerrar = new EventEmitter<void>();
 
-  isClosing = signal<boolean>(false);
+  private authService = inject(AuthService);
+  private alertsService = inject(AlertsService);
 
+  isClosing = signal<boolean>(false);
   mostrarPassword = signal<boolean>(false);
 
-  // Objeto que mapea exactamente a tu JSON del curl
   nuevoUsuario = {
     nombre: '',
     correo: '',
@@ -49,16 +52,11 @@ export class ModalRegistro {
 
   async enviarRegistro() {
     try {
-      /* Aquí se realizaría el POST a:
-         /user/register
-         Enviando: this.nuevoUsuario
-      */
-      console.log('Enviando datos al servidor:', this.nuevoUsuario);
-
-      // Simulación de respuesta exitosa
-      alert('¡Registro exitoso! Ahora puedes iniciar sesión.');
+      await this.authService.registro(this.nuevoUsuario);
+      this.alertsService.success('Registro exitoso', 'Tu cuenta ha sido creada y has iniciado sesión.');
+      this.cerrarModal();
     } catch (error) {
-      console.error('Error al registrar usuario', error);
+      this.alertsService.error('Error al registrar usuario', 'Hubo un problema al crear tu cuenta. Intenta con otro correo');
     }
   }
 }
