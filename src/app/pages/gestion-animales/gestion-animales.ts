@@ -2,6 +2,9 @@ import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Animal } from '../../interfaces/animal';
+import { AnimalService } from '../../services/animal';
+import { AuthService } from '../../services/auth';
+import { AlertsService } from '../../services/alerts-service';
 
 @Component({
   selector: 'app-gestion-animales',
@@ -11,19 +14,18 @@ import { Animal } from '../../interfaces/animal';
 })
 export class GestionAnimales implements OnInit {
   private fb = inject(FormBuilder);
-  listaMascotas: Animal[] = [
-    { id: 1, nombre: 'Gatillo', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipo: 'Gato', lugar: 'Colonia Paso Blanco', ubicacion: 'Veterinarias Cañada Honda', imagen: null },
-    { id: 2, nombre: 'Firulais', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipo: 'Perro', lugar: 'Colonia Paso Blanco', ubicacion: 'Veterinarias Cañada Honda', imagen: null },
-    { id: 3, nombre: 'Michi', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipo: 'Gato', lugar: 'Colonia Paso Blanco', ubicacion: 'Veterinarias Cañada Honda', imagen: null },
-    { id: 4, nombre: 'Firulais', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipo: 'Perro', lugar: 'Colonia Paso Blanco', ubicacion: 'Veterinarias Cañada Honda', imagen: null },
-    { id: 5, nombre: 'Michi', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipo: 'Gato', lugar: 'Colonia Paso Blanco', ubicacion: 'Veterinarias Cañada Honda', imagen: null },
-    { id: 6, nombre: 'Firulais', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipo: 'Perro', lugar: 'Colonia Paso Blanco', ubicacion: 'Veterinarias Cañada Honda', imagen: null },
-    { id: 8, nombre: 'Firulais', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipo: 'Perro', lugar: 'Colonia Paso Blanco', ubicacion: 'Veterinarias Cañada Honda', imagen: null },
-    { id: 10, nombre: 'Firulais', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipo: 'Perro', lugar: 'Colonia Paso Blanco', ubicacion: 'Veterinarias Cañada Honda', imagen: null },
-  ];
+
+  private animalService = inject(AnimalService);
+  private authService = inject(AuthService);
+  private alertsService = inject(AlertsService);
+
+  private cdr = inject(ChangeDetectorRef);
+
+  listaMascotas: Animal[] = [];
 
   mostrarFormulario = false;
   editando = false;
+  guardando = false;
   mascotaSeleccionadaId: number | null = null;
 
   paginaActual = 1;
@@ -45,7 +47,7 @@ export class GestionAnimales implements OnInit {
   }
 
   mascotaForm = this.fb.group({
-    imagen: [null, Validators.required],
+    imagen: [null as any, Validators.required],
     nombre: ['', [Validators.required, Validators.minLength(3)]],
     descripcion: ['', [Validators.required, Validators.maxLength(200)]],
     tipo: ['', Validators.required],
@@ -58,13 +60,30 @@ export class GestionAnimales implements OnInit {
     this.cargarMascotas();
   }
 
-  cargarMascotas() {
+  async cargarMascotas() {
+    const idUsuario = this.authService.currentUser()?.id;
+    if (!idUsuario) return;
+
+    try{
+      await this.animalService.obtenerMisMascotas(idUsuario);
+
+      this.listaMascotas = this.animalService.listaAnimales();
+
+      this.cdr.detectChanges();
+
+      console.log('Mis mascotas descargadas:', this.listaMascotas);
+    }catch(error){
+      this.alertsService.error('Error', 'No se pudieron cargar las mascotas');
+    }
   }
 
   abrirFormularioNuevo() {
     this.editando = false;
     this.mascotaSeleccionadaId = null;
     this.mascotaForm.reset();
+    this.mascotaForm.get('tipo')?.setValue('');
+    this.mascotaForm.get('imagen')?.setValidators(Validators.required);
+    this.mascotaForm.get('imagen')?.updateValueAndValidity();
     this.mostrarFormulario = true;
   }
 
@@ -91,40 +110,63 @@ export class GestionAnimales implements OnInit {
     });
   }
 
-  eliminarMascota(id: number | undefined) {
+  async eliminarMascota(id: number | undefined) {
     if (id === undefined) return;
     
-    console.log(`Eliminando mascota con ID: ${id}`);
-    this.listaMascotas = this.listaMascotas.filter((m) => m.id !== id);
-    
-    if (this.mascotasPaginadas.length === 0 && this.paginaActual > 1) {
-      this.paginaActual--;
+    if(confirm('¿Estás seguro de que deseas eliminar esta mascota?')){
+      try{
+        await this.animalService.eliminarAnimal(id);
+        this.alertsService.success('Eliminado', 'Mascota eliminada correctamente');
+
+        await this.cargarMascotas();
+
+        if(this.mascotasPaginadas.length === 0 && this.paginaActual > 1){
+          this.paginaActual--;
+        }
+      }catch(error){
+        this.alertsService.error('Error', 'No se pudo eliminar la mascota');
+      }
     }
   }
 
-  guardarMascota() {
+  async guardarMascota() {
     if (this.mascotaForm.valid) {
+      this.guardando = true; 
+
       const valores = this.mascotaForm.value;
       const formData = new FormData();
       
       const tipoFinal = valores.tipo === 'Otro' ? valores.otrotipo : valores.tipo;
+      const idUsuarioActual = this.authService.currentUser()?.id;
       
       formData.append('nombre', valores.nombre || '');
-      formData.append('especie', tipoFinal || '');
-      formData.append('rescuer_id', '1');
+      formData.append('idRescatista', idUsuarioActual?.toString() || '');
+      formData.append('descripcion', valores.descripcion || '');
+      formData.append('tipo', tipoFinal || '');
+      formData.append('lugar', valores.lugar || '');
+      formData.append('ubicacion', valores.ubicacion || '');
       
       const imagenFile = this.mascotaForm.get('imagen')?.value;
       if (imagenFile) {
         formData.append('imagen', imagenFile);
       }
 
-      if (this.editando && this.mascotaSeleccionadaId) {
-        console.log('Actualizando datos via formData...');
-      } else {
-        console.log('Registrando nueva mascota via formData...');
-      }
+      try{
+        if (this.editando && this.mascotaSeleccionadaId) {
+          await this.animalService.actualizarAnimal(this.mascotaSeleccionadaId, formData);
+          this.alertsService.success('Actualizado', 'Mascota actualizada correctamente');
+        } else {
+          await this.animalService.crearAnimal(formData);
+          this.alertsService.success('Registrado', 'Mascota creada correctamente');
+        }
 
-      this.mostrarFormulario = false;
+        this.mostrarFormulario = false;
+        await this.cargarMascotas();
+      }catch(error){
+        this.alertsService.error('Error al Guardar', 'Revisa la conexión o los campos del formulario.');
+      } finally {
+        this.guardando = false;
+      }
     }
   }
 

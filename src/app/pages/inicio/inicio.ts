@@ -6,12 +6,11 @@ import { ModalLogin } from '../../components/modal-login/modal-login';
 import { ModalRegistro } from '../../components/modal-registro/modal-registro';
 import { ModalCandidatura } from '../../components/modal-candidatura/modal-candidatura';
 import { AuthService } from '../../services/auth';
-import { CustomAlert } from '../../components/custom-alert/custom-alert'; 
 
 @Component({
   selector: 'app-inicio',
   standalone: true,
-  imports: [CommonModule, ModalLogin, ModalRegistro, ModalCandidatura, CustomAlert],
+  imports: [CommonModule, ModalLogin, ModalRegistro, ModalCandidatura],
   templateUrl: './inicio.html',
   styleUrl: './inicio.css',
 })

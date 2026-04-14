@@ -20,6 +20,7 @@ export class ModalRegistro {
 
   isClosing = signal<boolean>(false);
   mostrarPassword = signal<boolean>(false);
+  cargando = signal<boolean>(false);
 
   nuevoUsuario = {
     nombre: '',
@@ -51,12 +52,16 @@ export class ModalRegistro {
   }
 
   async enviarRegistro() {
+    this.cargando.set(true);
+
     try {
       await this.authService.registro(this.nuevoUsuario);
       this.alertsService.success('Registro exitoso', 'Tu cuenta ha sido creada y has iniciado sesión.');
       this.cerrarModal();
     } catch (error) {
       this.alertsService.error('Error al registrar usuario', 'Hubo un problema al crear tu cuenta. Intenta con otro correo');
+    } finally {
+      this.cargando.set(false);
     }
   }
 }
