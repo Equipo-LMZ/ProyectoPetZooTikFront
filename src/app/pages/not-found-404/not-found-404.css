@@ -1,0 +1,203 @@
+.forest-container {
+  height: 100vh;
+  background: #030a03; /* Verde bosque casi negro */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #d1d5db;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+}
+
+.game-area {
+  width: 95%;
+  max-width: 650px;
+  height: 380px;
+  /* Fondo con degradado que simula luz filtrándose */
+  background: linear-gradient(to bottom, #113311 0%, #051a05 100%);
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+/* Bordes y Sombras "Orgánicas" */
+.border-wood {
+  border: 8px solid #3d2b1f; /* Café corteza */
+  outline: 2px solid #5d4037;
+}
+
+.shadow-deep {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+}
+
+/* === Efectos Atmosféricos (Vívidos) === */
+.light-shafts {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    135deg,
+    rgba(255, 255, 200, 0.03) 0px,
+    rgba(255, 255, 200, 0.03) 10px,
+    transparent 10px,
+    transparent 50px
+  );
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.mist-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 120%, rgba(200, 220, 200, 0.1), transparent 70%);
+  pointer-events: none;
+}
+
+/* === HUD === */
+.hud {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 14px;
+  color: #a7f3d0; /* Verde menta claro */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  z-index: 10;
+}
+
+/* === Texto === */
+.text-forest {
+  color: #d1fae5;
+  text-align: center;
+  margin: 10px 0;
+}
+.text-hint {
+  color: #6ee7b7;
+  opacity: 0.7;
+  font-size: 11px;
+}
+.text-404 {
+  font-size: 6rem;
+  font-weight: 900;
+  color: #f8fafc;
+  margin: 0;
+  line-height: 1;
+}
+.text-alert {
+  color: #fecaca;
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+/* === Entidades === */
+.stage {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 120px;
+}
+
+.pet {
+  position: absolute;
+  bottom: 12px; /* Un poco despegado del suelo */
+  left: 60px;
+  font-size: 45px;
+  z-index: 15;
+  transition: transform 0.1s linear; /* Para un ligero giro al saltar */
+}
+
+/* Animación de salto suave (cubic-bezier para gravedad natural) */
+.jumping {
+  animation: jump-natural 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.obstacle {
+  position: absolute;
+  bottom: 12px;
+  right: -60px;
+  font-size: 40px;
+  animation: slide-left 1.6s linear infinite; /* Un poco más lento para mayor inmersión */
+  z-index: 10;
+}
+
+.ground {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 12px;
+  background: #1a0f0a; /* Tierra oscura */
+  border-top: 4px solid #059669; /* Musgo vibrante */
+}
+
+/* === Animaciones === */
+@keyframes jump-natural {
+  0%,
+  100% {
+    bottom: 12px;
+    transform: rotate(0deg);
+  }
+  50% {
+    bottom: 130px;
+    transform: rotate(-5deg);
+  } /* Ligero giro en el aire */
+}
+
+@keyframes slide-left {
+  from {
+    right: -60px;
+  }
+  to {
+    right: 115%;
+  }
+}
+
+/* === UI Overlays === */
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 30;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.game-over-screen {
+  background: rgba(5, 15, 5, 0.9);
+}
+
+/* === Botones === */
+.btn-forest {
+  background: #065f46; /* Verde bosque */
+  color: #e2e8f0;
+  border: 2px solid #a7f3d0;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.btn-forest:hover {
+  background: #047857;
+  transform: translateY(-2px);
+}
+
+.btn-forest:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Clases de utilidad */
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
