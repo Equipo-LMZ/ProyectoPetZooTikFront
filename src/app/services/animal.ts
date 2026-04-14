@@ -20,25 +20,42 @@ export class AnimalService {
     return new HttpHeaders({Authorization: `Bearer ${token}`})
   }
 
+  private mapearMascota = (datoBackend: any): Animal => {
+    return{
+      id: datoBackend.idMascota,
+      nombre: datoBackend.nombre,
+      descripcion: datoBackend.descripcion,
+      tipo: datoBackend.tipoAnimal,
+      lugar: datoBackend.lugarRescate,
+      ubicacion: datoBackend.ubicacionActual,
+      imagen: datoBackend.imagen ? `${this.baseUrl}${datoBackend.imagen}` : null
+    }
+  }
+
   // Fetch (Ya se que no se llaman fetch) publicas
   async obtenerAnimales() {
     try {
-      const data = await lastValueFrom(
-        this.http.get<Animal[]>(`${this.baseUrl}/pets`),
+      const res: any = await lastValueFrom(
+        this.http.get(`${this.baseUrl}/pets`)
       );
-      this.listaAnimales.set(data);
-      return data;
+
+      const dataCruda = Array.isArray(res) ? res: (res.datos || res.pets || []);
+
+      const animalesMapeados = dataCruda.map(this.mapearMascota);
+
+      this.listaAnimales.set(animalesMapeados);
+      
+      return animalesMapeados;
     } catch (error) {
       console.error('Error al obtener los animales:', error);
-      throw error;
+      return [];
     }
   }
 
   async obtenerPorId(id: number) {
     try {
-        const data = await lastValueFrom(this.http.get<Animal>(`${this.baseUrl}/pets/${id}`),
-      );
-      return data;
+        const res: any = await lastValueFrom(this.http.get(`${this.baseUrl}/pets/${id}`));
+      return this.mapearMascota(res);
     } catch (error) {
       console.error('Error al obtener el animal:', error);
       throw error;
@@ -46,6 +63,25 @@ export class AnimalService {
   }
 
   // Fetch (Ya se que no se llaman fetch) privadas
+  // Get Animales Rescatista
+  async obtenerMisMascotas(idRescatista: number) {
+    try {
+      // Usamos la ruta del back
+      const res: any = await lastValueFrom(
+        this.http.get(`${this.baseUrl}/pets?idRescuer=${idRescatista}`, { headers: this.getHeaders() })
+      );
+      
+      const dataCruda = Array.isArray(res) ? res : (res.datos || res.pets || []);
+      const animalesMapeados = dataCruda.map(this.mapearMascota);
+      
+      this.listaAnimales.set(animalesMapeados);
+      return animalesMapeados;
+    } catch (error) {
+      console.error('Error al obtener mis mascotas:', error);
+      return [];
+    }
+  }
+
   // CREATE
   async crearAnimal(formData: FormData) {
     try {

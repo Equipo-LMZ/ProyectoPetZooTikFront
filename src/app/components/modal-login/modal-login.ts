@@ -20,6 +20,7 @@ export class ModalLogin {
 
   isClosing = signal<boolean>(false);
   mostrarPassword = signal<boolean>(false);
+  cargando = signal<boolean>(false);
 
   credenciales = {
     correo: '',
@@ -45,6 +46,7 @@ export class ModalLogin {
   }
 
   async intentarLogin() {
+    this.cargando.set(true);
     console.log('Datos a enviar:', this.credenciales);
 
     try {
@@ -57,6 +59,8 @@ export class ModalLogin {
       } else {
         this.alertsService.error('Error al iniciar sesión', 'El usuario no existe.');
       }
+    } finally{
+      this.cargando.set(false);
     }
   }
 }

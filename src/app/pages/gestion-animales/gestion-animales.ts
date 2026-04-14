@@ -19,10 +19,13 @@ export class GestionAnimales implements OnInit {
   private authService = inject(AuthService);
   private alertsService = inject(AlertsService);
 
+  private cdr = inject(ChangeDetectorRef);
+
   listaMascotas: Animal[] = [];
 
   mostrarFormulario = false;
   editando = false;
+  guardando = false;
   mascotaSeleccionadaId: number | null = null;
 
   paginaActual = 1;
@@ -58,8 +61,17 @@ export class GestionAnimales implements OnInit {
   }
 
   async cargarMascotas() {
+    const idUsuario = this.authService.currentUser()?.id;
+    if (!idUsuario) return;
+
     try{
-      await this.animalService.obtenerAnimales();
+      await this.animalService.obtenerMisMascotas(idUsuario);
+
+      this.listaMascotas = this.animalService.listaAnimales();
+
+      this.cdr.detectChanges();
+
+      console.log('Mis mascotas descargadas:', this.listaMascotas);
     }catch(error){
       this.alertsService.error('Error', 'No se pudieron cargar las mascotas');
     }
@@ -119,6 +131,8 @@ export class GestionAnimales implements OnInit {
 
   async guardarMascota() {
     if (this.mascotaForm.valid) {
+      this.guardando = true; 
+
       const valores = this.mascotaForm.value;
       const formData = new FormData();
       
@@ -150,6 +164,8 @@ export class GestionAnimales implements OnInit {
         await this.cargarMascotas();
       }catch(error){
         this.alertsService.error('Error al Guardar', 'Revisa la conexión o los campos del formulario.');
+      } finally {
+        this.guardando = false;
       }
     }
   }
