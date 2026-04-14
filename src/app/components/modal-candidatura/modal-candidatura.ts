@@ -1,74 +1,70 @@
-import { Component, inject } from '@angular/core';
-import {
-  AbstractControl,
-  FormArray,
-  FormBuilder,
-  FormControl,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validators,
-} from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RescatistaService } from '../../services/rescatista-service';
+import { AlertsService } from '../../services/alerts-service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-modal-candidatura',
-  imports: [ReactiveFormsModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './modal-candidatura.html',
   styleUrl: './modal-candidatura.css',
 })
 export class ModalCandidatura {
-  private fb = inject(FormBuilder);
+  private rescatistaService = inject(RescatistaService);
+  private alertService = inject(AlertsService);
 
-  // Expresión regular para validar URLs básicas (para redes sociales)
-  private urlPattern = '(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?';
+  isOpen = signal(false); //para mostrarlo solo tienes que cambiar esto en el botón a true
+  previewImagen = signal<string | null>(null);
+  selectedFile: File | null = null;
 
-  postulacionForm = this.fb.group({
-    imagen: [null, [Validators.required, this.validarExtensionImagen]],
-    biografia: ['', [Validators.required, Validators.minLength(50), Validators.maxLength(1000)]],
-    ubicacion: ['', [Validators.required, Validators.minLength(10)]],
-    fechaCreacion: [{ value: new Date().toISOString().split('T')[0], disabled: true }],
-    experiencia: [0, [Validators.required, Validators.min(0), Validators.max(50)]],
-    motivo: ['', [Validators.required, Validators.minLength(30), Validators.maxLength(500)]],
-    horario: ['', [Validators.required, Validators.minLength(10)]],
-    redesSociales: this.fb.array([]),
-  });
+  // Datos del formulario
+  datos = {
+    fecha: new Date().toISOString().split('T')[0],
+    biografia: '',
+    residencia: '',
+    userId: '2', //este debería cambiar por el del usuario, esta es una pruebaaaaaaaaaaaaa
+  };
 
-  validarExtensionImagen(control: AbstractControl): ValidationErrors | null {
-    const archivo = control.value as File;
-    if (archivo) {
-      const extensionesPermitidas = ['jpg', 'jpeg', 'png', 'webp'];
-      const extension = archivo.name.split('.').pop()?.toLowerCase();
-      return extension && extensionesPermitidas.includes(extension)
-        ? null
-        : { extensionInvalida: true };
-    }
-    return null;
+  abrir() {
+    this.isOpen.set(true);
+  }
+  cerrar() {
+    this.isOpen.set(false);
   }
 
-  // Getter para el FormArray (necesario para el tipado en el template)
-  get redesArray() {
-    return this.postulacionForm.get('redesSociales') as FormArray;
-  }
-
-  agregarRedSocial() {
-    // Cada nueva red social debe ser una URL válida
-    this.redesArray.push(
-      new FormControl('', [Validators.required, Validators.pattern(this.urlPattern)]),
-    );
-  }
-  eliminarRedSocial(index: number) {
-    this.redesArray.removeAt(index);
-  }
-  onFileChange(event: any) {
+  onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
-      this.postulacionForm.patchValue({ imagen: file });
-      this.postulacionForm.get('imagen')?.updateValueAndValidity();
+      this.selectedFile = file;
+      const reader = new FileReader();
+      reader.onload = () => this.previewImagen.set(reader.result as string);
+      reader.readAsDataURL(file);
     }
   }
 
-  enviarPostulacion() {
-    if (this.postulacionForm.valid) {
-      console.log('Datos listos para el POST:', this.postulacionForm.getRawValue());
+  async enviar() {
+    if (!this.selectedFile) {
+      this.alertService.warning(
+        '¡Falta Evidencia!',
+        'Debes incluir una fotografía tuya para confirmar tu identidad.',
+      );
+      return;
+    }
+
+    try {
+      await this.rescatistaService.enviarSolicitud(this.datos, this.selectedFile);
+      this.alertService.success(
+        '¡Cartel Publicado!',
+        'Tu solicitud ha sido enviada a los administradores para validar o denegar tu solicitud',
+      );
+      this.cerrar();
+    } catch (error) {
+      this.alertService.error(
+        'Fallo al momento de enviar tu solicitud',
+        'No se pudo enviar tu solicitud correctamente, intentalo de nuevo más tarde',
+      );
     }
   }
 }

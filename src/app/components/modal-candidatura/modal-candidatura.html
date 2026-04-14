@@ -1,76 +1,47 @@
-<section class="section-postulacion">
-  <div class="container-postulacion">
-    <header class="header-postulacion">
-      <h2 class="title-postulacion">Formulario de Postulación</h2>
+<div class="modal-overlay" *ngIf="isOpen()">
+  <div class="wanted-poster">
+    <header class="poster-header">
+      <h1 class="text-wanted">Formulario de Registro</h1>
+      <h2 class="text-reward">Publicación para Adopción</h2>
     </header>
 
-    <form [formGroup]="postulacionForm" (ngSubmit)="enviarPostulacion()" class="form-postulacion">
-      <div class="div-postulacion">
-        <label class="label-postulacion">Fotografía:</label>
-        <input type="file" (change)="onFileChange($event)" class="input-postulacion" />
-        @if (postulacionForm.get('imagen')?.touched && postulacionForm.get('imagen')?.invalid) {
-          @if (postulacionForm.get('imagen')?.hasError('required')) {
-            <small class="text-postulacion">La foto es obligatoria.</small>
-          }
-          @if (postulacionForm.get('imagen')?.hasError('extensionInvalida')) {
-            <small class="text-postulacion">Solo se permiten imágenes (JPG, PNG, WEBP).</small>
-          }
-        }
-      </div>
-
-      <div class="div-postulacion">
-        <label for="residencia" class="label-postulacion">Residencia:</label>
-        <input type="text" id="residencia" formControlName="ubicacion" class="input-postulacion" />
-
-        <label for="experiencia" class="label-postulacion">Años de experiencia:</label>
-        <input
-          type="number"
-          id="experiencia"
-          formControlName="experiencia"
-          class="input-postulacion"
-        />
-      </div>
-
-      <div class="div-postulacion">
-        <label for="biografia" class="label-postulacion">Biografía:</label>
-        <textarea
-          id="biografia"
-          formControlName="biografia"
-          class="textarea-postulacion"
-        ></textarea>
-      </div>
-
-      <div class="div-postulacion">
-        <label for="motivo" class="label-postulacion">¿Por qué quieres ser rescatista?</label>
-        <textarea id="motivo" formControlName="motivo" class="textarea-postulacion"></textarea>
-      </div>
-
-      <div class="div-postulacion">
-        <label class="label-postulacion">Redes Sociales:</label>
-        <div formArrayName="redesSociales">
-          @for (control of redesArray.controls; track $index) {
-            <div class="div-postulacion">
-              <input
-                [formControlName]="$index"
-                class="input-postulacion"
-                placeholder="URL Perfil"
-              />
-              <button type="button" (click)="eliminarRedSocial($index)" class="button-postulacion">
-                Quitar
-              </button>
-            </div>
-          }
+    <main class="poster-content">
+      <div class="photo-frame" (click)="fileInput.click()">
+        <img *ngIf="previewImagen()" [src]="previewImagen()" class="photo-preview" />
+        <div *ngIf="!previewImagen()" class="photo-placeholder">
+          <span>Haz clic para subir una imagen</span>
         </div>
-        <button type="button" (click)="agregarRedSocial()" class="button-postulacion">
-          + Agregar red social
-        </button>
+        <input type="file" #fileInput (change)="onFileSelected($event)" hidden accept="image/*" />
       </div>
 
-      <footer class="footer-postulacion">
-        <button type="submit" [disabled]="postulacionForm.invalid" class="button-postulacion">
-          Enviar Solicitud
-        </button>
-      </footer>
-    </form>
+      <div class="form-grid">
+        <div class="input-group">
+          <label>Dirección de residencia:</label>
+          <input
+            type="text"
+            [(ngModel)]="datos.residencia"
+            placeholder="Ej: Calle Madero #123"
+            name="residencia"
+          />
+        </div>
+
+        <div class="input-group full">
+          <label>Biografía / Descripción:</label>
+          <textarea
+            [(ngModel)]="datos.biografia"
+            rows="3"
+            placeholder="Describe la información relevante..."
+            name="biografia"
+          ></textarea>
+        </div>
+      </div>
+    </main>
+
+    <footer class="poster-footer">
+      <button (click)="enviar()" class="btn-western">Publicar</button>
+      <button (click)="cerrar()" class="btn-cancel">Cancelar</button>
+    </footer>
+
+    <div class="paper-texture"></div>
   </div>
-</section>
+</div>

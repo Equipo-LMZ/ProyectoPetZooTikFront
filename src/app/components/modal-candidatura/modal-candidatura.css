@@ -1,0 +1,107 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 40000;
+  backdrop-filter: blur(5px);
+}
+
+.wanted-poster {
+  background-color: #d2b48c;
+  width: 90%;
+  max-width: 500px;
+  padding: 30px;
+  border: 15px solid #5d4037;
+  position: relative;
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+  font-family: 'Playbill', 'Slab Serif', serif;
+  color: #3e2723;
+  text-align: center;
+}
+
+.text-wanted {
+  font-size: 5rem;
+  margin: 0;
+  letter-spacing: 10px;
+  line-height: 1;
+  border-bottom: 4px double #3e2723;
+}
+
+.text-reward {
+  font-size: 1.5rem;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.photo-frame {
+  width: 250px;
+  height: 250px;
+  margin: 20px auto;
+  border: 5px solid #3e2723;
+  background: #c4a484;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+
+.photo-frame:hover {
+  transform: scale(1.02);
+}
+
+.photo-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: sepia(1) contrast(1.2);
+}
+
+.form-grid {
+  text-align: left;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+}
+
+.input-group label {
+  display: block;
+  font-size: 0.8rem;
+  margin-bottom: 5px;
+}
+
+.input-group input,
+.input-group textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid #3e2723;
+  color: #3e2723;
+  margin-bottom: 15px;
+  outline: none;
+}
+
+.btn-western {
+  background: #3e2723;
+  color: #d2b48c;
+  padding: 10px 30px;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.btn-western:hover {
+  background: #5d4037;
+}
+
+.paper-texture {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url('https://www.transparenttextures.com/patterns/cardboard-flat.png');
+  opacity: 0.3;
+}
