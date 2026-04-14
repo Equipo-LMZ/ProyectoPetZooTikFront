@@ -15,7 +15,7 @@ export class ModalCandidatura {
   private rescatistaService = inject(RescatistaService);
   private alertService = inject(AlertsService);
 
-  isOpen = signal(false); //para mostrarlo solo tienes que cambiar esto en el botón a true
+  isOpen = signal(true); //para mostrarlo solo tienes que cambiar esto en el botón a true
   previewImagen = signal<string | null>(null);
   selectedFile: File | null = null;
 
