@@ -12,14 +12,14 @@ import { Animal } from '../../interfaces/animal';
 export class GestionAnimales implements OnInit {
   private fb = inject(FormBuilder);
   listaMascotas: Animal[] = [
-    { id: 1, nombre: 'Gatillo', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipoAnimal: 'Gato', lugarRescate: 'Colonia Paso Blanco', ubicacionActual: 'Veterinarias Cañada Honda', imagen: null },
-    { id: 2, nombre: 'Firulais', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipoAnimal: 'Perro', lugarRescate: 'Colonia Paso Blanco', ubicacionActual: 'Veterinarias Cañada Honda', imagen: null },
-    { id: 3, nombre: 'Michi', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipoAnimal: 'Gato', lugarRescate: 'Colonia Paso Blanco', ubicacionActual: 'Veterinarias Cañada Honda', imagen: null },
-    { id: 4, nombre: 'Firulais', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipoAnimal: 'Perro', lugarRescate: 'Colonia Paso Blanco', ubicacionActual: 'Veterinarias Cañada Honda', imagen: null },
-    { id: 5, nombre: 'Michi', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipoAnimal: 'Gato', lugarRescate: 'Colonia Paso Blanco', ubicacionActual: 'Veterinarias Cañada Honda', imagen: null },
-    { id: 6, nombre: 'Firulais', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipoAnimal: 'Perro', lugarRescate: 'Colonia Paso Blanco', ubicacionActual: 'Veterinarias Cañada Honda', imagen: null },
-    { id: 8, nombre: 'Firulais', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipoAnimal: 'Perro', lugarRescate: 'Colonia Paso Blanco', ubicacionActual: 'Veterinarias Cañada Honda', imagen: null },
-    { id: 10, nombre: 'Firulais', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipoAnimal: 'Perro', lugarRescate: 'Colonia Paso Blanco', ubicacionActual: 'Veterinarias Cañada Honda', imagen: null },
+    { id: 1, nombre: 'Gatillo', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipo: 'Gato', lugar: 'Colonia Paso Blanco', ubicacion: 'Veterinarias Cañada Honda', imagen: null },
+    { id: 2, nombre: 'Firulais', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipo: 'Perro', lugar: 'Colonia Paso Blanco', ubicacion: 'Veterinarias Cañada Honda', imagen: null },
+    { id: 3, nombre: 'Michi', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipo: 'Gato', lugar: 'Colonia Paso Blanco', ubicacion: 'Veterinarias Cañada Honda', imagen: null },
+    { id: 4, nombre: 'Firulais', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipo: 'Perro', lugar: 'Colonia Paso Blanco', ubicacion: 'Veterinarias Cañada Honda', imagen: null },
+    { id: 5, nombre: 'Michi', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipo: 'Gato', lugar: 'Colonia Paso Blanco', ubicacion: 'Veterinarias Cañada Honda', imagen: null },
+    { id: 6, nombre: 'Firulais', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipo: 'Perro', lugar: 'Colonia Paso Blanco', ubicacion: 'Veterinarias Cañada Honda', imagen: null },
+    { id: 8, nombre: 'Firulais', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipo: 'Perro', lugar: 'Colonia Paso Blanco', ubicacion: 'Veterinarias Cañada Honda', imagen: null },
+    { id: 10, nombre: 'Firulais', descripcion: 'Blanco con manchas grises y negras, ojos de color verde, muy juguetón', tipo: 'Perro', lugar: 'Colonia Paso Blanco', ubicacion: 'Veterinarias Cañada Honda', imagen: null },
   ];
 
   mostrarFormulario = false;
@@ -48,10 +48,10 @@ export class GestionAnimales implements OnInit {
     imagen: [null, Validators.required],
     nombre: ['', [Validators.required, Validators.minLength(3)]],
     descripcion: ['', [Validators.required, Validators.maxLength(200)]],
-    tipoAnimal: ['', Validators.required],
-    otroTipoAnimal: [''],
-    lugarRescate: [''],
-    ubicacionActual: [''],
+    tipo: ['', Validators.required],
+    otrotipo: [''],
+    lugar: [''],
+    ubicacion: [''],
   });
 
   ngOnInit() {
@@ -79,15 +79,15 @@ export class GestionAnimales implements OnInit {
     this.mascotaForm.get('imagen')?.updateValueAndValidity();
 
     const tiposConocidos = ['Perro', 'Gato', 'Ave'];
-    const esConocido = tiposConocidos.includes(mascota.tipoAnimal);
+    const esConocido = tiposConocidos.includes(mascota.tipo);
     
     this.mascotaForm.patchValue({
       nombre: mascota.nombre,
       descripcion: mascota.descripcion,
-      tipoAnimal: esConocido ? mascota.tipoAnimal : 'Otro',
-      otroTipoAnimal: esConocido ? '' : mascota.tipoAnimal,
-      lugarRescate: mascota.lugarRescate,
-      ubicacionActual: mascota.ubicacionActual,
+      tipo: esConocido ? mascota.tipo : 'Otro',
+      otrotipo: esConocido ? '' : mascota.tipo,
+      lugar: mascota.lugar,
+      ubicacion: mascota.ubicacion,
     });
   }
 
@@ -107,7 +107,7 @@ export class GestionAnimales implements OnInit {
       const valores = this.mascotaForm.value;
       const formData = new FormData();
       
-      const tipoFinal = valores.tipoAnimal === 'Otro' ? valores.otroTipoAnimal : valores.tipoAnimal;
+      const tipoFinal = valores.tipo === 'Otro' ? valores.otrotipo : valores.tipo;
       
       formData.append('nombre', valores.nombre || '');
       formData.append('especie', tipoFinal || '');
