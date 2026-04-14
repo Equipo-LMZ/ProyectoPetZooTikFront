@@ -1,19 +1,23 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
 import { ModalLogin } from '../../components/modal-login/modal-login';
 import { ModalRegistro } from '../../components/modal-registro/modal-registro';
 import { ModalCandidatura } from '../../components/modal-candidatura/modal-candidatura';
+import { AuthService } from '../../services/auth';
+import { CustomAlert } from '../../components/custom-alert/custom-alert'; 
 
 @Component({
   selector: 'app-inicio',
   standalone: true,
-  imports: [CommonModule, ModalLogin, ModalRegistro, ModalCandidatura],
+  imports: [CommonModule, ModalLogin, ModalRegistro, ModalCandidatura, CustomAlert],
   templateUrl: './inicio.html',
   styleUrl: './inicio.css',
 })
 export class Inicio {
+  public authService = inject(AuthService);
+
   mostrarHelicoptero = signal<boolean>(true);
   faseAnimacion = signal<number>(0);
   seleccionActual = signal<number>(0);
