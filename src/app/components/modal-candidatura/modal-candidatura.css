@@ -1,0 +1,218 @@
+/* === Fondo Pizarra (Overlay) === */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 40000;
+}
+
+/* === El Tablero (Card) === */
+.ranger-card {
+  /* Fondo negro mate texturizado como pizarra */
+  background-color: #2c2c2c;
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 80%),
+    repeating-linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.01) 0px,
+      rgba(255, 255, 255, 0.01) 1px,
+      transparent 1px,
+      transparent 10px
+    );
+
+  width: 95%;
+  max-width: 460px;
+  padding: 40px;
+
+  /* Marco de madera de la pizarra */
+  border: 12px solid #3d2b1f;
+  outline: 2px solid #5d4037;
+  border-radius: 4px;
+
+  color: #ffffff;
+  font-family: 'Comic Sans MS', 'Cursive', sans-serif; /* Simula escritura a mano */
+
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.6),
+    inset 0 0 100px rgba(0, 0, 0, 0.5);
+
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* Efecto de "polvo de gis" en las esquinas */
+.ranger-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.1), transparent 150px);
+}
+
+/* === Header (Estilo Letrero de Menú) === */
+.poster-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.header-eyebrow {
+  color: #ffd166; /* Amarillo gis */
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  display: block;
+}
+
+.text-wanted {
+  color: #ffffff;
+  font-size: 2.2rem;
+  text-transform: uppercase;
+  margin: 10px 0;
+  /* Sombra para que parezca gis grueso */
+  text-shadow:
+    2px 2px 0px rgba(255, 255, 255, 0.2),
+    -1px -1px 0px rgba(0, 0, 0, 0.5);
+}
+
+.header-rule {
+  color: #06d6a0; /* Verde gis vibrante */
+  font-size: 18px;
+  letter-spacing: 5px;
+}
+
+/* === Cuadro de Foto (Dibujado a mano) === */
+.photo-frame {
+  width: 160px;
+  height: 160px;
+  margin: 0 auto 25px;
+  /* Borde que parece trazado con gis */
+  border: 3px solid #ef476f; /* Rosa gis */
+  border-radius: 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 15px rgba(239, 71, 111, 0.2);
+  transition: transform 0.2s;
+}
+
+.photo-frame:hover {
+  transform: rotate(-2deg) scale(1.05);
+}
+
+.photo-preview {
+  width: 90%;
+  height: 90%;
+  object-fit: cover;
+  border: 1px solid white;
+}
+
+.photo-placeholder {
+  color: #ef476f;
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+/* === Inputs (Líneas de gis) === */
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  color: #118ab2; /* Azul gis vibrante */
+  font-size: 13px;
+  margin-bottom: 8px;
+  display: block;
+  text-transform: uppercase;
+}
+
+.input-group input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  /* Línea de gis blanca */
+  border-bottom: 2px dashed rgba(255, 255, 255, 0.5);
+  color: white;
+  padding: 8px 0;
+  font-size: 16px;
+  outline: none;
+}
+
+.input-group input:focus {
+  border-bottom-color: #ffd166;
+}
+
+.input-group textarea {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  color: white;
+  padding: 10px;
+  font-size: 15px;
+  outline: none;
+}
+
+.input-group textarea:focus {
+  border-color: #06d6a0;
+}
+
+/* === Botones (Dibujados con gis) === */
+.poster-footer {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.btn-western {
+  flex: 1;
+  background: transparent;
+  color: #06d6a0;
+  border: 3px solid #06d6a0;
+  padding: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  /* Sombra interna para efecto de profundidad */
+  box-shadow: 4px 4px 0px rgba(6, 214, 160, 0.2);
+}
+
+.btn-western:hover {
+  background: #06d6a0;
+  color: #2c2c2c;
+}
+
+.btn-cancel {
+  flex: 1;
+  background: transparent;
+  color: #ef476f;
+  border: 3px solid #ef476f;
+  padding: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 4px 4px 0px rgba(239, 71, 111, 0.2);
+}
+
+.btn-cancel:hover {
+  background: #ef476f;
+  color: #2c2c2c;
+}
+
+/* Personalización del Scrollbar para que parezca madera */
+.ranger-card::-webkit-scrollbar {
+  width: 8px;
+}
+.ranger-card::-webkit-scrollbar-thumb {
+  background: #5d4037;
+  border-radius: 10px;
+}
