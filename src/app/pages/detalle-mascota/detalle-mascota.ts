@@ -2,6 +2,8 @@ import { Component, inject, input, output, signal } from '@angular/core';
 import { Animal } from '../../interfaces/animal';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AnimalService } from '../../services/animal';
+import { AlertsService } from '../../services/alerts-service';
 
 @Component({
   selector: 'app-detalle-mascota',
@@ -12,35 +14,42 @@ import { CommonModule } from '@angular/common';
 })
 export class DetalleMascota {
   private route = inject(ActivatedRoute);
+  private animalService = inject(AnimalService);
+  private alertService = inject(AlertsService);
 
-  // Signal para manejar el animal actual
+  //Signal del animal actual
   animal = signal<Animal | undefined>(undefined);
 
-  ngOnInit() {
-    // Obtenemos el ID desde la ruta /detalle-mascota/1
+  async ngOnInit() {
+    //obtenemos la id
     const idParam = this.route.snapshot.paramMap.get('id');
     const id = Number(idParam);
 
-    // Aquí simulas la carga. En el futuro, llamarás a tu service.getAnimalById(id)
-    this.cargarDatosMascota(id);
+    if (id) {
+      await this.cargarAnimal(id);
+    } else {
+      this.alertService.error('Error de Archivo', 'El ID del expediente no es válido.');
+    }
   }
+  private async cargarAnimal(id: number) {
+    try {
+      // 2. Llamada real al backend a través de tu servicio
+      const data = await this.animalService.obtenerPorId(id);
 
-  cargarDatosMascota(id: number) {
-    // Datos de ejemplo que coinciden con tu interfaz
-    const mockMascotas: Animal[] = [
-      {
-        id: 1,
-        nombre: 'Mantequilla',
-        descripcion:
-          'Un gato naranja muy perezoso que ama dormir al sol. Es experto en cazar moscas imaginarias.',
-        imagen: 'assets/mantequilla.png',
-        tipoAnimal: 'Gato',
-        lugarRescate: 'Parque Pelícano',
-        ubicacionActual: 'Refugio Central',
-      },
-    ];
-
-    const encontrado = mockMascotas.find((a) => a.id === id);
-    this.animal.set(encontrado);
+      if (data) {
+        this.animal.set(data);
+      } else {
+        this.alertService.warning(
+          'Expediente Extraviado',
+          'No se encontró ningún registro con ese número de folio.',
+        );
+      }
+    } catch (error) {
+      console.error('Error al consultar el expediente:', error);
+      this.alertService.error(
+        'Fallo de Conexión',
+        'No se pudo establecer comunicación con el archivo central de la Gaceta.',
+      );
+    }
   }
 }

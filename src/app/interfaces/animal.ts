@@ -3,7 +3,7 @@ export interface Animal {
   imagen: any;
   nombre: string;
   descripcion: string;
-  tipoAnimal: string;
-  lugarRescate: string;
-  ubicacionActual: string;
+  tipo: string;
+  lugar: string;
+  ubicacion: string;
 }

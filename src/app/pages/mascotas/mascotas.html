@@ -25,44 +25,52 @@
     </header>
 
     <main class="main-adopcion columns-1 md:columns-2 gap-12 space-y-16 relative z-10">
-      @for (animal of listaAnimales; track animal.id) {
-        <article
-          class="article-adopcion break-inside-avoid border-b-2 border-black pb-10 group"
-          [style.animation-delay]="$index * 0.2 + 0.8 + 's'"
-        >
-          <h2
-            class="title-adopcion text-4xl font-bold mb-4 uppercase leading-none group-hover:tracking-widest transition-all duration-500"
-          >
-            {{ animal.nombre }}
-          </h2>
-
+      @for (animal of animalService.listaAnimales(); track animal.id) {
+        <article class="article-adopcion break-inside-avoid">
           <div
-            class="div-adopcion border-4 border-black bg-white p-1 mb-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.9)] overflow-hidden"
+            class="div-adopcion-img-wrapper border-4 border-black bg-white p-1 mb-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,0.8)]"
           >
             <img
               [src]="animal.imagen"
               [alt]="animal.nombre"
-              class="img-adopcion w-full h-auto grayscale brightness-90 group-hover:brightness-110 group-hover:scale-110 transition-all duration-700"
+              class="img-adopcion w-full h-64 object-cover grayscale transition-all duration-300 hover:grayscale-0"
             />
           </div>
 
-          <div class="div-adopcion">
-            <p
-              class="text-adopcion text-xl leading-tight text-justify first-letter:text-6xl first-letter:font-bold first-letter:mr-2 first-letter:float-left"
-            >
-              {{ animal.descripcion }}
-            </p>
-          </div>
+          <div class="space-y-2">
+            <h2 class="title-adopcion text-3xl font-black uppercase italic">{{ animal.nombre }}</h2>
 
-          <footer class="footer-adopcion mt-8">
-            <button
-              class="button-adopcion w-full py-3 font-bold uppercase tracking-widest text-base"
-              (click)="abrirModalAdopcion(animal)"
+            <div
+              class="gap-2 font-mono text-[10px] uppercase bg-black text-white px-2 py-1 inline-block"
             >
-              ADOPTAR
-            </button>
-          </footer>
+              <span>{{ animal.tipo }}</span> | <span>{{ animal.lugar }}</span>
+            </div>
+
+            <p class="text-adopcion text-lg leading-tight text-justify font-serif">
+              {{ animal.descripcion | slice: 0 : 120
+              }}{{ animal.descripcion.length > 120 ? '...' : '' }}
+            </p>
+
+            <p class="text-[10px] font-bold uppercase opacity-70">
+              Encontrado en: {{ animal.ubicacion }}
+            </p>
+
+            <footer class="pt-4">
+              <button
+                [routerLink]="['/detalle-mascota', animal.id]"
+                class="button-adopcion w-full py-3 bg-black text-white font-bold uppercase tracking-widest text-sm border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
+              >
+                Número del expediente del animal: #{{ animal.id }}
+              </button>
+            </footer>
+          </div>
         </article>
+      } @empty {
+        <div class="col-span-full text-center p-20">
+          <p class="animate-pulse font-black text-2xl uppercase tracking-tighter">
+            Sin adopciones disponibles
+          </p>
+        </div>
       }
     </main>
 

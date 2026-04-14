@@ -1,30 +1,27 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Animal } from '../../interfaces/animal';
+import { AnimalService } from '../../services/animal';
+import { AlertsService } from '../../services/alerts-service';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-mascotas',
-  imports: [],
+  imports: [CommonModule, RouterLink],
   standalone: true,
   templateUrl: './mascotas.html',
   styleUrl: './mascotas.css',
 })
 export class Mascotas {
-  listaAnimales: Animal[] = [
-    {
-      id: 1,
-      nombre: 'Mantequilla',
-      descripcion:
-        'Un gato naranja muy perezoso que ama dormir al sol. Es experto en cazar moscas imaginarias.',
-      imagen: 'assets/pixel-cat.png',
-      tipoAnimal: 'Gato',
-      lugarRescate: 'Granja Pelican',
-      ubicacionActual: 'Refugio Central',
-    },
-    // ... más animalitos
-  ];
+  // Inyectamos el servicio
+  public animalService = inject(AnimalService);
+  private alertService = inject(AlertsService);
 
-  abrirModalAdopcion(animal: Animal) {
-    console.log('Abriendo formulario de adopción para:', animal.nombre);
-    // Aquí dispararías el modal que hicimos anteriormente
+  async ngOnInit() {
+    try {
+      await this.animalService.obtenerAnimales();
+    } catch (error) {
+      this.alertService.error('¡Error!', 'No pudimos sincronizar los animales con el servidor.');
+    }
   }
 }
