@@ -1,1 +1,41 @@
-<p>not-found-404 works!</p>
+<div class="forest-container">
+  <div class="game-area border-wood shadow-deep">
+    <div class="light-shafts"></div>
+    <div class="mist-overlay"></div>
+
+    @if (gameState() === 'waiting') {
+      <div class="overlay start-screen animate-fadeIn">
+        <h1 class="text-404">404</h1>
+        <p class="text-forest italic">TE HAS PERDIDO EN LO MÁS PROFUNDO DE LA MALEZA</p>
+        <p class="text-hint font-mono">[ Trata de encontrar el camino a casa]</p>
+        <button (click)="startGame()" class="btn-forest btn-pulse">COMENZAR LA TRAVESÍA</button>
+      </div>
+    }
+
+    <div class="hud text-forest font-mono">
+      <span>DISTANCIA: {{ score() }}m</span>
+      <span class="ml-6">RÉCORD: {{ highScore() }}m</span>
+    </div>
+
+    <div class="stage">
+      <div #pet class="pet" [class.jumping]="isJumping()">🦝</div>
+
+      @if (gameState() === 'playing') {
+        <div #obstacle class="obstacle">🪵</div>
+      }
+
+      <div class="ground mossy-floor"></div>
+    </div>
+
+    @if (gameState() === 'gameover') {
+      <div class="overlay game-over-screen animate-fadeIn">
+        <h2 class="text-alert">¡UY, TE CAÍSTE!</h2>
+        <p class="text-forest">Recorriste: {{ score() }}m antes de caerte</p>
+        <div class="actions mt-6">
+          <button (click)="startGame()" class="btn-forest">REINTENTAR</button>
+          <a routerLink="/mascotas" class="chalk-link text-xs ml-4">VOLVER AL PARQUE</a>
+        </div>
+      </div>
+    }
+  </div>
+</div>
