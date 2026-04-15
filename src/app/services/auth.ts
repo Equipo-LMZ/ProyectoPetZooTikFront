@@ -1,12 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private http = inject(HttpClient);
+  private router = inject(Router);
   private baseUrl = 'https://api.petzootik.site/user';
 
   public currentUser = signal<{ id: number; nombre: string; token: string } | null>(null);
@@ -88,5 +90,6 @@ export class AuthService {
   logout() {
     localStorage.clear();
     this.currentUser.set(null);
+    this.router.navigate(['/'])
   }
 }
