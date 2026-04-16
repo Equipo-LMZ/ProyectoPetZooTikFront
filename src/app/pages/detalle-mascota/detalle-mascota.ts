@@ -1,4 +1,4 @@
-import { Component, inject, input, output, signal } from '@angular/core';
+import { Component, inject, input, output, signal, ChangeDetectorRef} from '@angular/core';
 import { Animal } from '../../interfaces/animal';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -16,6 +16,7 @@ export class DetalleMascota {
   private route = inject(ActivatedRoute);
   private animalService = inject(AnimalService);
   private alertService = inject(AlertsService);
+  private cdr = inject(ChangeDetectorRef);
 
   //Signal del animal actual
   animal = signal<Animal | undefined>(undefined);
@@ -27,13 +28,13 @@ export class DetalleMascota {
 
     if (id) {
       await this.cargarAnimal(id);
+      this.cdr.detectChanges();
     } else {
       this.alertService.error('Error de Archivo', 'El ID del expediente no es válido.');
     }
   }
   private async cargarAnimal(id: number) {
     try {
-      // 2. Llamada real al backend a través de tu servicio
       const data = await this.animalService.obtenerPorId(id);
 
       if (data) {

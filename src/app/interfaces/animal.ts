@@ -1,5 +1,6 @@
 export interface Animal {
   id?: number;
+  idRescatista?: number;
   imagen: any;
   nombre: string;
   descripcion: string;

@@ -42,7 +42,7 @@
               <img
                 [src]="animal()?.imagen"
                 [alt]="animal()?.nombre"
-                class="img-expediente w-full h-auto grayscale contrast-125 border-2 border-black"
+                class="img-expediente w-full h-auto border-2 border-black"
               />
               <p class="caption-img font-mono text-[9px] mt-2 text-center italic uppercase">
                 Evidencia_Animalito_{{ animal()?.id }}.png
@@ -84,9 +84,10 @@
             </div>
 
             <button
-              class="btn-adopcion w-full py-4 bg-black text-white font-black text-xl uppercase tracking-tighter shadow-[6px_6px_0px_0px_rgba(0,0,0,0.4)] hover:-translate-y-1 active:translate-y-1 active:shadow-none transition-all"
+              [routerLink]="['/adoptar', animal()?.id]"
+              class="w-full py-4 bg-green-800 text-white font-black uppercase tracking-widest border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 transition-all"
             >
-              SOLICITAR ADOPCIÓN
+              SOLICITAR ADOPCIÓN DE {{ animal()?.nombre }}
             </button>
           </div>
         </div>
