@@ -25,8 +25,18 @@ export class Navbar {
     this.verModal.set(false);
   }
 
+  menuAbierto = signal(false);
+  toggleMenu() {
+    this.menuAbierto.update((v) => !v);
+  }
+
+  cerrarMenu() {
+    this.menuAbierto.set(false);
+  }
+
   logout() {
     this.authService.logout();
+    this.cerrarMenu();
     this.router.navigate(['/']);
   }
 }
