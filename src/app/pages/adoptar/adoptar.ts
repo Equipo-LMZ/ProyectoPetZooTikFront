@@ -23,7 +23,6 @@ export class Adoptar {
     '¿Todos los integrantes del hogar están de acuerdo con la adopción?',
     '¿Tienes tiempo diario para paseos, juegos y socialización?',
     '¿Qué harías si el animal se enferma y requiere gastos médicos imprevistos?',
-    '¿Quién se hará cargo del animalito si sales de viaje o vacaciones?',
     '¿Conoces el esquema de vacunas y desparasitaciones necesarias?',
   ];
 

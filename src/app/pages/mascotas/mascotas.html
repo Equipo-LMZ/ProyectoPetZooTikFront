@@ -22,15 +22,29 @@
         <span>Sin Costo</span>
       </div>
 
-      <div class="filter-badge">
-        <label class="badge-label">Clasificación:</label>
-        <select (change)="cambiarFiltro($event)" class="badge-select">
-          <option value="todos">Todos los animales</option>
-          <option value="canino">Caninos (Perros)</option>
-          <option value="felino">Felinos (Gatos)</option>
-          <option value="ave">Aves</option>
-          <option value="otro">Otros</option>
-        </select>
+      <div
+        class="div-adopcion flex flex-wrap justify-end gap-6 border-t-2 border-black mt-4 pt-4 relative z-20"
+      >
+        <div class="filter-badge">
+          <label class="badge-label">BUSCAR ANIMALITO:</label>
+          <input
+            type="text"
+            (input)="actualizarBusqueda($event)"
+            placeholder="NOMBRE O SEÑAS..."
+            class="badge-input"
+          />
+        </div>
+
+        <div class="filter-badge">
+          <label class="badge-label">CLASIFICACIÓN:</label>
+          <select (change)="cambiarFiltro($event)" class="badge-select">
+            <option value="todos">Todos los animales</option>
+            <option value="canino">Caninos (Perros)</option>
+            <option value="felino">Felinos (Gatos)</option>
+            <option value="ave">Aves</option>
+            <option value="otro">Otros</option>
+          </select>
+        </div>
       </div>
     </header>
 

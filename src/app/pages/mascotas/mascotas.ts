@@ -17,18 +17,27 @@ export class Mascotas {
   private alertService = inject(AlertsService);
 
   public filtroActual = signal<string>('todos');
+  public filtroBusqueda = signal<string>('');
 
   public mascotasFiltradas = computed(() => {
     const lista = this.animalService.listaAnimales();
-    const filtro = this.filtroActual().toLowerCase();
-
-    if (filtro === 'todos') return lista;
+    const filtroEspecie = this.filtroActual().toLowerCase();
+    const textoBusqueda = this.filtroBusqueda().toLowerCase().trim();
 
     return lista.filter((animal) => {
-      const tipo = animal.tipo.toLowerCase();
-      if (filtro === 'canino') return tipo === 'canino' || tipo === 'perro';
-      if (filtro === 'felino') return tipo === 'felino' || tipo === 'gato';
-      return tipo === filtro;
+      let coincideEspecie = true;
+      if (filtroEspecie !== 'todos') {
+        const tipo = animal.tipo.toLowerCase();
+        if (filtroEspecie === 'canino') coincideEspecie = tipo === 'canino' || tipo === 'perro';
+        else if (filtroEspecie === 'felino') coincideEspecie = tipo === 'felino' || tipo === 'gato';
+        else coincideEspecie = tipo === filtroEspecie;
+      }
+
+      const coincideTexto =
+        animal.nombre.toLowerCase().includes(textoBusqueda) ||
+        animal.descripcion.toLowerCase().includes(textoBusqueda);
+
+      return coincideEspecie && coincideTexto;
     });
   });
 
@@ -43,5 +52,10 @@ export class Mascotas {
   cambiarFiltro(event: Event) {
     const value = (event.target as HTMLSelectElement).value;
     this.filtroActual.set(value);
+  }
+
+  actualizarBusqueda(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.filtroBusqueda.set(value);
   }
 }
