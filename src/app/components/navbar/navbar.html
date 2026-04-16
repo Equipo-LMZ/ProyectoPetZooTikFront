@@ -1,1 +1,46 @@
-<p>navbar works!</p>
+<nav class="nav-petzootik">
+  <div class="nav-container">
+    <div class="nav-left">
+      <a routerLink="/" class="flex items-center gap-3 no-underline">
+        <div class="logo-box">PZ</div>
+        <span class="logo-text">PETZOOTIK</span>
+      </a>
+    </div>
+
+    <div class="nav-center">
+      <ul class="nav-links">
+        <li>
+          <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+            >Inicio</a
+          >
+        </li>
+        <li><a routerLink="/mascotas" routerLinkActive="active">Mascotas</a></li>
+        <li><a routerLink="/mapa" routerLinkActive="active">Mapa</a></li>
+        <li>
+          <a routerLink="/panel" routerLinkActive="active" class="link-rescatista">
+            Panel Rescatista
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="nav-right">
+      @if (authService.currentUser(); as user) {
+        <div class="session-card animate-fade-in">
+          <div class="session-info">
+            <span class="session-badge">Rescatista Activo</span>
+            <p class="session-name">{{ user.nombre }}</p>
+            <p class="session-id">ID: #{{ user.id }}</p>
+          </div>
+          <button (click)="logout()" class="btn-logout">Salir</button>
+        </div>
+      } @else {
+        <button (click)="abrirLogin()" class="btn-login-trigger">Iniciar Sesión</button>
+      }
+    </div>
+  </div>
+</nav>
+
+@if (verModal()) {
+  <app-modal-login (cerrar)="cerrarLogin()"></app-modal-login>
+}

@@ -38,6 +38,9 @@
   justify-content: center;
   min-height: 100vh;
   padding: 40px 10px;
+  background-image: url('/assets/fondos/fondo-madera.jpg');
+  background-size: cover;
+  background-attachment: fixed;
 }
 
 .main-adopcion {

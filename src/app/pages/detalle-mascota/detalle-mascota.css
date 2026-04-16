@@ -1,11 +1,13 @@
 /* === Layout base === */
 .div-escritorio {
   min-height: 100vh;
-  background: #1a1a1a;
   padding: 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-image: url('/assets/fondos/fondo-madera.jpg');
+  background-size: cover;
+  background-attachment: fixed;
 }
 
 .md\:p-responsive {
@@ -179,6 +181,10 @@
 
   box-shadow: 6px 6px 0 black;
   transition: 0.2s;
+}
+
+button {
+  cursor: pointer;
 }
 
 .btn-adopcion:hover {
