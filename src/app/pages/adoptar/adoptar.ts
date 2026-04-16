@@ -1,5 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, input, signal } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AlertsService } from '../../services/alerts-service';
+import { AnimalService } from '../../services/animal';
 
 @Component({
   selector: 'app-adoptar',
@@ -10,53 +12,88 @@ import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } fr
 })
 export class Adoptar {
   private fb = inject(FormBuilder);
+  private animalService = inject(AnimalService);
+  private alertService = inject(AlertsService);
 
-  // Listado de preguntas (el ID es el índice + 1)
+  public id = input.required<string>(); // id de la mascota desde la URL
+  public animalActual = signal<any>(null); // Guardaremos los datos del animal aquí
+
   preguntasBase = [
     '¿Cuentas con espacio suficiente y seguro para el animal?',
     '¿Todos los integrantes del hogar están de acuerdo con la adopción?',
     '¿Tienes tiempo diario para paseos, juegos y socialización?',
     '¿Qué harías si el animal se enferma y requiere gastos médicos imprevistos?',
     '¿Quién se hará cargo del animalito si sales de viaje o vacaciones?',
-    '¿Has tenido mascotas antes? ¿Qué pasó con ellas?',
     '¿Conoces el esquema de vacunas y desparasitaciones necesarias?',
-    '¿Estás de acuerdo con la esterilización obligatoria del animal?',
-    '¿Qué harías si el animal rompe algún objeto o mueble en casa?',
-    '¿Aceptas que el refugio realice visitas de seguimiento periódicas?',
   ];
 
   adopcionForm = this.fb.group({
     nombreCompleto: ['', [Validators.required, Validators.minLength(8)]],
     direccion: ['', [Validators.required, Validators.minLength(10)]],
     motivoAdopcion: ['', [Validators.required, Validators.minLength(20)]],
-
-    // Aquí vive la lista de objetos { id, respuesta }
     respuestasCuestionario: this.fb.array(
       this.preguntasBase.map((_, index) => this.crearPreguntaForm(index + 1)),
     ),
   });
 
-  // Crea un grupo para el backend
+  async ngOnInit() {
+    // 1. Al cargar, obtenemos al animal para tener su idRescatista
+    try {
+      const data = await this.animalService.obtenerPorId(Number(this.id()));
+      this.animalActual.set(data);
+    } catch (error) {
+      this.alertService.error('Error', 'No se pudo obtener la información del rescatista.');
+    }
+  }
+
   private crearPreguntaForm(id: number): FormGroup {
     return this.fb.group({
-      id: [id], // La columna ID
-      respuesta: ['', [Validators.required, Validators.minLength(5)]], // La columna Respuesta
+      id: [id],
+      respuesta: ['', [Validators.required, Validators.minLength(5)]],
     });
   }
 
-  // Getter para iterar en el HTML
   get cuestionarioArray() {
     return this.adopcionForm.get('respuestasCuestionario') as FormArray;
   }
 
-  enviarSolicitud() {
-    if (this.adopcionForm.valid) {
-      // El objeto final ya viene con la estructura:
-      // { nombre:..., respuestasCuestionario: [ {id: 1, respuesta: '...'}, {id: 2, respuesta: '...'} ] }
-      const payload = this.adopcionForm.getRawValue();
-      console.log('JSON listo para el Backend:', payload);
+  async enviarSolicitud() {
+    if (this.adopcionForm.valid && this.animalActual()) {
+      const rawValues = this.adopcionForm.getRawValue();
 
-      // Aquí harías tu POST
+      const SolicitudAdopcion = {
+        idUser: localStorage.getItem('userId'),
+        idMascota: Number(this.id()),
+        idRescatista: this.animalActual().idRescatista,
+
+        formulario: {
+          nombreCompleto: rawValues.nombreCompleto,
+          direccion: rawValues.direccion,
+          motivo: rawValues.motivoAdopcion,
+          cuestionario: rawValues.respuestasCuestionario.map((item: any, index: number) => {
+            return {
+              idPregunta: item['id'],
+              pregunta: this.preguntasBase[index],
+              respuesta: item['respuesta'],
+            };
+          }),
+        },
+      };
+
+      //prueba en consola
+      console.log('Payload estructurado:', SolicitudAdopcion);
+
+      try {
+        await this.animalService.enviarSolicitudAdopcion(SolicitudAdopcion);
+        this.alertService.success(
+          '¡Solicitud Enviada!',
+          'El rescatista revisará tu perfil pronto.',
+        );
+      } catch (error) {
+        this.alertService.error('Error', 'No se pudo procesar la adopción.');
+      }
+    } else {
+      this.adopcionForm.markAllAsTouched();
     }
   }
 }

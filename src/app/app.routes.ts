@@ -19,7 +19,7 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/mapa/mapa').then(m => m.Mapa) 
   },
   {
-    path: 'adoptar',
+    path: 'adoptar/:id',
     loadComponent: () => import('./pages/adoptar/adoptar').then(m => m.Adoptar)
   },
 
