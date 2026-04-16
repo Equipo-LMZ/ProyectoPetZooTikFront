@@ -1,10 +1,10 @@
-/* src/app/pages/adoptar/adoptar.css */
-
 .div-escritorio {
-  background-color: var(--color-escritorio);
   display: flex;
   justify-content: center;
   padding: 40px 20px;
+  background-image: url('/assets/fondos/fondo-pasto.jpg');
+  background-size: cover;
+  background-attachment: fixed;
 }
 
 .section-adopcion {
@@ -15,7 +15,7 @@
   position: relative;
   padding: 40px;
   /* Sombras y bordes pixelados */
-  box-shadow: 15px 15px 0px rgba(0,0,0,0.4);
+  box-shadow: 15px 15px 0px rgba(0, 0, 0, 0.4);
   animation: slam-expediente 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
@@ -36,7 +36,8 @@
   color: #444;
 }
 
-.label-adopcion, .label-pregunta {
+.label-adopcion,
+.label-pregunta {
   font-weight: bold;
   font-size: 0.75rem;
   text-transform: uppercase;
@@ -55,8 +56,9 @@
   outline: none;
 }
 
-.textarea-adopcion, .textarea-pregunta {
-  background: rgba(255,255,255,0.1);
+.textarea-adopcion,
+.textarea-pregunta {
+  background: rgba(255, 255, 255, 0.1);
   border: 3px solid var(--color-tinta);
   width: 100%;
   padding: 10px;
@@ -95,17 +97,17 @@
   font-size: 1.5rem;
   cursor: pointer;
   transition: all 0.1s steps(2);
-  box-shadow: 0 8px 0 rgba(0,0,0,0.2);
+  box-shadow: 0 8px 0 rgba(0, 0, 0, 0.2);
 }
 
 .button-adopcion:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 10px 0 rgba(0,0,0,0.2);
+  box-shadow: 0 10px 0 rgba(0, 0, 0, 0.2);
 }
 
 .button-adopcion:active:not(:disabled) {
   transform: translateY(6px);
-  box-shadow: 0 2px 0 rgba(0,0,0,0.2);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
 }
 
 .button-adopcion:disabled {
