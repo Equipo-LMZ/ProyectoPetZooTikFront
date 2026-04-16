@@ -5,7 +5,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-image: url('/assets/fondos/fondo-pasto.jpg');
+  background-image: url('/assets/fondos/fondo-madera.jpg');
   background-size: cover;
   background-attachment: fixed;
 }

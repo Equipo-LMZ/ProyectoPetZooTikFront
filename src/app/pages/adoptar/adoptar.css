@@ -2,7 +2,7 @@
   display: flex;
   justify-content: center;
   padding: 40px 20px;
-  background-image: url('/assets/fondos/fondo-pasto.jpg');
+  background-image: url('/assets/fondos/fondo-madera.jpg');
   background-size: cover;
   background-attachment: fixed;
 }
