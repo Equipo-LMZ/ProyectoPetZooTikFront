@@ -1,28 +1,20 @@
-/* ============================================================
-   VARIABLES — Paleta Cartografía Forestal
-   ============================================================ */
-:host {
-  --forest-ink: #1b2e20; /* tinta principal */
-  --forest-deep: #243b2a; /* verde oscuro */
-  --forest-mid: #3a5c42; /* verde medio */
-  --forest-sage: #6b8f71; /* verde salvia */
-  --forest-muted: #a3b89a; /* verde apagado */
-  --parchment-light: #f4ead8; /* pergamino claro */
-  --parchment-mid: #e8d5b0; /* pergamino medio */
-  --parchment-dark: #d4b98a; /* pergamino oscuro */
-  --bark: #6b4c2a; /* marrón corteza */
+.forest-map-page {
+  --forest-ink: #1b2e20;
+  --forest-deep: #243b2a;
+  --forest-mid: #3a5c42;
+  --forest-sage: #6b8f71;
+  --forest-muted: #a3b89a;
+  --parchment-light: #f4ead8;
+  --parchment-mid: #e8d5b0;
+  --parchment-dark: #d4b98a;
+  --bark: #6b4c2a;
   --bark-light: #9a7045;
-  --gold-accent: #b08d4c; /* acento dorado */
+  --gold-accent: #b08d4c;
   --shadow-forest: rgba(27, 46, 32, 0.18);
 
   font-family: 'Georgia', 'Times New Roman', Times, serif;
   color: var(--forest-ink);
-}
 
-/* ============================================================
-   PÁGINA BASE — Textura topográfica
-   ============================================================ */
-.forest-map-page {
   min-height: 100vh;
   padding: 2rem 1rem;
   background-color: #e8d5b0;
