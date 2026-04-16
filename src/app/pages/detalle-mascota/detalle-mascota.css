@@ -126,7 +126,6 @@
 
 .img-expediente {
   width: 100%;
-  filter: grayscale(100%);
   image-rendering: pixelated;
 }
 
