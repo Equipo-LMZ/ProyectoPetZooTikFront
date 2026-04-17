@@ -25,17 +25,13 @@
   pointer-events: none;
 }
 
-.cat-paw {
-  display: block;
-  font-size: 2rem;
+.cat-paw-svg {
+  width: 45px;
+  height: auto;
   transform-origin: top center;
-  animation: pawSwing 2.8s ease-in-out infinite;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.35));
-  padding: 6px 10px 10px;
-  background: linear-gradient(135deg, #1b4332, #2d6a4f);
-  border-radius: 0 0 14px 14px;
-  border: 2px solid #52b788;
-  border-top: none;
+  animation: pawSwing 2.5s ease-in-out infinite;
+  filter: drop-shadow(0 6px 8px rgba(0,0,0,0.4));
+  cursor: pointer;
 }
 
 @keyframes pawSwing {

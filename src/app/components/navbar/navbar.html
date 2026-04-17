@@ -9,7 +9,16 @@
     [class.paw-hidden]="navVisible()"
     (mouseenter)="mostrarNav()"
   >
-    <span class="cat-paw">🐾</span>
+    <svg class="cat-paw-svg" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+      <path d="M30,-10 C30,40 15,75 35,100 C45,112 65,112 75,100 C95,75 80,40 80,-10 Z" fill="#ffffff"/>
+      
+      <path d="M55,65 C45,65 40,75 40,85 C40,95 48,100 55,100 C62,100 70,95 70,85 C70,75 65,65 55,65 Z" fill="#f472b6"/>
+      
+      <circle cx="35" cy="70" r="8" fill="#f472b6"/>
+      <circle cx="45" cy="55" r="9" fill="#f472b6"/>
+      <circle cx="65" cy="55" r="9" fill="#f472b6"/>
+      <circle cx="75" cy="70" r="8" fill="#f472b6"/>
+    </svg>
   </div>
 }
 
