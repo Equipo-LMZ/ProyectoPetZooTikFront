@@ -3,9 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 
-// NOTAAAAAAAAA:
-  // TENEMOS QUE AGREGAR LOS SOCKETS
-
 @Injectable({
   providedIn: 'root',
 })
@@ -98,5 +95,19 @@ export class ChatService {
         observer.next(datos);
       });
     });
+  }
+  
+  // Desconecta el socket (cuando el usuario cierre sesión)
+  desconectarSocket(): void {
+    if (this.socket) {
+      this.socket.disconnect();
+    }
+  }
+
+  // Reconecta el socket (Si por alguna razón se necesita forzar reconexión)
+  reconectarSocket(): void {
+    if (this.socket && !this.socket.connected) {
+      this.socket.connect();
+    }
   }
 }
