@@ -1,61 +1,58 @@
-<nav class="nav-petzootik">
-  <div class="nav-container flex justify-between items-center w-full">
+@if (!ocultarTodo) {
+  <div 
+    class="nav-hover-zone hidden md:block"
+    (mouseenter)="mostrarNav()"
+  ></div>
+
+  <div 
+    class="cat-paw-trigger hidden md:flex"
+    [class.paw-hidden]="navVisible()"
+    (mouseenter)="mostrarNav()"
+  >
+    <span class="cat-paw">🐾</span>
+  </div>
+}
+
+<nav 
+  class="nav-petzootik"
+  [class.nav-visible]="navVisible() && !ocultarTodo"
+  [class.nav-hidden-total]="ocultarTodo"
+  (mouseenter)="mostrarNav()"
+  (mouseleave)="ocultarNav()"
+>
+  <div class="nav-container">
     <div class="nav-left">
-      <a routerLink="/" (click)="cerrarMenu()" class="flex items-center gap-3 no-underline">
+      <a routerLink="/" (click)="cerrarMenu()" class="nav-logo-link">
         <div class="logo-box">PZ</div>
         <span class="logo-text">PETZOOTIK</span>
       </a>
     </div>
 
-    <div class="md:hidden">
-      <button (click)="toggleMenu()" class="text-[#fefae0] p-2 focus:outline-none">
-        @if (!menuAbierto()) {
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-8 w-8"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 6h16M4 12h16m-7 6h7"
-            />
-          </svg>
-        } @else {
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-8 w-8"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        }
-      </button>
-    </div>
+    @if (!ocultarTodo) {
+      <div class="nav-hamburger md:hidden">
+        <button (click)="toggleMenu()" class="hamburger-btn">
+          @if (!menuAbierto()) {
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+            </svg>
+          } @else {
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          }
+        </button>
+      </div>
+    }
 
     <div class="hidden md:block">
-      <ul class="nav-links flex items-center">
+      <ul class="nav-links">
         <li>
-          <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
-            >Inicio</a
-          >
+          <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
         </li>
         <li><a routerLink="/mascotas" routerLinkActive="active">Mascotas</a></li>
         <li><a routerLink="/mapa" routerLinkActive="active">Mapa</a></li>
         <li>
-          <a routerLink="/panel" routerLinkActive="active" class="link-rescatista"
-            >Panel Rescatista</a
-          >
+          <a routerLink="/panel" routerLinkActive="active" class="link-rescatista">Panel Rescatista</a>
         </li>
       </ul>
     </div>
@@ -76,45 +73,30 @@
   </div>
 
   @if (menuAbierto()) {
-    <div
-      class="absolute top-[72px] left-0 w-full bg-[#1b4332] border-b-4 border-[#52b788] z-50 md:hidden animate-fade-in"
-    >
-      <ul class="flex flex-col p-4 gap-4 space-y-4">
+    <div class="mobile-menu md:hidden animate-fade-in">
+      <ul class="mobile-menu-list">
         <li>
-          <a (click)="cerrarMenu()" routerLink="/" class="text-[#b7e4c7] font-bold block py-2"
-            >Inicio</a
-          >
+          <a (click)="cerrarMenu()" routerLink="/" class="mobile-link">Inicio</a>
         </li>
         <li>
-          <a
-            (click)="cerrarMenu()"
-            routerLink="/mascotas"
-            class="text-[#b7e4c7] font-bold block py-2"
-            >Mascotas</a
-          >
+          <a (click)="cerrarMenu()" routerLink="/mascotas" class="mobile-link">Mascotas</a>
         </li>
         <li>
-          <a (click)="cerrarMenu()" routerLink="/mapa" class="text-[#b7e4c7] font-bold block py-2"
-            >Mapa</a
-          >
+          <a (click)="cerrarMenu()" routerLink="/mapa" class="mobile-link">Mapa</a>
         </li>
         <li>
-          <a
-            (click)="cerrarMenu()"
-            routerLink="/panel"
-            class="text-[#fefae0] bg-[#2d6a4f] p-3 rounded-xl block text-center border border-[#74c69d]"
-          >
+          <a (click)="cerrarMenu()" routerLink="/panel" class="mobile-link-rescatista">
             Panel Rescatista
           </a>
         </li>
-        <hr class="border-[#52b788]/30" />
-        <li class="flex justify-center py-2">
+        <hr class="mobile-divider" />
+        <li class="mobile-session">
           @if (authService.currentUser(); as user) {
             <div class="text-center">
-              <p class="text-[#74c69d] text-[10px] uppercase font-black">
+              <p class="mobile-session-label">
                 Conectado como: {{ user.nombre }}
               </p>
-              <button (click)="logout()" class="mt-2 text-rose-400 font-bold uppercase text-xs">
+              <button (click)="logout()" class="mobile-logout-btn">
                 Cerrar Sesión
               </button>
             </div>

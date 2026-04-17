@@ -1,21 +1,24 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, HostListener } from '@angular/core';
 import { AuthService } from '../../services/auth';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { ModalLogin } from '../modal-login/modal-login';
+import { NavbarService } from '../../services/navbar.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink, RouterLinkActive, ModalLogin],
+  imports: [RouterLink, RouterLinkActive, CommonModule],
   standalone: true,
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
 export class Navbar {
   public authService = inject(AuthService);
+  public navbarService = inject(NavbarService);
   private router = inject(Router);
 
-  // Control del modal
   verModal = signal<boolean>(false);
+
+  navVisible = signal<boolean>(false);
 
   abrirLogin() {
     this.verModal.set(true);
@@ -38,5 +41,17 @@ export class Navbar {
     this.authService.logout();
     this.cerrarMenu();
     this.router.navigate(['/']);
+  }
+
+  mostrarNav() {
+    this.navVisible.set(true);
+  }
+
+  ocultarNav() {
+    this.navVisible.set(false);
+  }
+
+  get ocultarTodo(): boolean {
+    return this.navbarService.debeOcultarTodo;
   }
 }

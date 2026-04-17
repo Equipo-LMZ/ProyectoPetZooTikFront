@@ -1,4 +1,4 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -6,6 +6,7 @@ import { ModalLogin } from '../../components/modal-login/modal-login';
 import { ModalRegistro } from '../../components/modal-registro/modal-registro';
 import { ModalCandidatura } from '../../components/modal-candidatura/modal-candidatura';
 import { AuthService } from '../../services/auth';
+import { NavbarService } from '../../services/navbar.service';
 
 @Component({
   selector: 'app-inicio',
@@ -14,18 +15,17 @@ import { AuthService } from '../../services/auth';
   templateUrl: './inicio.html',
   styleUrl: './inicio.css',
 })
-export class Inicio {
+export class Inicio implements OnInit, OnDestroy {
   public authService = inject(AuthService);
+  private navbarService = inject(NavbarService);
 
   mostrarHelicoptero = signal<boolean>(true);
   faseAnimacion = signal<number>(0);
   seleccionActual = signal<number>(0);
   modalAbierto = signal<'login' | 'registro' | 'candidatura' | null>(null);
 
-  /** true mientras el bosque hace zoom-in y se oscurece hacia negro */
   transicionNegro = signal<boolean>(false);
 
-  /** true mientras el campamento está en zoom máximo (antes de hacer zoom-out) */
   transicionDesdeNegro = signal<boolean>(false);
 
   luciernagas = Array.from({ length: 35 }, () => ({
@@ -37,16 +37,31 @@ export class Inicio {
 
   constructor(private router: Router) {}
 
+  ngOnInit() {
+    this.navbarService.enPaginaInicio.set(true);
+    this.navbarService.faseInicio.set(this.faseAnimacion());
+  }
+
+  ngOnDestroy() {
+    this.navbarService.enPaginaInicio.set(false);
+    this.navbarService.faseInicio.set(-1);
+  }
+
+  private sincronizarFase(fase: number) {
+    this.faseAnimacion.set(fase);
+    this.navbarService.faseInicio.set(fase);
+  }
+
   avanzarEscena() {
     if (this.faseAnimacion() !== 0) return;
-    this.faseAnimacion.set(1);
+    this.sincronizarFase(1);
     setTimeout(() => this.mostrarHelicoptero.set(false), 200);
-    setTimeout(() => this.faseAnimacion.set(2), 300);
+    setTimeout(() => this.sincronizarFase(2), 300);
   }
 
   regresarInicio(event: Event) {
     event.stopPropagation();
-    this.faseAnimacion.set(0);
+    this.sincronizarFase(0);
     setTimeout(() => this.mostrarHelicoptero.set(true), 800);
   }
 
@@ -90,22 +105,16 @@ export class Inicio {
   ingresarAlParque() {
     this.cerrarModales();
 
-    // PASO 1 (0ms): El bosque hace zoom-in hacia el centro y se oscurece a negro
     this.transicionNegro.set(true);
 
-    // PASO 2 (1100ms): Pantalla totalmente negra.
-    // Ponemos el campamento en escala grande (invisible aún) y lo activamos (fase 3)
     setTimeout(() => {
       this.transicionDesdeNegro.set(true);
-      this.faseAnimacion.set(3);
+      this.sincronizarFase(3);
     }, 1100);
 
-    // PASO 3 (1350ms): Quitamos el overlay negro — el campamento se vuelve visible (en zoom)
     setTimeout(() => {
       this.transicionNegro.set(false);
     }, 1350);
-
-    // PASO 4 (1450ms): El campamento hace zoom-out hacia su tamaño normal
     setTimeout(() => {
       this.transicionDesdeNegro.set(false);
     }, 1450);
