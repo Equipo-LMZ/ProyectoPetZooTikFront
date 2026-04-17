@@ -265,6 +265,66 @@
         <img src="assets/parque/mapa.png" class="w-full h-auto object-contain drop-shadow-2xl">
       </div>
 
+      <div class="group absolute z-30 transition-transform duration-300 hover:scale-110 cursor-default
+                  bottom-[41%] md:bottom-[46%]
+                  left-[70%] md:left-[65%] lg:left-[60%] 
+                  w-[12%] md:w-[8%] lg:w-[5%]">
+
+        <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-40">
+          <span class="bg-black/80 backdrop-blur-sm text-emerald-400 text-xs font-bold px-3 py-1.5 rounded-full whitespace-nowrap border border-emerald-500/30 drop-shadow-lg uppercase tracking-wider">
+            Lodi
+          </span>
+        </div>
+
+        <img src="assets/parque/lodi.png" 
+             class="w-full h-auto object-contain drop-shadow-lg" alt="Lodi el camaleón">
+      </div>
+
+      <div class="group absolute z-30 transition-transform duration-300 hover:scale-110 cursor-default
+                  bottom-[27%] md:bottom-[27%] lg:bottom-[27%]
+                  left-[75%] md:left-[70%] lg:left-[65%]
+                  w-[16%] md:w-[11%] lg:w-[8%]">
+
+        <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-40">
+          <span class="bg-black/80 backdrop-blur-sm text-emerald-400 text-xs font-bold px-3 py-1.5 rounded-full whitespace-nowrap border border-emerald-500/30 drop-shadow-lg uppercase tracking-wider">
+            Gatillo
+          </span>
+        </div>
+
+        <img src="assets/parque/gatillo.png" 
+             class="w-full h-auto object-contain drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)]" alt="Gatillo">
+      </div>
+
+      <div class="group absolute z-20 transition-transform duration-300 hover:scale-110 cursor-default
+                  bottom-[10%] md:bottom-[15%]
+                  right-[63%] md:right-[58%] lg:right-[53%]
+                  w-[15%] md:w-[10%] lg:w-[7%]">
+
+        <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-40">
+          <span class="bg-black/80 backdrop-blur-sm text-emerald-400 text-xs font-bold px-3 py-1.5 rounded-full whitespace-nowrap border border-emerald-500/30 drop-shadow-lg uppercase tracking-wider">
+            Dizi
+          </span>
+        </div>
+
+        <img src="assets/parque/dizi.png" 
+             class="w-full h-auto object-contain drop-shadow-[0_15px_20px_rgba(0,0,0,0.6)] -scale-x-100" alt="Dizi">
+      </div>
+      
+      <div class="group absolute z-30 transition-transform duration-300 hover:scale-125 cursor-default
+                  bottom-[50%] md:bottom-[50%] lg:bottom-[50%]
+                  right-[69%] md:right-[69%] lg:right-[69%]
+                  w-[9%] md:w-[6%] lg:w-[4%]">
+        
+        <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-40">
+          <span class="bg-black/80 backdrop-blur-sm text-emerald-400 text-xs font-bold px-3 py-1.5 rounded-full whitespace-nowrap border border-emerald-500/30 drop-shadow-lg uppercase tracking-wider">
+            Canario
+          </span>
+        </div>
+        
+        <img src="assets/parque/canario.png" 
+             class="w-full h-auto object-contain drop-shadow-md" alt="Canario rescatado">
+      </div>
+
     </div></div>@if (modalAbierto() === 'login') {
     <app-modal-login (cerrar)="cerrarModales()" (exito)="ingresarAlParque()"></app-modal-login>
   }
