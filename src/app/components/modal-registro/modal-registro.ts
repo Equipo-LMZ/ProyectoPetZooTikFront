@@ -14,6 +14,7 @@ import { AlertsService } from '../../services/alerts-service';
 export class ModalRegistro {
 
   @Output() cerrar = new EventEmitter<void>();
+  @Output() exito = new EventEmitter<void>();
 
   private authService = inject(AuthService);
   private alertsService = inject(AlertsService);
@@ -57,6 +58,8 @@ export class ModalRegistro {
     try {
       await this.authService.registro(this.nuevoUsuario);
       this.alertsService.success('Registro exitoso', 'Tu cuenta ha sido creada y has iniciado sesión.');
+
+      this.exito.emit();
       this.cerrarModal();
     } catch (error) {
       this.alertsService.error('Error al registrar usuario', 'Hubo un problema al crear tu cuenta. Intenta con otro correo');
