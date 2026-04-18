@@ -13,7 +13,9 @@ export class AuthService {
   private alertsService = inject(AlertsService);
   private baseUrl = 'https://api.petzootik.site/user';
 
-  public currentUser = signal<{ id: number; nombre: string; token: string; tipo: string } | null>(null);
+  public currentUser = signal<{ id: number; nombre: string; token: string; tipo: string } | null>(
+    null,
+  );
 
   constructor() {
     this.recuperarSesion();
@@ -26,11 +28,11 @@ export class AuthService {
     const tipo = localStorage.getItem('tipo');
 
     if (token && nombre && idStr && tipo) {
-      this.currentUser.set({ 
-        token, 
-        nombre, 
+      this.currentUser.set({
+        token,
+        nombre,
         tipo,
-        id: Number(idStr)
+        id: Number(idStr),
       });
     }
   }
@@ -38,16 +40,26 @@ export class AuthService {
   async login(credenciales: { correo: string; contrasena: string }) {
     try {
       credenciales.correo = credenciales.correo.toLowerCase();
-      const res = await lastValueFrom(
-        this.http.post<any>(`${this.baseUrl}/login`, credenciales)
-      );
-      
+      const res = await lastValueFrom(this.http.post<any>(`${this.baseUrl}/login`, credenciales));
+
       if (res && res.token) {
         this.establecerSesion(res);
       }
       return res;
-    } catch (error) {
-      console.error('Error en AuthService.login:', error);
+    } catch (error: any) {
+      if (error.status === 0) {
+        this.alertsService.error(
+          'Error de Conexión',
+          'El servidor no responde. Revisa tu internet o intenta más tarde.',
+        );
+      } else if (error.status === 401 || error.status === 404) {
+        this.alertsService.error('Acceso Denegado', 'Correo o contraseña incorrectos.');
+      } else {
+        this.alertsService.error(
+          'Error en Login',
+          'Ocurrió un problema inesperado al iniciar sesión.',
+        );
+      }
       throw error;
     }
   }
@@ -55,17 +67,15 @@ export class AuthService {
   async registro(usuario: { nombre: string; correo: string; contrasena: string }) {
     try {
       usuario.correo = usuario.correo.toLowerCase();
-      
-      const res = await lastValueFrom(
-        this.http.post<any>(`${this.baseUrl}/register`, usuario)
-      );
-      
+
+      const res = await lastValueFrom(this.http.post<any>(`${this.baseUrl}/register`, usuario));
+
       if (res && res.token) {
         this.establecerSesion(res);
       }
       return res;
     } catch (error) {
-      console.error('Error en AuthService.registro:', error);
+      this.alertsService.error('Error de Registro', 'No pudimos crear tu cuenta.');
       throw error;
     }
   }
@@ -85,11 +95,12 @@ export class AuthService {
       localStorage.setItem('userId', id.toString());
       localStorage.setItem('tipo', tipo);
 
-      this.currentUser.set({ id, nombre, token, tipo});
-
-      console.log('Sesión establecida a prueba de balas:', { id, nombre });
+      this.currentUser.set({ id, nombre, token, tipo });
     } else {
-      console.error('Error de mapeo: No se encontró res.token o el ID', res);
+      this.alertsService.error(
+        'Error de Datos',
+        'La respuesta del servidor no tiene el formato esperado.',
+      );
     }
   }
 
@@ -97,6 +108,6 @@ export class AuthService {
     localStorage.clear();
     this.currentUser.set(null);
     this.alertsService.success('Sesión finalizada', 'Tu sesión se ha cerrado exitosamente.');
-    this.router.navigate(['/'])
+    this.router.navigate(['/']);
   }
 }

@@ -1,6 +1,15 @@
-import { Component, signal, afterNextRender, OnInit, OnDestroy, computed } from '@angular/core';
+import {
+  Component,
+  signal,
+  afterNextRender,
+  OnInit,
+  OnDestroy,
+  computed,
+  inject,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as L from 'leaflet';
+import { AlertsService } from '../../services/alerts-service';
 
 @Component({
   selector: 'app-mapa',
@@ -10,6 +19,7 @@ import * as L from 'leaflet';
   styleUrl: './mapa.css',
 })
 export class Mapa implements OnInit, OnDestroy {
+  private alertsService = inject(AlertsService);
   /**Referencia principal a la instancia del mapa de Leaflet. */
   private mapaInstancia!: L.Map;
 
@@ -35,7 +45,10 @@ export class Mapa implements OnInit, OnDestroy {
           this.initMap(posicion.coords.latitude, posicion.coords.longitude);
         },
         (error) => {
-          console.warn('Acceso a geolocalización denegado. Utilizando coordenadas de respaldo.');
+          this.alertsService.info(
+            'Ubicación aproximada',
+            'No pudimos acceder a tu GPS. Usaremos la ubicación predeterminada.',
+          );
           this.initMap(...this.coordenadasPorDefecto);
         },
       );
@@ -82,7 +95,6 @@ export class Mapa implements OnInit, OnDestroy {
       if (exito) break;
 
       try {
-        console.log(`Intentando conectar con: ${url.split('/')[2]}`);
         const respuesta = await fetch(url);
 
         if (!respuesta.ok) throw new Error(`Status: ${respuesta.status}`);
@@ -100,13 +112,14 @@ export class Mapa implements OnInit, OnDestroy {
           exito = true;
         }
       } catch (error) {
-        console.warn(`Servidor ${url.split('/')[2]} falló. Intentando con el siguiente...`);
+        // console.warn(`Servidor ${url.split('/')[2]} falló. Intentando con el siguiente...`);
       }
     }
 
     if (!exito) {
-      console.error(
-        'Todos los servidores de Overpass fallaron. Intenta reducir el radio o espera un momento.',
+      this.alertsService.error(
+        'Error de Conexión',
+        'No pudimos contactar con los servidores. Intenta más tarde.',
       );
     }
 

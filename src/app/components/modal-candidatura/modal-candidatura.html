@@ -1,48 +1,46 @@
-@if (isOpen()) {
-  <div class="modal-overlay">
-    <div class="ranger-card">
-      <header class="poster-header">
-        <p class="header-eyebrow">Estación del Guardabosques</p>
-        <h1 class="text-wanted">Publicar Adopción</h1>
-        <p class="header-rule">&#x2015; formulario de registro &#x2015;</p>
-      </header>
+<div class="modal-overlay">
+  <div class="ranger-card">
+    <header class="poster-header">
+      <p class="header-eyebrow">Estación del Guardabosques</p>
+      <h1 class="text-wanted">Postulate a ser Rescatista!</h1>
+      <p class="header-rule">&#x2015; formulario de registro &#x2015;</p>
+    </header>
 
-      <main class="poster-content">
-        <div class="photo-frame" (click)="fileInput.click()">
-          <img *ngIf="previewImagen()" [src]="previewImagen()" class="photo-preview" />
-          <div *ngIf="!previewImagen()" class="photo-placeholder">
-            <span>Agregar foto</span>
-          </div>
-          <input type="file" #fileInput (change)="onFileSelected($event)" hidden accept="image/*" />
+    <main class="poster-content">
+      <div class="photo-frame" (click)="fileInput.click()">
+        <img *ngIf="previewImagen()" [src]="previewImagen()" class="photo-preview" />
+        <div *ngIf="!previewImagen()" class="photo-placeholder">
+          <span>Agregar foto</span>
+        </div>
+        <input type="file" #fileInput (change)="onFileSelected($event)" hidden accept="image/*" />
+      </div>
+
+      <div class="form-grid">
+        <div class="input-group">
+          <label>Dirección de tu domicilio</label>
+          <input
+            type="text"
+            [(ngModel)]="datos.residencia"
+            placeholder="Ej: Calle Madero #123"
+            name="residencia"
+          />
         </div>
 
-        <div class="form-grid">
-          <div class="input-group">
-            <label>Dirección de residencia</label>
-            <input
-              type="text"
-              [(ngModel)]="datos.residencia"
-              placeholder="Ej: Calle Madero #123"
-              name="residencia"
-            />
-          </div>
-
-          <div class="input-group full">
-            <label>Biografía / Descripción</label>
-            <textarea
-              [(ngModel)]="datos.biografia"
-              rows="3"
-              placeholder="Describe la información relevante..."
-              name="biografia"
-            ></textarea>
-          </div>
+        <div class="input-group full">
+          <label>Biografía / Descripción</label>
+          <textarea
+            [(ngModel)]="datos.biografia"
+            rows="3"
+            placeholder="Describe la información relevante..."
+            name="biografia"
+          ></textarea>
         </div>
-      </main>
+      </div>
+    </main>
 
-      <footer class="poster-footer">
-        <button (click)="enviar()" class="btn-western">Publicar</button>
-        <button (click)="cerrar()" class="btn-cancel">Cancelar</button>
-      </footer>
-    </div>
+    <footer class="poster-footer">
+      <button (click)="enviar()" class="btn-western">Publicar</button>
+      <button (click)="cerrarModal()" class="btn-cancel">Cancelar</button>
+    </footer>
   </div>
-}
+</div>

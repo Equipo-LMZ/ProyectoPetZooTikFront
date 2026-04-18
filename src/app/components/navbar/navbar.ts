@@ -3,10 +3,11 @@ import { AuthService } from '../../services/auth';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { NavbarService } from '../../services/navbar.service';
 import { CommonModule } from '@angular/common';
+import { ModalLogin } from '../modal-login/modal-login';
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink, RouterLinkActive, CommonModule],
+  imports: [RouterLink, RouterLinkActive, CommonModule, ModalLogin],
   standalone: true,
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',

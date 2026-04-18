@@ -64,7 +64,7 @@ export class GestionAnimales implements OnInit {
     const idUsuario = this.authService.currentUser()?.id;
     if (!idUsuario) return;
 
-    try{
+    try {
       await this.animalService.obtenerMisMascotas(idUsuario);
 
       this.listaMascotas = this.animalService.listaAnimales();
@@ -72,7 +72,7 @@ export class GestionAnimales implements OnInit {
       this.cdr.detectChanges();
 
       console.log('Mis mascotas descargadas:', this.listaMascotas);
-    }catch(error){
+    } catch (error) {
       this.alertsService.error('Error', 'No se pudieron cargar las mascotas');
     }
   }
@@ -93,13 +93,13 @@ export class GestionAnimales implements OnInit {
     if (mascota.id !== undefined) {
       this.mascotaSeleccionadaId = mascota.id;
     }
-    
+
     this.mascotaForm.get('imagen')?.clearValidators();
     this.mascotaForm.get('imagen')?.updateValueAndValidity();
 
     const tiposConocidos = ['Perro', 'Gato', 'Ave'];
     const esConocido = tiposConocidos.includes(mascota.tipo);
-    
+
     this.mascotaForm.patchValue({
       nombre: mascota.nombre,
       descripcion: mascota.descripcion,
@@ -112,18 +112,18 @@ export class GestionAnimales implements OnInit {
 
   async eliminarMascota(id: number | undefined) {
     if (id === undefined) return;
-    
-    if(confirm('¿Estás seguro de que deseas eliminar esta mascota?')){
-      try{
+
+    if (confirm('¿Estás seguro de que deseas eliminar esta mascota?')) {
+      try {
         await this.animalService.eliminarAnimal(id);
         this.alertsService.success('Eliminado', 'Mascota eliminada correctamente');
 
         await this.cargarMascotas();
 
-        if(this.mascotasPaginadas.length === 0 && this.paginaActual > 1){
+        if (this.mascotasPaginadas.length === 0 && this.paginaActual > 1) {
           this.paginaActual--;
         }
-      }catch(error){
+      } catch (error) {
         this.alertsService.error('Error', 'No se pudo eliminar la mascota');
       }
     }
@@ -131,27 +131,27 @@ export class GestionAnimales implements OnInit {
 
   async guardarMascota() {
     if (this.mascotaForm.valid) {
-      this.guardando = true; 
+      this.guardando = true;
 
       const valores = this.mascotaForm.value;
       const formData = new FormData();
-      
+
       const tipoFinal = valores.tipo === 'Otro' ? valores.otrotipo : valores.tipo;
       const idUsuarioActual = this.authService.currentUser()?.id;
-      
+
       formData.append('nombre', valores.nombre || '');
       formData.append('idRescatista', idUsuarioActual?.toString() || '');
       formData.append('descripcion', valores.descripcion || '');
       formData.append('tipo', tipoFinal || '');
       formData.append('lugar', valores.lugar || '');
       formData.append('ubicacion', valores.ubicacion || '');
-      
+
       const imagenFile = this.mascotaForm.get('imagen')?.value;
       if (imagenFile) {
         formData.append('imagen', imagenFile);
       }
 
-      try{
+      try {
         if (this.editando && this.mascotaSeleccionadaId) {
           await this.animalService.actualizarAnimal(this.mascotaSeleccionadaId, formData);
           this.alertsService.success('Actualizado', 'Mascota actualizada correctamente');
@@ -162,8 +162,11 @@ export class GestionAnimales implements OnInit {
 
         this.mostrarFormulario = false;
         await this.cargarMascotas();
-      }catch(error){
-        this.alertsService.error('Error al Guardar', 'Revisa la conexión o los campos del formulario.');
+      } catch (error) {
+        this.alertsService.error(
+          'Error al Guardar',
+          'Revisa la conexión o los campos del formulario.',
+        );
       } finally {
         this.guardando = false;
       }
@@ -175,6 +178,8 @@ export class GestionAnimales implements OnInit {
     if (file) {
       this.mascotaForm.patchValue({ imagen: file });
       this.mascotaForm.get('imagen')?.updateValueAndValidity();
+    } else {
+      this.alertsService.error('Error al cargar el archivo', 'Inténtalo de Nuevo más tarde.');
     }
   }
 }
