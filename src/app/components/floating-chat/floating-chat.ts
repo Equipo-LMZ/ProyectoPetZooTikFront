@@ -155,15 +155,17 @@ export class FloatingChatComponent implements OnInit, OnDestroy {
 
   listenMessages() {
     this.messageSub = this.chatService.escucharNuevosMensajes().subscribe((mensaje: any) => {
-      const chat = this.conversaciones.find(c => c.id === mensaje.chatId);
+      if (mensaje.user_id === this.authService.currentUser()?.id) return;
+
+      const chat = this.conversaciones.find(c => c.id == mensaje.chat_id);
       if (chat) {
-        const msgId = mensaje.id || mensaje.idMensaje;
+        const msgId = mensaje.id || mensaje.idMensaje || Date.now();
         const existe = chat.mensajes.some(m => m.id === msgId);
         if (!existe) {
           const nuevoMsg: Mensaje = {
             id: msgId,
-            texto: mensaje.mensaje,
-            esMio: mensaje.idRemitente === this.authService.currentUser()?.id,
+            texto: mensaje.contenido,
+            esMio: mensaje.user_id === this.authService.currentUser()?.id,
             hora: new Date(mensaje.fechaEnvio || new Date()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           };
           chat.mensajes.push(nuevoMsg);
@@ -183,8 +185,8 @@ export class FloatingChatComponent implements OnInit, OnDestroy {
       next: (response: any) => {
         if (response && response.data && this.chatActivo) {
           this.chatActivo.mensajes = response.data.map((msg: any) => ({
-            id: msg.id || msg.idMensaje,
-            texto: msg.mensaje,
+            id: msg.id || msg.idMensaje || Date.now(),
+            texto: msg.contenido,
             esMio: msg.idRemitente === this.authService.currentUser()?.id,
             hora: new Date(msg.fechaEnvio).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           }));
