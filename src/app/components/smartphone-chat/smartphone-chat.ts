@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ChatThread, Mensaje } from '../../interfaces/chat';
+import { ChatService } from '../../services/chat-service';
 
 @Component({
   selector: 'app-smartphone-chat',
@@ -12,6 +13,7 @@ import { ChatThread, Mensaje } from '../../interfaces/chat';
 })
 export class SmartphoneChatComponent {
   private fb = inject(FormBuilder);
+  private chatService = inject(ChatService);
 
   @Input() chatActivo: ChatThread | null = null;
   @Input() conversaciones: ChatThread[] = [];
@@ -65,6 +67,11 @@ export class SmartphoneChatComponent {
       if (input) input.style.height = 'auto';
 
       setTimeout(() => this.scrollToBottom(), 50);
+
+      // Enviar al backend
+      this.chatService.enviarMensaje(this.chatActivo.id, msjTexto).subscribe({
+        error: (err) => console.error('Error enviando mensaje', err)
+      });
     }
   }
 
