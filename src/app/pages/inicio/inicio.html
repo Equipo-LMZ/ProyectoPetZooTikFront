@@ -271,7 +271,9 @@
       <div class="group absolute z-30 transition-transform duration-300 hover:scale-110 cursor-default
                   bottom-[27%] md:bottom-[27%] lg:bottom-[27%]
                   left-[75%] md:left-[70%] lg:left-[65%]
-                  w-[16%] md:w-[11%] lg:w-[8%]">
+                  w-[16%] md:w-[11%] lg:w-[8%]"
+           (mouseenter)="reproducirSonidoAnimal(null, 'cat')"
+           (click)="reproducirSonidoAnimal($event, 'cat')">
 
         <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-40">
           <span class="bg-black/80 backdrop-blur-sm text-emerald-400 text-xs font-bold px-3 py-1.5 rounded-full whitespace-nowrap border border-emerald-500/30 drop-shadow-lg uppercase tracking-wider">
@@ -286,7 +288,9 @@
       <div class="group absolute z-20 transition-transform duration-300 hover:scale-110 cursor-default
                   bottom-[10%] md:bottom-[15%]
                   right-[63%] md:right-[58%] lg:right-[53%]
-                  w-[15%] md:w-[10%] lg:w-[7%]">
+                  w-[15%] md:w-[10%] lg:w-[7%]"
+           (mouseenter)="reproducirSonidoAnimal(null, 'dog')"
+           (click)="reproducirSonidoAnimal($event, 'dog')">
 
         <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-40">
           <span class="bg-black/80 backdrop-blur-sm text-emerald-400 text-xs font-bold px-3 py-1.5 rounded-full whitespace-nowrap border border-emerald-500/30 drop-shadow-lg uppercase tracking-wider">
@@ -301,7 +305,9 @@
       <div class="group absolute z-30 transition-transform duration-300 hover:scale-125 cursor-default
                   bottom-[50%] md:bottom-[50%] lg:bottom-[50%]
                   right-[69%] md:right-[69%] lg:right-[69%]
-                  w-[9%] md:w-[6%] lg:w-[4%]">
+                  w-[9%] md:w-[6%] lg:w-[4%]"
+           (mouseenter)="reproducirSonidoAnimal(null, 'canary')"
+           (click)="reproducirSonidoAnimal($event, 'canary')">
         
         <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-40">
           <span class="bg-black/80 backdrop-blur-sm text-emerald-400 text-xs font-bold px-3 py-1.5 rounded-full whitespace-nowrap border border-emerald-500/30 drop-shadow-lg uppercase tracking-wider">

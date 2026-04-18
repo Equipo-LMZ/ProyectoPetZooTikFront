@@ -7,6 +7,7 @@ import { ModalRegistro } from '../../components/modal-registro/modal-registro';
 import { ModalCandidatura } from '../../components/modal-candidatura/modal-candidatura';
 import { AuthService } from '../../services/auth';
 import { NavbarService } from '../../services/navbar.service';
+import { AudioService } from '../../services/audio.service';
 
 @Component({
   selector: 'app-inicio',
@@ -18,6 +19,7 @@ import { NavbarService } from '../../services/navbar.service';
 export class Inicio implements OnInit, OnDestroy {
   public authService = inject(AuthService);
   private navbarService = inject(NavbarService);
+  private audioService = inject(AudioService);
 
   mostrarHelicoptero = signal<boolean>(true);
   faseAnimacion = signal<number>(0);
@@ -177,5 +179,12 @@ export class Inicio implements OnInit, OnDestroy {
     this.authService.logout();
     this.sincronizarFase(0);
     this.mostrarHelicoptero.set(true);
+  }
+
+  reproducirSonidoAnimal(event: Event | null, animal: 'cat' | 'dog' | 'canary') {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.audioService.playAnimal(animal);
   }
 }
