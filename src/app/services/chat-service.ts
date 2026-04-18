@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { AuthService } from './auth';
+import { AudioService } from './audio.service';
 
 @Injectable({
   providedIn: 'root',
@@ -14,10 +15,24 @@ export class ChatService {
   private socket: Socket;
   private http = inject(HttpClient);
   private authService = inject(AuthService);
+  private audioService = inject(AudioService);
 
   constructor() {
     // Inicializamos el "tubo" principal de comunicación
     this.socket = io(this.socketUrl);
+
+    // Escuchar mensajes entrantes para reproducir sonido de notificación
+    this.socket.on('nuevo_mensaje', (mensaje) => {
+      const miId = this.authService.currentUser()?.id;
+      if (mensaje.user_id && miId && mensaje.user_id !== miId) {
+        this.audioService.playReceive();
+      }
+    });
+
+    this.socket.on('notificacion_chat', (datos) => {
+      // Las notificaciones globales suelen ser solo de otros usuarios
+      this.audioService.playReceive();
+    });
   }
 
   // Obtenemos el token del localStorage usando el AuthService

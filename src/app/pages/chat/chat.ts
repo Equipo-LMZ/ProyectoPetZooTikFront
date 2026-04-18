@@ -46,7 +46,7 @@ export class Chat implements OnInit {
               idAdoptante: chatInfo.idAdoptante,
               idRescatista: chatInfo.idRescatista,
               animalId: 0, 
-              animalNombre: '', 
+              animalNombre: (() => { const parts = (chatInfo.id || chatInfo.idChat || '').split('_'); return parts.length > 1 ? parts[1] : ''; })(),
               avatar: avatarUrl,
               mensajes: [],
               formularios: []

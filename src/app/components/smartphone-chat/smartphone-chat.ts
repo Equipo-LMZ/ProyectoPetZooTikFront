@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ChatThread, Mensaje } from '../../interfaces/chat';
 import { ChatService } from '../../services/chat-service';
+import { AudioService } from '../../services/audio.service';
 
 @Component({
   selector: 'app-smartphone-chat',
@@ -15,6 +16,7 @@ export class SmartphoneChatComponent implements OnChanges {
   private fb = inject(FormBuilder);
   private chatService = inject(ChatService);
   private cdr = inject(ChangeDetectorRef);
+  private audioService = inject(AudioService);
 
   @Input() chatActivo: ChatThread | null = null;
   @Input() conversaciones: ChatThread[] = [];
@@ -34,6 +36,10 @@ export class SmartphoneChatComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['chatActivo']) {
       this.mostrarPerfil = false;
+      // Scroll al último mensaje cuando se abre un chat
+      if (this.chatActivo) {
+        setTimeout(() => this.scrollToBottom(true), 150);
+      }
     }
   }
 
@@ -108,6 +114,8 @@ export class SmartphoneChatComponent implements OnChanges {
     const msjTexto = this.mensajeForm.value.nuevoMensaje?.trim() || '';
     
     if ((msjTexto !== '' || this.imagenSeleccionada) && this.chatActivo) {
+      this.audioService.playSend();
+
       const nuevo: Mensaje = {
         id: Date.now(),
         texto: msjTexto,
@@ -135,10 +143,13 @@ export class SmartphoneChatComponent implements OnChanges {
     }
   }
 
-  scrollToBottom() {
+  scrollToBottom(smooth = false) {
     const container = document.getElementById('chat-messages-container');
     if (container) {
-      container.scrollTop = container.scrollHeight;
+      container.scrollTo({
+        top: container.scrollHeight,
+        behavior: smooth ? 'smooth' : 'instant'
+      });
     }
   }
 
