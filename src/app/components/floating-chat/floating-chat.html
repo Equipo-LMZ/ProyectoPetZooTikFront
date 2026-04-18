@@ -21,9 +21,9 @@
   }
 </button>
 
-<!-- Floating Chat Window -->
-@if (isOpen && isVisible) {
-  <div class="fixed bottom-28 right-6 w-[360px] h-[720px] max-h-[75vh] z-[9998] origin-bottom-right animate-pop-in">
+@if (hasOpened && isVisible) {
+  <div class="fixed bottom-28 right-6 w-[360px] h-[720px] max-h-[75vh] z-[9998] origin-bottom-right transition-all"
+       [ngClass]="isOpen ? 'animate-rotate-in pointer-events-auto' : 'animate-rotate-out pointer-events-none'">
     <app-smartphone-chat 
       class="w-full h-full flex"
       [chatActivo]="chatActivo" 

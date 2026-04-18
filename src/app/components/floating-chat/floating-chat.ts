@@ -12,7 +12,8 @@ import { SmartphoneChatComponent } from '../smartphone-chat/smartphone-chat';
   selector: 'app-floating-chat',
   standalone: true,
   imports: [CommonModule, SmartphoneChatComponent],
-  templateUrl: './floating-chat.html'
+  templateUrl: './floating-chat.html',
+  styleUrl: './floating-chat.css'
 })
 export class FloatingChatComponent implements OnInit, OnDestroy {
   private router = inject(Router);
@@ -23,6 +24,7 @@ export class FloatingChatComponent implements OnInit, OnDestroy {
 
   isInPanel = false;
   isOpen = false;
+  hasOpened = false;
   hasUnread = false;
 
   conversaciones: ChatThread[] = [];
@@ -66,6 +68,7 @@ export class FloatingChatComponent implements OnInit, OnDestroy {
 
   toggleChat() {
     this.isOpen = !this.isOpen;
+    this.hasOpened = true;
     if (this.isOpen && this.conversaciones.length === 0 && !this.loaded) {
       this.cargarChats();
     }
