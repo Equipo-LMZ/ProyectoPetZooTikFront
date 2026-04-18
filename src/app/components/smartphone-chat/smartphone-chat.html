@@ -31,9 +31,11 @@
           <div class="flex-1 min-w-0 pr-1">
             <div class="flex justify-between items-baseline mb-0.5">
               <h4 class="font-bold text-[15px] text-slate-800 truncate pr-2">{{ chat.nombreCandidato }}</h4>
-              <span class="text-[10px] text-slate-400 font-bold uppercase whitespace-nowrap">{{ chat.mensajes[chat.mensajes.length-1].hora }}</span>
+              @if (chat.mensajes && chat.mensajes.length > 0) {
+                <span class="text-[10px] text-slate-400 font-bold uppercase whitespace-nowrap">{{ chat.mensajes[chat.mensajes.length-1].hora }}</span>
+              }
             </div>
-            <p class="text-[13px] text-slate-500 truncate leading-tight">{{ chat.mensajes[chat.mensajes.length-1].texto }}</p>
+            <p class="text-[13px] text-slate-500 truncate leading-tight">{{ chat.mensajes && chat.mensajes.length > 0 ? chat.mensajes[chat.mensajes.length-1].texto : 'Toca para iniciar a conversar' }}</p>
           </div>
         </button>
       }
