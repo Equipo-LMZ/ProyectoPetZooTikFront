@@ -112,10 +112,8 @@ export class FloatingChatComponent implements OnInit, OnDestroy {
 
   async cargarFormularios() {
     try {
-      const response = await this.animalService.obtenerSolicitudesRecibidas();
-      if (response && response.solicitudes) {
-        const solicitudes = response.solicitudes;
-        
+      const solicitudes = await this.animalService.obtenerSolicitudesRecibidas();
+      if (solicitudes && Array.isArray(solicitudes)) {
         this.conversaciones.forEach(chat => {
           if (chat.idAdoptante && chat.idRescatista) {
             chat.formularios = solicitudes
