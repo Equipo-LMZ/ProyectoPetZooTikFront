@@ -77,8 +77,8 @@ export class FloatingChatComponent implements OnInit, OnDestroy {
   cargarChats() {
     this.chatService.obtenerMisChats().subscribe({
       next: (response: any) => {
-        if (response.success) {
-          this.conversaciones = response.chats.map((chatInfo: any) => {
+        if (response && response.data) {
+          this.conversaciones = response.data.map((chatInfo: any) => {
             const avatarUrl = chatInfo.avatar 
               ? (chatInfo.avatar.startsWith('http') ? chatInfo.avatar : `https://api.petzootik.site${chatInfo.avatar}`)
               : 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
@@ -180,8 +180,8 @@ export class FloatingChatComponent implements OnInit, OnDestroy {
     this.chatActivo = chat;
     this.chatService.obtenerMensajes(chat.id).subscribe({
       next: (response: any) => {
-        if (response.success && this.chatActivo) {
-          this.chatActivo.mensajes = response.mensajes.map((msg: any) => ({
+        if (response && response.data && this.chatActivo) {
+          this.chatActivo.mensajes = response.data.map((msg: any) => ({
             id: msg.id || msg.idMensaje,
             texto: msg.mensaje,
             esMio: msg.idRemitente === this.authService.currentUser()?.id,
