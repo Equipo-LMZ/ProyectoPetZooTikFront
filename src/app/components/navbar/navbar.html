@@ -1,124 +1,114 @@
-<nav class="nav-petzootik">
-  <div class="nav-container flex justify-between items-center w-full">
+@if (authService.currentUser(); as user) {
+  <div class="fixed top-0 left-6 md:left-10 z-[10005] pointer-events-auto flex flex-col items-center animate-fade-in">
+    <div class="flex justify-between w-20 px-2 pointer-events-none">
+      <div class="w-[2px] h-6 bg-slate-400 opacity-60"></div>
+      <div class="w-[2px] h-6 bg-slate-400 opacity-60"></div>
+    </div>
+    
+    <div class="bg-amber-800 border-b-4 border-r-4 border-amber-950 border-t-2 border-l-2 border-amber-700 px-6 py-3 rounded-sm shadow-[0_10px_20px_rgba(0,0,0,0.5)] flex flex-col items-center gap-1 transform -rotate-1 origin-top transition-transform duration-300 relative group">
+      
+      <div class="absolute top-2 left-2 w-1.5 h-1.5 bg-slate-800 rounded-full shadow-inner opacity-80"></div>
+      <div class="absolute top-2 right-2 w-1.5 h-1.5 bg-slate-800 rounded-full shadow-inner opacity-80"></div>
+
+      <span class="text-[9px] text-amber-300/80 font-black uppercase tracking-widest font-serif drop-shadow-sm">Rescatista</span>
+      <h4 class="text-amber-50 font-bold text-lg leading-none drop-shadow-md tracking-wide">{{ user.nombre }}</h4>
+      
+      <div class="h-0 overflow-hidden group-hover:h-8 transition-all duration-300 w-full mt-0 group-hover:mt-2 border-t-0 group-hover:border-t border-dashed border-amber-900/60 pt-0 group-hover:pt-2 text-center">
+        <button (click)="logout()" class="cursor-pointer text-[10px] font-bold uppercase text-rose-300 hover:text-rose-100 transition-colors w-full">
+          Cerrar Sesión
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (!ocultarTodo) {
+  <div 
+    class="nav-hover-zone hidden md:block"
+    (mouseenter)="mostrarNav()"
+  ></div>
+
+  <div 
+    class="cat-paw-trigger hidden md:flex"
+    [class.paw-hidden]="navVisible()"
+    (mouseenter)="mostrarNav()"
+  >
+    <svg class="cat-paw-svg" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+      <path d="M30,-10 C30,40 15,75 35,100 C45,112 65,112 75,100 C95,75 80,40 80,-10 Z" fill="#ffffff"/>
+      <path d="M55,65 C45,65 40,75 40,85 C40,95 48,100 55,100 C62,100 70,95 70,85 C70,75 65,65 55,65 Z" fill="#f472b6"/>
+      <circle cx="35" cy="70" r="8" fill="#f472b6"/>
+      <circle cx="45" cy="55" r="9" fill="#f472b6"/>
+      <circle cx="65" cy="55" r="9" fill="#f472b6"/>
+      <circle cx="75" cy="70" r="8" fill="#f472b6"/>
+    </svg>
+  </div>
+}
+
+<nav 
+  class="nav-petzootik"
+  [class.nav-visible]="navVisible() && !ocultarTodo"
+  [class.nav-hidden-total]="ocultarTodo"
+  (mouseenter)="mostrarNav()"
+  (mouseleave)="ocultarNav()"
+>
+  <div class="nav-container">
     <div class="nav-left">
-      <a routerLink="/" (click)="cerrarMenu()" class="flex items-center gap-3 no-underline">
+      <a routerLink="/" (click)="cerrarMenu()" class="nav-logo-link md:ml-40">
         <div class="logo-box">PZ</div>
         <span class="logo-text">PETZOOTIK</span>
       </a>
     </div>
 
-    <div class="md:hidden">
-      <button (click)="toggleMenu()" class="text-[#fefae0] p-2 focus:outline-none">
-        @if (!menuAbierto()) {
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-8 w-8"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 6h16M4 12h16m-7 6h7"
-            />
-          </svg>
-        } @else {
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-8 w-8"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        }
-      </button>
-    </div>
+    @if (!ocultarTodo) {
+      <div class="nav-hamburger md:hidden">
+        <button (click)="toggleMenu()" class="hamburger-btn">
+          @if (!menuAbierto()) {
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+            </svg>
+          } @else {
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          }
+        </button>
+      </div>
+    }
 
     <div class="hidden md:block">
-      <ul class="nav-links flex items-center">
-        <li>
-          <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
-            >Inicio</a
-          >
-        </li>
+      <ul class="nav-links">
+        <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Inicio</a></li>
         <li><a routerLink="/mascotas" routerLinkActive="active">Mascotas</a></li>
         <li><a routerLink="/mapa" routerLinkActive="active">Mapa</a></li>
-        <li>
-          <a routerLink="/panel" routerLinkActive="active" class="link-rescatista"
-            >Panel Rescatista</a
-          >
-        </li>
+
+        @if (authService.currentUser()?.tipo === 'Rescatista') {
+          <li><a routerLink="/panel" routerLinkActive="active" class="link-rescatista">Panel Rescatista</a></li>
+        }
+
       </ul>
     </div>
 
     <div class="hidden md:block">
-      @if (authService.currentUser(); as user) {
-        <div class="session-card animate-fade-in">
-          <div class="session-info">
-            <span class="session-badge">Rescatista Activo</span>
-            <p class="session-name">{{ user.nombre }}</p>
-          </div>
-          <button (click)="logout()" class="btn-logout">Salir</button>
-        </div>
-      } @else {
+      @if (!authService.currentUser()) {
         <button (click)="abrirLogin()" class="btn-login-trigger">Iniciar Sesión</button>
       }
     </div>
   </div>
 
   @if (menuAbierto()) {
-    <div
-      class="absolute top-[72px] left-0 w-full bg-[#1b4332] border-b-4 border-[#52b788] z-50 md:hidden animate-fade-in"
-    >
-      <ul class="flex flex-col p-4 gap-4 space-y-4">
-        <li>
-          <a (click)="cerrarMenu()" routerLink="/" class="text-[#b7e4c7] font-bold block py-2"
-            >Inicio</a
-          >
-        </li>
-        <li>
-          <a
-            (click)="cerrarMenu()"
-            routerLink="/mascotas"
-            class="text-[#b7e4c7] font-bold block py-2"
-            >Mascotas</a
-          >
-        </li>
-        <li>
-          <a (click)="cerrarMenu()" routerLink="/mapa" class="text-[#b7e4c7] font-bold block py-2"
-            >Mapa</a
-          >
-        </li>
-        <li>
-          <a
-            (click)="cerrarMenu()"
-            routerLink="/panel"
-            class="text-[#fefae0] bg-[#2d6a4f] p-3 rounded-xl block text-center border border-[#74c69d]"
-          >
-            Panel Rescatista
-          </a>
-        </li>
-        <hr class="border-[#52b788]/30" />
-        <li class="flex justify-center py-2">
-          @if (authService.currentUser(); as user) {
-            <div class="text-center">
-              <p class="text-[#74c69d] text-[10px] uppercase font-black">
-                Conectado como: {{ user.nombre }}
-              </p>
-              <button (click)="logout()" class="mt-2 text-rose-400 font-bold uppercase text-xs">
-                Cerrar Sesión
-              </button>
-            </div>
-          } @else {
+    <div class="mobile-menu md:hidden animate-fade-in">
+      <ul class="mobile-menu-list">
+        <li><a (click)="cerrarMenu()" routerLink="/" class="mobile-link">Inicio</a></li>
+        <li><a (click)="cerrarMenu()" routerLink="/mascotas" class="mobile-link">Mascotas</a></li>
+        <li><a (click)="cerrarMenu()" routerLink="/mapa" class="mobile-link">Mapa</a></li>
+
+        @if (authService.currentUser()?.tipo === 'Rescatista') {
+          <li><a (click)="cerrarMenu()" routerLink="/panel" class="mobile-link-rescatista">Panel Rescatista</a></li>
+        }
+        
+        <hr class="mobile-divider" />
+        <li class="mobile-session">
+          @if (!authService.currentUser()) {
             <button (click)="abrirLogin(); cerrarMenu()" class="btn-login-trigger w-full">
               Iniciar Sesión
             </button>
