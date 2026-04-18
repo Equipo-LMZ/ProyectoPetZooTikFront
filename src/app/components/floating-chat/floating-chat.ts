@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, ChangeDetectorRef, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
@@ -31,8 +31,31 @@ export class FloatingChatComponent implements OnInit, OnDestroy {
   chatActivo: ChatThread | null = null;
   
   private routerSub!: Subscription;
-  private messageSub!: Subscription;
+  private messageSub?: Subscription;
   private loaded = false;
+
+  constructor() {
+    effect(() => {
+      const user = this.authService.currentUser();
+      if (!user) {
+        this.conversaciones = [];
+        this.chatActivo = null;
+        this.loaded = false;
+        this.isOpen = false;
+        this.hasOpened = false;
+        this.hasUnread = false;
+        if (this.messageSub) {
+          this.messageSub.unsubscribe();
+        }
+      } else {
+        if (!this.loaded && !this.isInPanel) {
+          this.cargarChats();
+          this.listenMessages();
+          this.loaded = true;
+        }
+      }
+    });
+  }
 
   ngOnInit() {
     console.log('FloatingChatComponent INICIADO');
