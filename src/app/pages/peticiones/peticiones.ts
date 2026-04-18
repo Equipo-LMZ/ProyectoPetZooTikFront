@@ -1,17 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-export interface Peticion {
-  id: number;
-  userId: number;
-  nombre: string;
-  fecha: string;
-  biografia: string;
-  residencia: string;
-  imagen: string;
-  estado: 'Pendiente' | 'Aprobada' | 'Rechazada';
-  animacionSello: 'none' | 'approve' | 'reject';
-}
+import { RescatistaService } from '../../services/rescatista-service';
+import { AlertsService } from '../../services/alerts-service';
+import { Peticion } from '../../interfaces/peticion-interface';
 
 @Component({
   selector: 'app-peticiones',
@@ -20,56 +11,66 @@ export interface Peticion {
   templateUrl: './peticiones.html',
   styleUrl: './peticiones.css',
 })
-export class Peticiones {
+
+export class Peticiones implements OnInit {
+  private rescatistaService = inject(RescatistaService);
+  private alertsService = inject(AlertsService);
+
   tabFiltro: 'Pendientes' | 'Aprobadas' | 'Rechazadas' = 'Pendientes';
   indiceActual: number = 0;
+  cargando: boolean = false;
 
-  solicitudes: Peticion[] = [
-    {
-      id: 1,
-      userId: 101,
-      nombre: 'Mariana López',
-      fecha: '2025-04-11',
-      biografia: 'Quiero cambiar la vida de más animales comunitarios en mi zona. Llevo 2 años como voluntaria en albergues locales.',
-      residencia: 'Monterrey, Nuevo León',
-      imagen: 'https://randomuser.me/api/portraits/women/44.jpg',
-      estado: 'Pendiente',
-      animacionSello: 'none'
-    },
-    {
-      id: 2,
-      userId: 205,
-      nombre: 'Roberto Gómez',
-      fecha: '2025-04-10',
-      biografia: 'Tengo un albergue improvisado y busco formalizar las adopciones. Me apasiona darles una segunda oportunidad.',
-      residencia: 'Guadalajara, Jalisco',
-      imagen: 'https://randomuser.me/api/portraits/men/32.jpg',
-      estado: 'Pendiente',
-      animacionSello: 'none'
-    },
-    {
-      id: 3,
-      userId: 312,
-      nombre: 'Carla Ruiz',
-      fecha: '2025-04-08',
-      biografia: 'Me interesa usar la plataforma para difundir mis casos críticos. Soy veterinaria zootecnista de profesión.',
-      residencia: 'CDMX, Ciudad de México',
-      imagen: 'https://randomuser.me/api/portraits/women/68.jpg',
-      estado: 'Pendiente',
-      animacionSello: 'none'
-    },
-    {
-      id: 4,
-      userId: 408,
-      nombre: 'Eduardo Garza',
-      fecha: '2025-04-07',
-      biografia: 'Quiero conectar perros rehabilitados con familias amorosas. Trabajo como entrenador canino profesional.',
-      residencia: 'Querétaro, Querétaro',
-      imagen: 'https://randomuser.me/api/portraits/men/75.jpg',
-      estado: 'Pendiente',
-      animacionSello: 'none'
+  solicitudes: Peticion[] = [];
+
+  ngOnInit() {
+    this.cargarPeticiones();
+  }
+
+  async cargarPeticiones() {
+    this.cargando = true;
+    try {
+      const [resP, resA, resR] = await Promise.all([
+        this.rescatistaService.obtenerPeticiones('p'),
+        this.rescatistaService.obtenerPeticiones('a'),
+        this.rescatistaService.obtenerPeticiones('r')
+      ]);
+      
+      const todaLaData = [
+        ...(resP.candidacies || []),
+        ...(resA.candidacies || []),
+        ...(resR.candidacies || [])
+      ];
+      
+      this.solicitudes = todaLaData.map((item: any) => {
+        console.log("Datos de la solicitud recibida:", item);
+        let estadoF: 'Pendiente' | 'Aprobada' | 'Rechazada' = 'Pendiente';
+        if (item.status === 'a' || item.status === 'A') estadoF = 'Aprobada';
+        if (item.status === 'r' || item.status === 'R') estadoF = 'Rechazada';
+
+        let urlImagen = 'assets/ui/default-avatar.png';
+        if (item.imagen) {
+           urlImagen = item.imagen.startsWith('http') ? item.imagen : `https://api.petzootik.site${item.imagen}`;
+        }
+
+        return {
+          id: item.idCandidatura || item.id,
+          userId: item.idUsuario || item.userId,
+          nombre: item.nombre || `Aspirante #${item.idUsuario || item.userId}`,
+          fecha: item.fechaCreacion ? new Date(item.fechaCreacion).toLocaleDateString() : 'Sin fecha',
+          biografia: item.biografia || 'Sin carta de motivos.',
+          residencia: item.residencia || 'No especificada',
+          imagen: urlImagen,
+          estado: estadoF,
+          animacionSello: 'none',
+          ya_evaluado: !!item.ya_evaluado
+        };
+      });
+    } catch (error) {
+      this.alertsService.error('Error de conexión', 'No se pudieron cargar las postulaciones.');
+    } finally {
+      this.cargando = false;
     }
-  ];
+  }
 
   get solicitudesFiltradas() {
     return this.solicitudes.filter(s => {
@@ -97,28 +98,41 @@ export class Peticiones {
     }
   }
 
-  aprobarPeticion(solicitud: Peticion) {
-    if (solicitud.animacionSello !== 'none') return;
+  async aprobarPeticion(solicitud: Peticion) {
+    if (solicitud.animacionSello !== 'none' || solicitud.ya_evaluado) return;
 
-    solicitud.animacionSello = 'approve';
+    try {
+      await this.rescatistaService.responderPeticion(solicitud.id, true);
+      
+      solicitud.animacionSello = 'approve';
+      solicitud.ya_evaluado = true;
 
-    setTimeout(() => {
-      solicitud.estado = 'Aprobada';
-      solicitud.animacionSello = 'none';
-      this.asegurarIndiceValido();
-    }, 1200);
+      setTimeout(() => {
+        this.cargarPeticiones();
+        this.alertsService.success('Aprobado', 'Voto a favor registrado.');
+      }, 1200);
+
+    } catch (error) {
+      this.alertsService.error('Error', 'No se pudo aprobar la postulación.');
+    }
   }
 
-  rechazarPeticion(solicitud: Peticion) {
-    if (solicitud.animacionSello !== 'none') return;
+  async rechazarPeticion(solicitud: Peticion) {
+   if (solicitud.animacionSello !== 'none' || solicitud.ya_evaluado) return;
 
-    solicitud.animacionSello = 'reject';
+    try {
+      await this.rescatistaService.responderPeticion(solicitud.id, false);
 
-    setTimeout(() => {
-      solicitud.estado = 'Rechazada';
-      solicitud.animacionSello = 'none';
-      this.asegurarIndiceValido();
-    }, 1200);
+      solicitud.animacionSello = 'reject';
+      solicitud.ya_evaluado = true;
+
+      setTimeout(() => {
+        this.cargarPeticiones();
+      }, 1200);
+
+    } catch (error) {
+      this.alertsService.error('Error', 'Hubo un problema al rechazar la postulación.');
+    }
   }
 
   private asegurarIndiceValido() {

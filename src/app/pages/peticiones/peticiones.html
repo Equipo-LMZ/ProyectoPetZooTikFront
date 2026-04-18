@@ -135,23 +135,32 @@
             </div>
 
             @if (solicitud.estado === 'Pendiente') {
-              <div class="flex gap-2 bg-slate-50 px-5 py-3 border-t border-slate-200 shrink-0">
-                <button 
-                  (click)="rechazarPeticion(solicitud)"
-                  class="flex-1 flex items-center justify-center gap-2 py-2.5 bg-white border-2 border-red-100 text-red-500 rounded-xl hover:bg-red-50 hover:border-red-500 transition-all cursor-pointer active:scale-95 shadow-sm font-bold text-sm">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                  Rechazar
-                </button>
-                <button 
-                  (click)="aprobarPeticion(solicitud)"
-                  class="flex-1 flex items-center justify-center gap-2 py-2.5 bg-green-500 text-white border-2 border-green-500 rounded-xl hover:bg-green-600 hover:border-green-600 transition-all cursor-pointer active:scale-95 shadow-md shadow-green-500/30 font-bold text-sm">
-                  Aprobar
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
-                  </svg>
-                </button>
+              <div class="flex flex-col bg-slate-50 px-5 py-3 border-t border-slate-200 shrink-0">
+                
+                @if (solicitud.ya_evaluado) {
+                  <p class="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Ya has emitido tu voto</p>
+                }
+
+                <div class="flex gap-2 w-full">
+                  <button 
+                    [disabled]="solicitud.ya_evaluado"
+                    (click)="rechazarPeticion(solicitud)"
+                    class="flex-1 flex items-center justify-center gap-2 py-2.5 bg-white border-2 border-red-100 text-red-500 rounded-xl hover:bg-red-50 hover:border-red-500 transition-all cursor-pointer active:scale-95 shadow-sm font-bold text-sm disabled:opacity-50 disabled:pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Rechazar
+                  </button>
+                  <button 
+                    [disabled]="solicitud.ya_evaluado"
+                    (click)="aprobarPeticion(solicitud)"
+                    class="flex-1 flex items-center justify-center gap-2 py-2.5 bg-green-500 text-white border-2 border-green-500 rounded-xl hover:bg-green-600 hover:border-green-600 transition-all cursor-pointer active:scale-95 shadow-md shadow-green-500/30 font-bold text-sm disabled:opacity-50 disabled:pointer-events-none">
+                    Aprobar
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </button>
+                </div>
               </div>
             } @else {
               <div class="flex justify-center items-center px-5 py-3 border-t border-slate-200 shrink-0"
