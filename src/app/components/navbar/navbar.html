@@ -80,7 +80,11 @@
         <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Inicio</a></li>
         <li><a routerLink="/mascotas" routerLinkActive="active">Mascotas</a></li>
         <li><a routerLink="/mapa" routerLinkActive="active">Mapa</a></li>
-        <li><a routerLink="/panel" routerLinkActive="active" class="link-rescatista">Panel Rescatista</a></li>
+
+        @if (authService.currentUser()?.tipo === 'Rescatista') {
+          <li><a routerLink="/panel" routerLinkActive="active" class="link-rescatista">Panel Rescatista</a></li>
+        }
+
       </ul>
     </div>
 
@@ -97,7 +101,11 @@
         <li><a (click)="cerrarMenu()" routerLink="/" class="mobile-link">Inicio</a></li>
         <li><a (click)="cerrarMenu()" routerLink="/mascotas" class="mobile-link">Mascotas</a></li>
         <li><a (click)="cerrarMenu()" routerLink="/mapa" class="mobile-link">Mapa</a></li>
-        <li><a (click)="cerrarMenu()" routerLink="/panel" class="mobile-link-rescatista">Panel Rescatista</a></li>
+
+        @if (authService.currentUser()?.tipo === 'Rescatista') {
+          <li><a (click)="cerrarMenu()" routerLink="/panel" class="mobile-link-rescatista">Panel Rescatista</a></li>
+        }
+        
         <hr class="mobile-divider" />
         <li class="mobile-session">
           @if (!authService.currentUser()) {

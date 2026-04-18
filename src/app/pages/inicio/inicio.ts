@@ -24,6 +24,17 @@ export class Inicio implements OnInit, OnDestroy {
   seleccionActual = signal<number>(0);
   modalAbierto = signal<'login' | 'registro' | 'candidatura' | null>(null);
 
+  mostrarAyuda = signal<boolean>(false);
+
+  abrirAyuda(event: Event) {
+    event.stopPropagation();
+    this.mostrarAyuda.set(true);
+  }
+
+  cerrarAyuda() {
+    this.mostrarAyuda.set(false);
+  }
+  
   transicionNegro = signal<boolean>(false);
 
   transicionDesdeNegro = signal<boolean>(false);

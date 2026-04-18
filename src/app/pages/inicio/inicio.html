@@ -231,13 +231,15 @@
         <img src="assets/parque/periodico.png" class="w-full h-auto object-contain drop-shadow-lg -rotate-3">
       </div>
 
-      <div (click)="abrirGestion($event)"
-           class="absolute z-30 cursor-pointer transition-transform duration-200 hover:scale-110 hover:-translate-y-2
-                  bottom-[21%] md:bottom-[18%] lg:bottom-[21%]
-                  right-[23%] md:right-[23%] lg:right-[23%]
-                  w-[12%] md:w-[7%] lg:w-[5%]">
-        <img src="assets/parque/portapapeles.png" class="w-full h-auto object-contain drop-shadow-lg rotate-3">
-      </div>
+      @if (authService.currentUser()?.tipo === 'Rescatista') {
+        <div (click)="abrirGestion($event)"
+             class="absolute z-30 cursor-pointer transition-transform duration-200 hover:scale-110 hover:-translate-y-2
+                    bottom-[21%] md:bottom-[18%] lg:bottom-[21%]
+                    right-[23%] md:right-[23%] lg:right-[23%]
+                    w-[12%] md:w-[7%] lg:w-[5%]">
+          <img src="assets/parque/portapapeles.png" class="w-full h-auto object-contain drop-shadow-lg rotate-3">
+        </div>
+      }
 
       <div (click)="irAlMapa()"
            class="absolute z-20 cursor-pointer transition-transform duration-200 hover:scale-105 hover:-translate-y-1
@@ -317,6 +319,68 @@
 
   @if (modalAbierto() === 'candidatura') {
     <app-modal-candidatura (cerrar)="cerrarModales()"></app-modal-candidatura>
+  }
+
+  <div class="absolute bottom-8 left-8 z-[55] transition-all duration-500"
+       [ngClass]="{'opacity-100 pointer-events-auto scale-100': faseAnimacion() === 3, 'opacity-0 pointer-events-none scale-50': faseAnimacion() !== 3}">
+    <button (click)="abrirAyuda($event)" 
+            class="w-12 h-12 md:w-14 md:h-14 bg-amber-600/90 backdrop-blur-md border-2 border-amber-300 text-amber-50 rounded-full font-black text-2xl flex items-center justify-center cursor-pointer shadow-[0_5px_15px_rgba(0,0,0,0.5)] hover:bg-amber-500 hover:scale-110 active:scale-95 transition-all">
+      ?
+    </button>
+  </div>
+
+  @if (mostrarAyuda()) {
+    <div class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/70 backdrop-blur-sm animate-fade-in" 
+         (click)="cerrarAyuda()">
+      
+      <div class="relative w-[90%] max-w-md bg-[#e8dcb8] border-4 border-[#8b5a2b] rounded-md shadow-2xl p-6 md:p-8 transform transition-transform" 
+           (click)="$event.stopPropagation()"
+           style="background-image: repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(139, 90, 43, 0.05) 21px, rgba(139, 90, 43, 0.05) 22px);">
+        
+        <button (click)="cerrarAyuda()" class="absolute top-3 right-4 text-[#8b5a2b] hover:text-red-800 font-black text-xl transition-colors">
+          ✕
+        </button>
+
+        <h3 class="text-2xl font-black text-[#5c3a21] uppercase tracking-widest text-center mb-6 font-serif border-b-2 border-[#8b5a2b]/30 pb-3">
+          Guía del Campamento
+        </h3>
+
+        <ul class="space-y-5">
+          <li class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-amber-100 border border-amber-300 rounded-lg flex items-center justify-center shrink-0 shadow-sm">📰</div>
+            <div>
+              <h4 class="font-bold text-[#5c3a21] uppercase text-sm">Periódico de Noticias</h4>
+              <p class="text-xs text-[#8b5a2b] leading-snug">Consulta la lista de animalitos que actualmente están buscando un hogar amoroso.</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-amber-100 border border-amber-300 rounded-lg flex items-center justify-center shrink-0 shadow-sm">🗺️</div>
+            <div>
+              <h4 class="font-bold text-[#5c3a21] uppercase text-sm">Mapa del Parque</h4>
+              <p class="text-xs text-[#8b5a2b] leading-snug">Explora las instalaciones generales y descubre todas las zonas de PetZooTik.</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-amber-100 border border-amber-300 rounded-lg flex items-center justify-center shrink-0 shadow-sm">📋</div>
+            <div>
+              <h4 class="font-bold text-[#5c3a21] uppercase text-sm">Tablero de Postulación</h4>
+              <p class="text-xs text-[#8b5a2b] leading-snug">¿Quieres ayudar más? Envía tu solicitud para convertirte en un rescatista oficial.</p>
+            </div>
+          </li>
+          
+          @if (authService.currentUser()?.tipo === 'Rescatista') {
+            <li class="flex items-start gap-4">
+              <div class="w-12 h-12 bg-amber-100 border border-amber-300 rounded-lg flex items-center justify-center shrink-0 shadow-sm">📝</div>
+              <div>
+                <h4 class="font-bold text-[#5c3a21] uppercase text-sm">Portapapeles (Exclusivo)</h4>
+                <p class="text-xs text-[#8b5a2b] leading-snug">Accede a tu Panel Central para gestionar tus rescates y conversaciones.</p>
+              </div>
+            </li>
+          }
+        </ul>
+
+      </div>
+    </div>
   }
 
 </main>
