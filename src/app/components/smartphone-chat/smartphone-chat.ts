@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, inject, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ChatThread, Mensaje } from '../../interfaces/chat';
@@ -14,6 +14,7 @@ import { ChatService } from '../../services/chat-service';
 export class SmartphoneChatComponent implements OnChanges {
   private fb = inject(FormBuilder);
   private chatService = inject(ChatService);
+  private cdr = inject(ChangeDetectorRef);
 
   @Input() chatActivo: ChatThread | null = null;
   @Input() conversaciones: ChatThread[] = [];
@@ -24,8 +25,11 @@ export class SmartphoneChatComponent implements OnChanges {
   mostrarPerfil = false;
 
   mensajeForm = this.fb.group({
-    nuevoMensaje: ['', Validators.required]
+    nuevoMensaje: ['']
   });
+
+  imagenSeleccionada: File | null = null;
+  imagenPreview: string | null = null;
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['chatActivo']) {
@@ -64,19 +68,60 @@ export class SmartphoneChatComponent implements OnChanges {
     }
   }
 
-  enviarMensaje() {
-    if (this.mensajeForm.valid && this.chatActivo) {
-      const msjTexto = this.mensajeForm.value.nuevoMensaje || '';
+  onImageSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      if (!file.type.match(/image\/(jpeg|jpg|png|webp)/)) {
+        console.error("Solo se permiten imágenes");
+        return;
+      }
+      this.imagenSeleccionada = file;
       
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.imagenPreview = e.target.result;
+        this.cdr.detectChanges();
+        setTimeout(() => this.scrollToBottom(), 50);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  removerImagen() {
+    this.imagenSeleccionada = null;
+    this.imagenPreview = null;
+    const fileInput = document.getElementById('chatImageInput') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
+    this.cdr.detectChanges();
+  }
+
+  getImageUrl(ruta: string | undefined): string {
+    if (!ruta) return '';
+    if (ruta.startsWith('data:image')) return ruta;
+    if (ruta.startsWith('http')) return ruta;
+    return `https://api.petzootik.site${ruta}`;
+  }
+
+  enviarMensaje() {
+    const msjTexto = this.mensajeForm.value.nuevoMensaje?.trim() || '';
+    
+    if ((msjTexto !== '' || this.imagenSeleccionada) && this.chatActivo) {
       const nuevo: Mensaje = {
         id: Date.now(),
         texto: msjTexto,
         esMio: true,
-        hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        imagen: this.imagenPreview || undefined
       };
       
       this.chatActivo.mensajes.push(nuevo);
+      
+      const imgFile = this.imagenSeleccionada;
+      
       this.mensajeForm.reset();
+      this.removerImagen();
       
       const input = document.getElementById('chatInputObj') as HTMLTextAreaElement;
       if (input) input.style.height = 'auto';
@@ -84,7 +129,7 @@ export class SmartphoneChatComponent implements OnChanges {
       setTimeout(() => this.scrollToBottom(), 50);
 
       // Enviar al backend
-      this.chatService.enviarMensaje(this.chatActivo.id, msjTexto).subscribe({
+      this.chatService.enviarMensaje(this.chatActivo.id, msjTexto, imgFile || undefined).subscribe({
         error: (err) => console.error('Error enviando mensaje', err)
       });
     }

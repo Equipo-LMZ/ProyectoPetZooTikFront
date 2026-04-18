@@ -80,7 +80,8 @@ export class Chat implements OnInit {
           id: Date.now(), // Temporaly id ya que kafka no devuelve insertId
           texto: mensaje.contenido,
           esMio: false,
-          hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          imagen: mensaje.imagen
         });
         this.cdr.detectChanges();
       }
@@ -155,7 +156,8 @@ export class Chat implements OnInit {
               id: msg.idMensaje || Date.now(),
               texto: msg.contenido,
               esMio: msg.idRemitente === this.miId,
-              hora: new Date(msg.fechaEnvio).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+              hora: new Date(msg.fechaEnvio).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              imagen: msg.imagen
             };
           });
           this.cdr.detectChanges();
