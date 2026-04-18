@@ -46,9 +46,15 @@ export class Inicio implements OnInit, OnDestroy {
       this.navbarService.faseInicio.set(3);
 
       this.transicionDesdeNegro.set(true);
+      this.transicionDesdeNegro.set(true);
+
       setTimeout(() => {
         this.transicionDesdeNegro.set(false);
       }, 1000); 
+
+      setTimeout(() => {
+        this.transicionDesdeNegro.set(false);
+      }, 500);
 
       window.history.replaceState({}, '');
       
@@ -145,5 +151,11 @@ export class Inicio implements OnInit, OnDestroy {
 
   entrarComoInvitado() {
     this.ingresarAlParque();
+  }
+
+  cerrarSesion() {
+    this.authService.logout();
+    this.sincronizarFase(0);
+    this.mostrarHelicoptero.set(true);
   }
 }

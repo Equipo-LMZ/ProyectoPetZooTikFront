@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
+import { AlertsService } from './alerts-service';
 
 @Injectable({
   providedIn: 'root',
@@ -9,6 +10,7 @@ import { Router } from '@angular/router';
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
+  private alertsService = inject(AlertsService);
   private baseUrl = 'https://api.petzootik.site/user';
 
   public currentUser = signal<{ id: number; nombre: string; token: string } | null>(null);
@@ -90,6 +92,7 @@ export class AuthService {
   logout() {
     localStorage.clear();
     this.currentUser.set(null);
+    this.alertsService.success('Sesión finalizada', 'Tu sesión se ha cerrado exitosamente.');
     this.router.navigate(['/'])
   }
 }
