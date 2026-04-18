@@ -34,6 +34,10 @@ export class SmartphoneChatComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['chatActivo']) {
       this.mostrarPerfil = false;
+      // Scroll al último mensaje cuando se abre un chat
+      if (this.chatActivo) {
+        setTimeout(() => this.scrollToBottom(true), 150);
+      }
     }
   }
 
@@ -135,10 +139,13 @@ export class SmartphoneChatComponent implements OnChanges {
     }
   }
 
-  scrollToBottom() {
+  scrollToBottom(smooth = false) {
     const container = document.getElementById('chat-messages-container');
     if (container) {
-      container.scrollTop = container.scrollHeight;
+      container.scrollTo({
+        top: container.scrollHeight,
+        behavior: smooth ? 'smooth' : 'instant'
+      });
     }
   }
 
