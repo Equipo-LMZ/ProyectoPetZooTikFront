@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RescatistaService } from '../../services/rescatista-service';
 import { AlertsService } from '../../services/alerts-service';
@@ -15,6 +15,8 @@ import { Peticion } from '../../interfaces/peticion-interface';
 export class Peticiones implements OnInit {
   private rescatistaService = inject(RescatistaService);
   private alertsService = inject(AlertsService);
+
+  private cdr = inject(ChangeDetectorRef);
 
   tabFiltro: 'Pendientes' | 'Aprobadas' | 'Rechazadas' = 'Pendientes';
   indiceActual: number = 0;
@@ -42,7 +44,6 @@ export class Peticiones implements OnInit {
       ];
       
       this.solicitudes = todaLaData.map((item: any) => {
-        console.log("Datos de la solicitud recibida:", item);
         let estadoF: 'Pendiente' | 'Aprobada' | 'Rechazada' = 'Pendiente';
         if (item.status === 'a' || item.status === 'A') estadoF = 'Aprobada';
         if (item.status === 'r' || item.status === 'R') estadoF = 'Rechazada';
@@ -65,10 +66,13 @@ export class Peticiones implements OnInit {
           ya_evaluado: !!item.ya_evaluado
         };
       });
+
+      this.cdr.detectChanges();
     } catch (error) {
       this.alertsService.error('Error de conexión', 'No se pudieron cargar las postulaciones.');
     } finally {
       this.cargando = false;
+      this.cdr.detectChanges();
     }
   }
 
@@ -108,12 +112,21 @@ export class Peticiones implements OnInit {
       solicitud.ya_evaluado = true;
 
       setTimeout(() => {
-        this.cargarPeticiones();
+        solicitud.estado = 'Aprobada';
+        solicitud.animacionSello = 'none';
+        
+        this.solicitudes = [...this.solicitudes];
+        
+        this.asegurarIndiceValido();
+        this.cdr.detectChanges(); 
+        
         this.alertsService.success('Aprobado', 'Voto a favor registrado.');
       }, 1200);
 
     } catch (error) {
       this.alertsService.error('Error', 'No se pudo aprobar la postulación.');
+      solicitud.animacionSello = 'none';
+      solicitud.ya_evaluado = false;
     }
   }
 
@@ -127,11 +140,19 @@ export class Peticiones implements OnInit {
       solicitud.ya_evaluado = true;
 
       setTimeout(() => {
-        this.cargarPeticiones();
+        solicitud.estado = 'Rechazada';
+        solicitud.animacionSello = 'none';
+        
+        this.solicitudes = [...this.solicitudes];
+
+        this.asegurarIndiceValido();
+        this.cdr.detectChanges();
       }, 1200);
 
     } catch (error) {
       this.alertsService.error('Error', 'Hubo un problema al rechazar la postulación.');
+      solicitud.animacionSello = 'none';
+      solicitud.ya_evaluado = false;
     }
   }
 

@@ -71,7 +71,6 @@ export class GestionAnimales implements OnInit {
 
       this.cdr.detectChanges();
 
-      console.log('Mis mascotas descargadas:', this.listaMascotas);
     } catch (error) {
       this.alertsService.error('Error', 'No se pudieron cargar las mascotas');
     }

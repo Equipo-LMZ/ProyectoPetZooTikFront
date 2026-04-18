@@ -173,5 +173,5 @@
 </nav>
 
 @if (verModal()) {
-  <app-modal-login (onClose)="cerrarLogin()"></app-modal-login>
+  <app-modal-login (cerrar)="cerrarLogin()" (exito)="cerrarLogin()"></app-modal-login>
 }

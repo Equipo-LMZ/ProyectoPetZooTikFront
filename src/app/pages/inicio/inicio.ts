@@ -1,4 +1,4 @@
-import { Component, signal, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, signal, inject, OnInit, OnDestroy, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -46,7 +46,16 @@ export class Inicio implements OnInit, OnDestroy {
     animationDelay: `-${Math.random() * 10}s`
   }));
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) {
+    effect(() => {
+      const usuario = this.authService.currentUser();
+      
+      if (!usuario) {
+        this.sincronizarFase(0);
+        this.mostrarHelicoptero.set(true);
+      }
+    });
+  }
 
   ngOnInit() {
     this.navbarService.enPaginaInicio.set(true);
