@@ -50,7 +50,6 @@ export class Inicio implements OnInit, OnDestroy {
     effect(() => {
       const usuario = this.authService.currentUser();
       
-      // Si el usuario es null (es decir, acaba de cerrar sesión)
       if (!usuario) {
         this.sincronizarFase(0);
         this.mostrarHelicoptero.set(true);

@@ -23,6 +23,7 @@ export class Navbar {
 
   abrirLogin() {
     this.verModal.set(true);
+    this.cerrarMenu();
   }
 
   cerrarLogin() {
