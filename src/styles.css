@@ -11,7 +11,10 @@
   --color-papel-brillo: rgba(255, 255, 255, 0.05);
 }
 
-* {
+/* Si afecta en la etiqueta main, ponle el padding: 0 y margin: 0 a una clase 
+y agregaselo a cada main para no afectar a los demas componentes */
+
+/* * {
   padding: 0;
   margin: 0;
-}
+} */

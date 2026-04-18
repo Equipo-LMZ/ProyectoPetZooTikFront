@@ -14,6 +14,7 @@ import { AlertsService } from '../../services/alerts-service';
 export class ModalLogin {
 
   @Output() cerrar = new EventEmitter<void>();
+  @Output() exito = new EventEmitter<void>();
 
   private authService = inject(AuthService);
   private alertsService = inject(AlertsService);
@@ -52,6 +53,8 @@ export class ModalLogin {
     try {
       await this.authService.login(this.credenciales);
       this.alertsService.success('Login exitoso', 'Has iniciado sesión correctamente.');
+
+      this.exito.emit();
       this.cerrarModal();
     } catch (error: any) {
       if (error.status === 404) {
