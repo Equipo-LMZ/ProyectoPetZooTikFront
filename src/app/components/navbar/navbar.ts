@@ -40,7 +40,6 @@ export class Navbar {
   logout() {
     this.authService.logout();
     this.cerrarMenu();
-    this.router.navigate(['/']);
   }
 
   mostrarNav() {
