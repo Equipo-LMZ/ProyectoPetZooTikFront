@@ -7,6 +7,7 @@ import { ChatService } from '../../services/chat-service';
 import { AnimalService } from '../../services/animal';
 import { ChatThread, Mensaje } from '../../interfaces/chat';
 import { SmartphoneChatComponent } from '../smartphone-chat/smartphone-chat';
+import { AlertsService } from '../../services/alerts-service';
 
 @Component({
   selector: 'app-floating-chat',
@@ -21,6 +22,7 @@ export class FloatingChatComponent implements OnInit, OnDestroy {
   private chatService = inject(ChatService);
   private animalService = inject(AnimalService);
   private cdr = inject(ChangeDetectorRef);
+  private alertsService = inject(AlertsService);
 
   isInPanel = false;
   isOpen = false;
@@ -58,7 +60,7 @@ export class FloatingChatComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    console.log('FloatingChatComponent INICIADO');
+    // console.log('FloatingChatComponent INICIADO');
     this.checkRoute(this.router.url);
     this.routerSub = this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
@@ -129,6 +131,9 @@ export class FloatingChatComponent implements OnInit, OnDestroy {
           this.cargarFormularios();
           this.cdr.detectChanges();
         }
+      },
+      error: () =>{
+        this.alertsService.error('Fallo de Red', 'No pudimos recuperar tus conversaciones.');
       }
     });
   }
@@ -147,7 +152,7 @@ export class FloatingChatComponent implements OnInit, OnDestroy {
                   try {
                     rawData = JSON.parse(rawData);
                   } catch (e) {
-                    console.error('Error parseando formulario', e);
+                    this.alertsService.warning('Error de Datos', 'Un formulario de adopción tiene un formato ilegible.');
                     return sol;
                   }
                 }
@@ -172,7 +177,7 @@ export class FloatingChatComponent implements OnInit, OnDestroy {
         this.cdr.detectChanges();
       }
     } catch (error) {
-      console.error("Error al cargar solicitudes para los chats flotantes:", error);
+      this.alertsService.error('Error de Sincronización', 'No pudimos cargar los expedientes de solicitud.');
     }
   }
 
@@ -217,6 +222,9 @@ export class FloatingChatComponent implements OnInit, OnDestroy {
           }));
           this.cdr.detectChanges();
         }
+      },
+      error: () => {
+        this.alertsService.error('Error de Carga', 'No logramos recuperar el historial de mensajes.');
       }
     });
   }

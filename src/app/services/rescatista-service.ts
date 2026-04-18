@@ -1,18 +1,20 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
+import { AlertsService } from './alerts-service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RescatistaService {
   private http = inject(HttpClient);
+  private alertsService = inject(AlertsService);
   private baseUrl = 'https://api.petzootik.site/user';
 
   private getHeaders() {
     const token = localStorage.getItem('token');
     return new HttpHeaders({
-      'Authorization': `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     });
   }
 
@@ -24,17 +26,24 @@ export class RescatistaService {
     formData.append('residencia', datos.residencia);
     formData.append('imagen', imagenFile);
 
-    return await lastValueFrom(this.http.post(`${this.baseUrl}/rescuer-request`, formData, { headers: this.getHeaders() }));
+    return await lastValueFrom(
+      this.http.post(`${this.baseUrl}/rescuer-request`, formData, { headers: this.getHeaders() }),
+    );
   }
 
   // Obtener todas las peticiones de rescatistas
   async obtenerPeticiones(status: string) {
     try {
       return await lastValueFrom(
-        this.http.get<any>(`${this.baseUrl}/rescuer-request?status=${status}`, { headers: this.getHeaders() })
+        this.http.get<any>(`${this.baseUrl}/rescuer-request?status=${status}`, {
+          headers: this.getHeaders(),
+        }),
       );
     } catch (error) {
-      console.error('Error obteniendo peticiones:', error);
+      this.alertsService.error(
+        'Fallo al enviar postulación',
+        'No pudimos entregar tu solicitud a la Estación Central. Revisa tu conexión.',
+      );
       throw error;
     }
   }
@@ -43,10 +52,17 @@ export class RescatistaService {
   async responderPeticion(id: number, aprobado: boolean) {
     try {
       return await lastValueFrom(
-        this.http.post(`${this.baseUrl}/rescuers/${id}/aprove`, { aprobado }, { headers: this.getHeaders() })
+        this.http.post(
+          `${this.baseUrl}/rescuers/${id}/aprove`,
+          { aprobado },
+          { headers: this.getHeaders() },
+        ),
       );
     } catch (error) {
-      console.error(`Error al responder petición ${id}:`, error);
+      this.alertsService.error(
+        'Error de Decisión',
+        'No se pudo registrar tu voto para esta postulación. Intenta de nuevo.',
+      );
       throw error;
     }
   }

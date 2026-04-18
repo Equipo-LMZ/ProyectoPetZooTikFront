@@ -45,7 +45,8 @@ export class Mascotas {
     try {
       await this.animalService.obtenerAnimales();
     } catch (error) {
-      this.alertService.error('¡Error!', 'No pudimos sincronizar los animales.');
+      // ya lo hace el service
+      // this.alertService.error('¡Error!', 'No pudimos sincronizar los animales.');
     }
   }
 

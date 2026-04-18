@@ -2,6 +2,7 @@ import { Component, inject, input, signal } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AlertsService } from '../../services/alerts-service';
 import { AnimalService } from '../../services/animal';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-adoptar',
@@ -14,6 +15,7 @@ export class Adoptar {
   private fb = inject(FormBuilder);
   private animalService = inject(AnimalService);
   private alertService = inject(AlertsService);
+  private router = inject(Router);
 
   public id = input.required<string>(); // id de la mascota desde la URL
   public animalActual = signal<any>(null); // Guardaremos los datos del animal aquí
@@ -36,12 +38,13 @@ export class Adoptar {
   });
 
   async ngOnInit() {
-    // 1. Al cargar, obtenemos al animal para tener su idRescatista
+    //Al cargar, obtenemos al animal para tener su idRescatista
     try {
       const data = await this.animalService.obtenerPorId(Number(this.id()));
       this.animalActual.set(data);
     } catch (error) {
-      this.alertService.error('Error', 'No se pudo obtener la información del rescatista.');
+      //ya lo hace services
+      // this.alertService.error('Error', 'No se pudo obtener la información del rescatista.');
     }
   }
 
@@ -82,9 +85,10 @@ export class Adoptar {
       try {
         await this.animalService.enviarSolicitudAdopcion(SolicitudAdopcion);
         this.alertService.success(
-          '¡Solicitud Enviada!',
-          'El rescatista revisará tu perfil pronto.',
+          '¡Expediente Entregado!',
+          'Tu solicitud ha sido enviada. El rescatista se pondrá en contacto contigo pronto.',
         );
+        await this.router.navigate(['/']);
       } catch (error) {
         this.alertService.error('Error', 'No se pudo procesar la adopción.');
       }

@@ -47,7 +47,6 @@ export class NotFound404 {
   }
 
   startGame() {
-    console.log('Esto es un Easter Egg, disfrutalo :D');
     this.score.set(0);
     this.gameState.set('playing');
     this.isJumping.set(false);

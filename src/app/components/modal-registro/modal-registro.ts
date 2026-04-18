@@ -12,7 +12,6 @@ import { AlertsService } from '../../services/alerts-service';
   styleUrl: './modal-registro.css',
 })
 export class ModalRegistro {
-
   @Output() cerrar = new EventEmitter<void>();
   @Output() exito = new EventEmitter<void>();
 
@@ -32,7 +31,7 @@ export class ModalRegistro {
   constructor() {}
 
   togglePassword() {
-    this.mostrarPassword.update(v => !v);
+    this.mostrarPassword.update((v) => !v);
   }
 
   cerrarModal() {
@@ -42,13 +41,18 @@ export class ModalRegistro {
 
     setTimeout(() => {
       this.cerrar.emit();
-    }, 300); 
+    }, 300);
   }
 
   async onRegister(form: NgForm) {
     if (form.valid) {
       console.log('Iniciando proceso de registro...');
       await this.enviarRegistro();
+    } else {
+      this.alertsService.warning(
+        'Formulario incompleto',
+        'Por favor, llena todos los campos correctamente.',
+      );
     }
   }
 
@@ -57,12 +61,18 @@ export class ModalRegistro {
 
     try {
       await this.authService.registro(this.nuevoUsuario);
-      this.alertsService.success('Registro exitoso', 'Tu cuenta ha sido creada y has iniciado sesión.');
+      // this.alertsService.success(
+      //   'Registro exitoso',
+      //   'Tu cuenta ha sido creada y has iniciado sesión.',
+      // );
 
       this.exito.emit();
       this.cerrarModal();
     } catch (error) {
-      this.alertsService.error('Error al registrar usuario', 'Hubo un problema al crear tu cuenta. Intenta con otro correo');
+      // this.alertsService.error(
+      //   'Error al registrar usuario',
+      //   'Hubo un problema al crear tu cuenta. Intenta con otro correo',
+      // );
     } finally {
       this.cargando.set(false);
     }
