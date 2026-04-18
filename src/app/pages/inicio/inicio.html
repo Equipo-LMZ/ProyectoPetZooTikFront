@@ -202,36 +202,36 @@
 
       <img src="assets/parque/farola.png"
            class="absolute z-[15] pointer-events-none object-contain drop-shadow-[0_0_45px_rgba(251,191,36,0.8)]
-                  h-[30%] md:h-[35%] lg:h-[40%]
-                  bottom-[23%] md:bottom-[28%]
-                  left-[60%] md:left-[55%] lg:left-[50%]">
+                  h-[25%] md:h-[35%] lg:h-[40%]
+                  bottom-[25%] md:bottom-[28%] lg:bottom-[28%]
+                  left-[35%] md:left-[45%] lg:left-[50%]">
 
       <img src="assets/parque/farola.png"
            style="transform: scaleX(-1);"
            class="absolute z-[15] pointer-events-none object-contain drop-shadow-[0_0_45px_rgba(251,191,36,0.8)]
-                  h-[30%] md:h-[35%] lg:h-[40%]
-                  bottom-[23%] md:bottom-[28%]
+                  h-[25%] md:h-[35%] lg:h-[40%]
+                  bottom-[25%] md:bottom-[28%] lg:bottom-[28%]
                   right-[38%] md:right-[43%] lg:right-[48%]">
 
       <div class="absolute z-20 pointer-events-none
-                  bottom-[6%] md:bottom-[10%]
-                  left-[0%] md:left-[3%]
-                  w-[70%] md:w-[50%] lg:w-[40%]">
+                  bottom-[15%] md:bottom-[17%] lg:bottom-[10%]
+                  left-[-23%] md:left-[-20%] lg:left-[3%]
+                  w-[70%] md:w-[60%] lg:w-[40%]">
         <img src="assets/parque/cabana.png" class="w-full h-auto object-contain drop-shadow-2xl">
       </div>
 
       <div (click)="abrirPostulacion()"
            class="absolute z-30 cursor-pointer transition-transform duration-200 hover:scale-110 hover:-translate-y-2
-                  bottom-[7%] md:bottom-[12%]
-                  left-[38%] md:left-[33%] lg:left-[28%]
-                  w-[23%] md:w-[18%] lg:w-[15%]">
+                  bottom-[15%] md:bottom-[17%] lg:bottom-[12%]
+                  left-[15%] md:left-[18%] lg:left-[28%]
+                  w-[30%] md:w-[20%] lg:w-[15%]">
         <img src="assets/parque/tablero-A.png" class="w-full h-auto object-contain drop-shadow-lg">
       </div>
 
       <div class="absolute z-10 pointer-events-none
                   bottom-[3%] md:bottom-[5%] lg:bottom-[7%]
                   left-32/64 -translate-x-1/2
-                  w-[30%] md:w-[20%] lg:w-[15%]">
+                  w-[40%] md:w-[25%] lg:w-[15%]">
         
         <div class="absolute inset-0 bg-orange-500/30 blur-2xl rounded-full animate-pulse z-0 scale-150"></div>
         
@@ -240,42 +240,42 @@
       </div>
       
       <div class="absolute z-20 pointer-events-none
-                  bottom-[5%] md:bottom-[8%]
+                  bottom-[13%] md:bottom-[15%] lg:bottom-[8%]
                   left-23/32 -translate-x-1/2
-                  w-[30%] md:w-[25%] lg:w-[20%]">
+                  w-[40%] md:w-[33%] lg:w-[20%]">
         <img src="assets/parque/mesa.png" class="w-full h-auto object-contain drop-shadow-2xl">
       </div>
 
       <div (click)="abrirNoticias($event)"
            class="absolute z-30 cursor-pointer transition-transform duration-200 hover:scale-110 hover:-translate-y-2
-                  bottom-[21%] md:bottom-[18%] lg:bottom-[21%]
-                  left-[64%] md:left-[59%] lg:left-[67%]
-                  w-[11%] md:w-[6%] lg:w-[5%]">
+                  bottom-[19%] md:bottom-[23%] lg:bottom-[21%]
+                  left-[64%] md:left-[64%] lg:left-[67%]
+                  w-[7%] md:w-[6%] lg:w-[5%]">
         <img src="assets/parque/periodico.png" class="w-full h-auto object-contain drop-shadow-lg -rotate-3">
       </div>
 
       @if (authService.currentUser()?.tipo === 'Rescatista') {
         <div (click)="abrirGestion($event)"
              class="absolute z-30 cursor-pointer transition-transform duration-200 hover:scale-110 hover:-translate-y-2
-                    bottom-[21%] md:bottom-[18%] lg:bottom-[21%]
-                    right-[23%] md:right-[23%] lg:right-[23%]
-                    w-[12%] md:w-[7%] lg:w-[5%]">
+                    bottom-[19%] md:bottom-[23%] lg:bottom-[21%]
+                    right-[19%] md:right-[20%] lg:right-[23%]
+                    w-[7%] md:w-[6%] lg:w-[5%]">
           <img src="assets/parque/portapapeles.png" class="w-full h-auto object-contain drop-shadow-lg rotate-3">
         </div>
       }
 
       <div (click)="irAlMapa()"
            class="absolute z-20 cursor-pointer transition-transform duration-200 hover:scale-105 hover:-translate-y-1
-                  bottom-[23%] md:bottom-[28%]
-                  right-[25%] md:right-[30%]
-                  w-[40%] md:w-[30%] lg:w-[20%]">
+                  bottom-[25%] md:bottom-[29%] lg:bottom-[28%]
+                  right-[10%] md:right-[18%] lg:right-[30%]
+                  w-[50%] md:w-[30%] lg:w-[20%]">
         <img src="assets/parque/mapa.png" class="w-full h-auto object-contain drop-shadow-2xl">
       </div>
 
       <div class="group absolute z-30 transition-transform duration-300 hover:scale-110 cursor-default
-                  bottom-[41%] md:bottom-[46%]
-                  left-[70%] md:left-[65%] lg:left-[60%] 
-                  w-[12%] md:w-[8%] lg:w-[5%]">
+                  bottom-[35.6%] md:bottom-[39.2%] lg:bottom-[46%]
+                  left-[70%] md:left-[67%] lg:left-[60%] 
+                  w-[11%] md:w-[8%] lg:w-[5%]">
 
         <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-40">
           <span class="bg-black/80 backdrop-blur-sm text-emerald-400 text-xs font-bold px-3 py-1.5 rounded-full whitespace-nowrap border border-emerald-500/30 drop-shadow-lg uppercase tracking-wider">
@@ -288,8 +288,8 @@
       </div>
 
       <div class="group absolute z-30 transition-transform duration-300 hover:scale-110 cursor-default
-                  bottom-[27%] md:bottom-[27%] lg:bottom-[27%]
-                  left-[75%] md:left-[70%] lg:left-[65%]
+                  bottom-[22%] md:bottom-[27%] lg:bottom-[27%]
+                  left-[60%] md:left-[63%] lg:left-[65%]
                   w-[16%] md:w-[11%] lg:w-[8%]"
            (mouseenter)="reproducirSonidoAnimal(null, 'cat')"
            (click)="reproducirSonidoAnimal($event, 'cat')">
@@ -305,9 +305,9 @@
       </div>
 
       <div class="group absolute z-20 transition-transform duration-300 hover:scale-110 cursor-default
-                  bottom-[10%] md:bottom-[15%]
-                  right-[63%] md:right-[58%] lg:right-[53%]
-                  w-[15%] md:w-[10%] lg:w-[7%]"
+                  bottom-[9%] md:bottom-[10%] lg:bottom-[15%]
+                  right-[55%] md:right-[58%] lg:right-[53%]
+                  w-[14%] md:w-[10%] lg:w-[7%]"
            (mouseenter)="reproducirSonidoAnimal(null, 'dog')"
            (click)="reproducirSonidoAnimal($event, 'dog')">
 
@@ -322,8 +322,8 @@
       </div>
       
       <div class="group absolute z-30 transition-transform duration-300 hover:scale-125 cursor-default
-                  bottom-[50%] md:bottom-[50%] lg:bottom-[50%]
-                  right-[69%] md:right-[69%] lg:right-[69%]
+                  bottom-[31%] md:bottom-[39.5%] lg:bottom-[50%]
+                  right-[73%] md:right-[78%] lg:right-[69%]
                   w-[9%] md:w-[6%] lg:w-[4%]"
            (mouseenter)="reproducirSonidoAnimal(null, 'canary')"
            (click)="reproducirSonidoAnimal($event, 'canary')">
