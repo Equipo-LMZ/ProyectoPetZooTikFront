@@ -1,0 +1,35 @@
+<!-- Floating Button -->
+<button 
+  [class.hidden]="!isVisible"
+  (click)="toggleChat()"
+  class="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-tr from-[#52b7e6] to-[#2e94c4] rounded-full flex items-center justify-center text-white shadow-2xl hover:scale-110 active:scale-95 hover:shadow-[0_20px_40px_-10px_rgba(46,148,196,0.5)] transition-all z-[9999] focus:outline-none cursor-pointer"
+  [ngClass]="{'from-slate-700 to-slate-900 shadow-slate-900/30': isOpen}">
+  
+  @if (!isOpen) {
+    <div class="relative">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+      </svg>
+      @if (hasUnread) {
+        <span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-red-500 rounded-full border-2 border-[#2e94c4] animate-pulse"></span>
+      }
+    </div>
+  } @else {
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  }
+</button>
+
+@if (hasOpened && isVisible) {
+  <div class="fixed bottom-28 right-6 w-[360px] h-[720px] max-h-[75vh] z-[9998] origin-bottom-right transition-all"
+       [ngClass]="isOpen ? 'animate-rotate-in pointer-events-auto' : 'animate-rotate-out pointer-events-none'">
+    <app-smartphone-chat 
+      class="w-full h-full flex"
+      [chatActivo]="chatActivo" 
+      [conversaciones]="conversaciones"
+      (abrirVisor)="abrirChat($event)"
+      (cerrarVisor)="cerrarChat()">
+    </app-smartphone-chat>
+  </div>
+}
