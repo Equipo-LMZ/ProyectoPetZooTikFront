@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ChatThread, Mensaje } from '../../interfaces/chat';
 import { SmartphoneChatComponent } from '../../components/smartphone-chat/smartphone-chat';
 import { ChatService } from '../../services/chat-service';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-chat',
@@ -16,12 +17,20 @@ export class Chat implements OnInit {
   filtroBusqueda = '';
 
   conversaciones: ChatThread[] = [];
+  miId: number = 0;
 
   private cdr = inject(ChangeDetectorRef);
+  private authService = inject(AuthService);
 
   constructor(private chatService: ChatService) {}
 
   ngOnInit(): void {
+    const currentUser = this.authService.currentUser();
+    if (currentUser) {
+      this.miId = currentUser.id;
+      this.chatService.conectarUsuarioGlobal(this.miId);
+    }
+
     this.chatService.obtenerMisChats().subscribe({
       next: (response) => {
         if (response && response.data) {
@@ -38,11 +47,34 @@ export class Chat implements OnInit {
               mensajes: [] 
             } as ChatThread;
           });
-          this.cdr.detectChanges(); // Forzamos a Angular a actualizar la interfaz
+
+          // Unirse a las salas de socket para cada chat
+          this.conversaciones.forEach(chat => {
+            this.chatService.unirseSala(chat.id);
+          });
+
+          this.cdr.detectChanges(); 
         }
       },
       error: (err) => {
         console.error('Error al obtener los chats:', err);
+      }
+    });
+
+    // Escuchar mensajes entrantes globales
+    this.chatService.escucharNuevosMensajes().subscribe((mensaje: any) => {
+      // Ignoramos si lo enviamos nosotros (ya lo agregamos localmente)
+      if (mensaje.user_id === this.miId) return;
+
+      const chatTarget = this.conversaciones.find(c => c.id == mensaje.chat_id);
+      if (chatTarget) {
+        chatTarget.mensajes.push({
+          id: Date.now(), // Temporaly id ya que kafka no devuelve insertId
+          texto: mensaje.contenido,
+          esMio: false,
+          hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        });
+        this.cdr.detectChanges();
       }
     });
   }
@@ -60,6 +92,24 @@ export class Chat implements OnInit {
 
   abrirChat(chat: ChatThread) {
     this.chatActivo = chat;
+    
+    // Obtener el historial de la BD
+    this.chatService.obtenerMensajes(chat.id).subscribe({
+      next: (response) => {
+        if (response && response.data) {
+          chat.mensajes = response.data.map((msg: any) => {
+            return {
+              id: msg.idMensaje || Date.now(),
+              texto: msg.contenido,
+              esMio: msg.idRemitente === this.miId,
+              hora: new Date(msg.fechaEnvio).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+          });
+          this.cdr.detectChanges();
+        }
+      },
+      error: (err) => console.error("Error cargando historial de mensajes:", err)
+    });
   }
 
   cerrarChat() {
