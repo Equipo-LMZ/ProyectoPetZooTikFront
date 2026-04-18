@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, EventEmitter, inject, Output, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RescatistaService } from '../../services/rescatista-service';
 import { AlertsService } from '../../services/alerts-service';
@@ -15,23 +15,20 @@ export class ModalCandidatura {
   private rescatistaService = inject(RescatistaService);
   private alertService = inject(AlertsService);
 
-  isOpen = signal(true); //para mostrarlo solo tienes que cambiar esto en el botón a true
+  @Output() cerrar = new EventEmitter<void>();
+
   previewImagen = signal<string | null>(null);
   selectedFile: File | null = null;
 
-  // Datos del formulario
   datos = {
     fecha: new Date().toISOString().split('T')[0],
     biografia: '',
     residencia: '',
-    userId: '2', //este debería cambiar por el del usuario, esta es una pruebaaaaaaaaaaaaa
+    userId: '2',
   };
 
-  abrir() {
-    this.isOpen.set(true);
-  }
-  cerrar() {
-    this.isOpen.set(false);
+  cerrarModal() {
+    this.cerrar.emit();
   }
 
   onFileSelected(event: any) {
@@ -59,7 +56,7 @@ export class ModalCandidatura {
         '¡Cartel Publicado!',
         'Tu solicitud ha sido enviada a los administradores para validar o denegar tu solicitud',
       );
-      this.cerrar();
+      this.cerrarModal();
     } catch (error) {
       this.alertService.error(
         'Fallo al momento de enviar tu solicitud',

@@ -79,9 +79,6 @@ export class Adoptar {
         },
       };
 
-      //prueba en consola
-      console.log('Payload estructurado:', SolicitudAdopcion);
-
       try {
         await this.animalService.enviarSolicitudAdopcion(SolicitudAdopcion);
         this.alertService.success(

@@ -86,7 +86,6 @@ export class NotFound404 {
             petRect.left + margin < obsRect.right &&
             petRect.bottom - margin > obsRect.top
           ) {
-            console.warn('¡El mapache se tropezó!');
             this.gameOver();
           }
         }

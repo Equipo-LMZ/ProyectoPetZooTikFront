@@ -3,6 +3,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
 import { Animal } from '../interfaces/animal';
 import { AuthService } from './auth';
+import { AlertsService } from './alerts-service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +13,7 @@ export class AnimalService {
   private authService = inject(AuthService);
   private baseUrl = 'https://api.petzootik.site';
 
+  private alertsService = inject(AlertsService);
   public listaAnimales = signal<Animal[]>([]);
 
   // Función para obtener el token en las peticiones CRUD es para facilitar la logica
@@ -46,7 +48,10 @@ export class AnimalService {
 
       return animalesMapeados;
     } catch (error) {
-      console.error('Error al obtener los animales:', error);
+      this.alertsService.error(
+        'Error al obtener los animales!',
+        'No pudimos conectarnos al servidor, intentelo de nuevo más tarde',
+      );
       return [];
     }
   }
@@ -56,7 +61,10 @@ export class AnimalService {
       const res: any = await lastValueFrom(this.http.get(`${this.baseUrl}/pets/${id}`));
       return this.mapearMascota(res);
     } catch (error) {
-      console.error('Error al obtener el animal:', error);
+      this.alertsService.error(
+        'Error al obtener el animal seleccionado',
+        'No pudimos conectarnos al servidor, intentelo de nuevo más tarde',
+      );
       throw error;
     }
   }
@@ -64,14 +72,17 @@ export class AnimalService {
   async obtenerSolicitudesRecibidas() {
     try {
       const res: any = await lastValueFrom(
-        this.http.get(`${this.baseUrl}/solicitud`, { 
-          headers: this.getHeaders() 
-        })
+        this.http.get(`${this.baseUrl}/solicitud`, {
+          headers: this.getHeaders(),
+        }),
       );
 
-      return Array.isArray(res) ? res : (res.datos || res.solicitudes || []);
+      return Array.isArray(res) ? res : res.datos || res.solicitudes || [];
     } catch (error) {
-      console.error('Error al obtener solicitudes recibidas:', error);
+      this.alertsService.error(
+        'Error al obtener solicitudes recibidas',
+        'No pudimos obtener las solicitudes de los rescatistas, intentelo de nuevo más tarde',
+      );
       return [];
     }
   }
@@ -82,7 +93,10 @@ export class AnimalService {
         this.http.post(`${this.baseUrl}/solicitud`, payload, { headers: this.getHeaders() }),
       );
     } catch (error) {
-      console.error('Error al enviar solicitud de adopción:', error);
+      this.alertsService.error(
+        'Error al enviar solicitud de adopción',
+        'No pudimos enviar las solicitudes de adopción, , intentelo de nuevo más tarde',
+      );
       throw error;
     }
   }
@@ -104,7 +118,10 @@ export class AnimalService {
       this.listaAnimales.set(animalesMapeados);
       return animalesMapeados;
     } catch (error) {
-      console.error('Error al obtener mis mascotas:', error);
+      this.alertsService.error(
+        'Error al obtener mis mascotas',
+        'No pudimos obtener tus mascotas, intentelo de nuevo más tarde',
+      );
       return [];
     }
   }
@@ -116,7 +133,10 @@ export class AnimalService {
         this.http.post(`${this.baseUrl}/pets`, formData, { headers: this.getHeaders() }),
       );
     } catch (error) {
-      console.error('Error al crear animal:', error);
+      this.alertsService.error(
+        'Error al crear animal',
+        'No fue posible crear el registro del animal, intentelo de nuevo más tarde',
+      );
       throw error;
     }
   }
@@ -128,7 +148,10 @@ export class AnimalService {
         this.http.put(`${this.baseUrl}/pets/${id}`, formData, { headers: this.getHeaders() }),
       );
     } catch (error) {
-      console.error('Error al actualizar animal:', error);
+      this.alertsService.error(
+        'Error al modificar animal',
+        'No fue posible modificar el registro del animal, intentelo de nuevo más tarde',
+      );
       throw error;
     }
   }
@@ -140,7 +163,10 @@ export class AnimalService {
         this.http.delete(`${this.baseUrl}/pets/${id}`, { headers: this.getHeaders() }),
       );
     } catch (error) {
-      console.error('Error al eliminar animal:', error);
+      this.alertsService.error(
+        'Error al eliminar animal',
+        'No fue posible eliminar el registro del animal, intentelo de nuevo más tarde',
+      );
       throw error;
     }
   }
