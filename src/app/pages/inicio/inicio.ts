@@ -39,7 +39,22 @@ export class Inicio implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.navbarService.enPaginaInicio.set(true);
-    this.navbarService.faseInicio.set(this.faseAnimacion());
+    
+    if (window.history.state?.directoAlParque) {
+      
+      this.faseAnimacion.set(3);
+      this.navbarService.faseInicio.set(3);
+
+      this.transicionDesdeNegro.set(true);
+      setTimeout(() => {
+        this.transicionDesdeNegro.set(false);
+      }, 1000); 
+
+      window.history.replaceState({}, '');
+      
+    } else {
+      this.navbarService.faseInicio.set(this.faseAnimacion());
+    }
   }
 
   ngOnDestroy() {
@@ -54,9 +69,17 @@ export class Inicio implements OnInit, OnDestroy {
 
   avanzarEscena() {
     if (this.faseAnimacion() !== 0) return;
+  
     this.sincronizarFase(1);
     setTimeout(() => this.mostrarHelicoptero.set(false), 200);
-    setTimeout(() => this.sincronizarFase(2), 300);
+
+    setTimeout(() => {
+      if (this.authService.currentUser()) {
+        this.ingresarAlParque();
+      } else {
+        this.sincronizarFase(2);
+      }
+    }, 300);
   }
 
   regresarInicio(event: Event) {
