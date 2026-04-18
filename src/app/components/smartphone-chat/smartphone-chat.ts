@@ -1,7 +1,8 @@
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ChatThread, Mensaje } from '../../interfaces/chat';
+import { ChatService } from '../../services/chat-service';
 
 @Component({
   selector: 'app-smartphone-chat',
@@ -10,8 +11,9 @@ import { ChatThread, Mensaje } from '../../interfaces/chat';
   templateUrl: './smartphone-chat.html',
   styleUrl: './smartphone-chat.css',
 })
-export class SmartphoneChatComponent {
+export class SmartphoneChatComponent implements OnChanges {
   private fb = inject(FormBuilder);
+  private chatService = inject(ChatService);
 
   @Input() chatActivo: ChatThread | null = null;
   @Input() conversaciones: ChatThread[] = [];
@@ -19,16 +21,27 @@ export class SmartphoneChatComponent {
   @Output() abrirVisor = new EventEmitter<ChatThread>();
 
   filtroBusqueda = '';
+  mostrarPerfil = false;
 
   mensajeForm = this.fb.group({
     nuevoMensaje: ['', Validators.required]
   });
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['chatActivo']) {
+      this.mostrarPerfil = false;
+    }
+  }
+
   get conversacionesFiltradas() {
-    return this.conversaciones.filter(c => 
-      c.nombreCandidato.toLowerCase().includes(this.filtroBusqueda.toLowerCase()) || 
-      c.animalNombre.toLowerCase().includes(this.filtroBusqueda.toLowerCase())
-    );
+    if (!this.conversaciones) return [];
+    return this.conversaciones.filter(c => {
+      const nombre = c.nombreCandidato || '';
+      const animal = c.animalNombre || '';
+      const filtro = this.filtroBusqueda || '';
+      return nombre.toLowerCase().includes(filtro.toLowerCase()) || 
+             animal.toLowerCase().includes(filtro.toLowerCase());
+    });
   }
 
   actualizarFiltro(event: any) {
@@ -40,7 +53,15 @@ export class SmartphoneChatComponent {
   }
 
   cerrarChat() {
+    this.mostrarPerfil = false;
     this.cerrarVisor.emit();
+  }
+
+  togglePerfil() {
+    this.mostrarPerfil = !this.mostrarPerfil;
+    if (this.mostrarPerfil) {
+      setTimeout(() => this.scrollToBottom(), 50);
+    }
   }
 
   enviarMensaje() {
@@ -61,6 +82,11 @@ export class SmartphoneChatComponent {
       if (input) input.style.height = 'auto';
 
       setTimeout(() => this.scrollToBottom(), 50);
+
+      // Enviar al backend
+      this.chatService.enviarMensaje(this.chatActivo.id, msjTexto).subscribe({
+        error: (err) => console.error('Error enviando mensaje', err)
+      });
     }
   }
 

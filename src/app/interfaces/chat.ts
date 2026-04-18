@@ -12,5 +12,7 @@ export interface ChatThread {
   animalNombre: string;
   avatar: string;
   mensajes: Mensaje[];
-  noLeidos: number;
+  idAdoptante?: number;
+  idRescatista?: number;
+  formularios?: any[];
 }

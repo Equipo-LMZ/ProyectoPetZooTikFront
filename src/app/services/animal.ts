@@ -61,26 +61,25 @@ export class AnimalService {
     }
   }
 
-  async obtenerSolicitudesRecibidas(idRescatista: number) {
-  try {
-    const res: any = await lastValueFrom(
-      this.http.get(`${this.baseUrl}/adoptions?idRescatista=${idRescatista}`, { 
-        headers: this.getHeaders() 
-      })
-    );
+  async obtenerSolicitudesRecibidas() {
+    try {
+      const res: any = await lastValueFrom(
+        this.http.get(`${this.baseUrl}/solicitud`, { 
+          headers: this.getHeaders() 
+        })
+      );
 
-    // Si el back devuelve un objeto con 'datos', lo extraemos, si no, el array directo
-    return Array.isArray(res) ? res : (res.datos || res.solicitudes || []);
-  } catch (error) {
-    console.error('Error al obtener solicitudes recibidas:', error);
-    return [];
+      return Array.isArray(res) ? res : (res.datos || res.solicitudes || []);
+    } catch (error) {
+      console.error('Error al obtener solicitudes recibidas:', error);
+      return [];
+    }
   }
-}
 
   async enviarSolicitudAdopcion(payload: any) {
     try {
       return await lastValueFrom(
-        this.http.post(`${this.baseUrl}/adoptions`, payload, { headers: this.getHeaders() }),
+        this.http.post(`${this.baseUrl}/solicitud`, payload, { headers: this.getHeaders() }),
       );
     } catch (error) {
       console.error('Error al enviar solicitud de adopción:', error);

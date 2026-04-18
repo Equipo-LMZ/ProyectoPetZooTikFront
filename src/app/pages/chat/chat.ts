@@ -1,7 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChatThread, Mensaje } from '../../interfaces/chat';
 import { SmartphoneChatComponent } from '../../components/smartphone-chat/smartphone-chat';
+import { ChatService } from '../../services/chat-service';
+import { AuthService } from '../../services/auth';
+import { AnimalService } from '../../services/animal';
 
 @Component({
   selector: 'app-chat',
@@ -10,50 +13,156 @@ import { SmartphoneChatComponent } from '../../components/smartphone-chat/smartp
   templateUrl: './chat.html',
   styleUrl: './chat.css',
 })
-export class Chat {
+export class Chat implements OnInit {
   chatActivo: ChatThread | null = null;
   filtroBusqueda = '';
 
-  conversaciones: ChatThread[] = [
-    {
-      id: 1,
-      nombreCandidato: 'Narvaez Jose Luis',
-      animalId: 1,
-      animalNombre: 'Gatillo',
-      avatar: 'https://ui-avatars.com/api/?name=Jose+N&background=edd8d3&color=a14a38',
-      noLeidos: 2,
-      mensajes: [
-        { id: 101, texto: '¡Hola! Estoy muy interesada en adoptar a Gatillo.', esMio: false, hora: '10:00 AM' },
-        { id: 102, texto: 'Hola Laura, ¡qué alegría! Gatillo es muy enérgico. ¿Tienes jardín en casa?', esMio: true, hora: '10:05 AM' },
-        { id: 103, texto: 'Sí, tengo un patio trasero grande y bardeado.', esMio: false, hora: '10:07 AM' },
-        { id: 104, texto: '¿Qué alimentación le estás dando actualmente? Me gustaría continuar su dieta.', esMio: false, hora: '10:08 AM' },
-      ]
-    },
-    {
-      id: 2,
-      nombreCandidato: 'Santos Emiliano',
-      animalId: 3,
-      animalNombre: 'Chispa',
-      avatar: 'https://ui-avatars.com/api/?name=Emiliano+S&background=d3e0ed&color=386ca1',
-      noLeidos: 0,
-      mensajes: [
-        { id: 201, texto: 'Buenas tardes, acabo de llenar la solicitud para Chispa.', esMio: false, hora: 'Ayer' },
-        { id: 202, texto: 'Excelente Emiliano. Estoy revisando tus referencias.', esMio: true, hora: 'Ayer' },
-        { id: 203, texto: 'De acuerdo, quedo al pendiente.', esMio: false, hora: 'Ayer' },
-      ]
+  conversaciones: ChatThread[] = [];
+  miId: number = 0;
+
+  private cdr = inject(ChangeDetectorRef);
+  private authService = inject(AuthService);
+  private animalService = inject(AnimalService);
+
+  constructor(private chatService: ChatService) {}
+
+  ngOnInit(): void {
+    const currentUser = this.authService.currentUser();
+    if (currentUser) {
+      this.miId = currentUser.id;
+      this.chatService.conectarUsuarioGlobal(this.miId);
     }
-  ];
+
+    this.chatService.obtenerMisChats().subscribe({
+      next: (response) => {
+        if (response && response.data) {
+          this.conversaciones = response.data.map((chatInfo: any) => {
+            // Generamos las iniciales para el avatar usando el nombre que trae el backend
+            const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(chatInfo.nombreCandidato || 'Usuario')}&background=random`;
+            
+            return {
+              id: chatInfo.id || chatInfo.idChat,
+              nombreCandidato: chatInfo.nombreCandidato || 'Usuario Desconocido',
+              idAdoptante: chatInfo.idAdoptante,
+              idRescatista: chatInfo.idRescatista,
+              animalId: 0, 
+              animalNombre: '', 
+              avatar: avatarUrl,
+              mensajes: [],
+              formularios: []
+            } as ChatThread;
+          });
+
+          // Unirse a las salas de socket para cada chat
+          this.conversaciones.forEach(chat => {
+            this.chatService.unirseSala(chat.id);
+          });
+
+          // Obtener solicitudes y cruzarlas
+          this.cargarFormularios();
+
+          this.cdr.detectChanges(); 
+        }
+      },
+      error: (err) => {
+        console.error('Error al obtener los chats:', err);
+      }
+    });
+
+    // Escuchar mensajes entrantes globales
+    this.chatService.escucharNuevosMensajes().subscribe((mensaje: any) => {
+      // Ignoramos si lo enviamos nosotros (ya lo agregamos localmente)
+      if (mensaje.user_id === this.miId) return;
+
+      const chatTarget = this.conversaciones.find(c => c.id == mensaje.chat_id);
+      if (chatTarget) {
+        chatTarget.mensajes.push({
+          id: Date.now(), // Temporaly id ya que kafka no devuelve insertId
+          texto: mensaje.contenido,
+          esMio: false,
+          hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        });
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  async cargarFormularios() {
+    try {
+      const solicitudes = await this.animalService.obtenerSolicitudesRecibidas();
+      
+      this.conversaciones.forEach(chat => {
+        if (chat.idAdoptante && chat.idRescatista) {
+          chat.formularios = solicitudes
+            .filter((sol: any) => sol.idUser == chat.idAdoptante && sol.idRescatista == chat.idRescatista)
+            .map((sol: any) => {
+              let rawData = sol.formulario;
+              if (typeof rawData === 'string') {
+                try {
+                  rawData = JSON.parse(rawData);
+                } catch (e) {
+                  console.error('Error parseando formulario', e);
+                  return sol;
+                }
+              }
+
+              // Convertimos a array de campos para la UI
+              if (rawData && typeof rawData === 'object' && !Array.isArray(rawData)) {
+                const formattedFields = [];
+                
+                if (rawData.nombreCompleto) formattedFields.push({ label: 'Nombre Completo', value: rawData.nombreCompleto });
+                if (rawData.direccion) formattedFields.push({ label: 'Dirección', value: rawData.direccion });
+                if (rawData.motivo) formattedFields.push({ label: 'Motivo de adopción', value: rawData.motivo });
+                
+                if (rawData.cuestionario && Array.isArray(rawData.cuestionario)) {
+                  rawData.cuestionario.forEach((q: any) => {
+                     formattedFields.push({ label: q.pregunta || 'Pregunta', value: q.respuesta || '' });
+                  });
+                }
+                
+                sol.formulario = formattedFields;
+              }
+              return sol;
+            });
+        }
+      });
+      this.cdr.detectChanges();
+    } catch (error) {
+      console.error("Error al cargar solicitudes para los chats:", error);
+    }
+  }
 
   get conversacionesFiltradas() {
-    return this.conversaciones.filter(c => 
-      c.nombreCandidato.toLowerCase().includes(this.filtroBusqueda.toLowerCase()) || 
-      c.animalNombre.toLowerCase().includes(this.filtroBusqueda.toLowerCase())
-    );
+    if (!this.conversaciones) return [];
+    return this.conversaciones.filter(c => {
+      const nombre = c.nombreCandidato || '';
+      const animal = c.animalNombre || '';
+      const filtro = this.filtroBusqueda || '';
+      return nombre.toLowerCase().includes(filtro.toLowerCase()) || 
+             animal.toLowerCase().includes(filtro.toLowerCase());
+    });
   }
 
   abrirChat(chat: ChatThread) {
     this.chatActivo = chat;
-    chat.noLeidos = 0;
+    
+    // Obtener el historial de la BD
+    this.chatService.obtenerMensajes(chat.id).subscribe({
+      next: (response) => {
+        if (response && response.data) {
+          chat.mensajes = response.data.map((msg: any) => {
+            return {
+              id: msg.idMensaje || Date.now(),
+              texto: msg.contenido,
+              esMio: msg.idRemitente === this.miId,
+              hora: new Date(msg.fechaEnvio).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+          });
+          this.cdr.detectChanges();
+        }
+      },
+      error: (err) => console.error("Error cargando historial de mensajes:", err)
+    });
   }
 
   cerrarChat() {

@@ -26,21 +26,18 @@
           
           <div class="relative flex-shrink-0">
             <img [src]="chat.avatar" [alt]="chat.nombreCandidato" class="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm">
-            @if (chat.noLeidos > 0) {
-              <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white animate-pulse">
-                {{ chat.noLeidos }}
-              </span>
-            }
           </div>
 
           <div class="flex-1 min-w-0">
             <div class="flex justify-between items-center mb-0.5">
               <h4 class="font-bold text-slate-800 truncate pr-2">{{ chat.nombreCandidato }}</h4>
-              <span class="text-[10px] text-slate-400 font-bold uppercase whitespace-nowrap">{{ chat.mensajes[chat.mensajes.length-1].hora }}</span>
+              @if (chat.mensajes && chat.mensajes.length > 0) {
+                <span class="text-[10px] text-slate-400 font-bold uppercase whitespace-nowrap">{{ chat.mensajes[chat.mensajes.length-1].hora }}</span>
+              }
             </div>
             
             <p class="text-xs text-slate-500 truncate mb-1">
-              {{ chat.mensajes[chat.mensajes.length-1].texto }}
+              {{ chat.mensajes && chat.mensajes.length > 0 ? chat.mensajes[chat.mensajes.length-1].texto : 'Toca para iniciar a conversar' }}
             </p>
             
             <span class="inline-block bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border border-slate-200">
