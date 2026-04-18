@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
+import { AuthService } from './auth';
 
 @Injectable({
   providedIn: 'root',
@@ -11,10 +12,18 @@ export class ChatService {
   private socketUrl = 'https://api.petzootik.site';
   
   private socket: Socket;
+  private http = inject(HttpClient);
+  private authService = inject(AuthService);
 
-  constructor(private http: HttpClient) {
+  constructor() {
     // Inicializamos el "tubo" principal de comunicación
     this.socket = io(this.socketUrl);
+  }
+
+  // Obtenemos el token del localStorage usando el AuthService
+  private getHeaders() {
+    const token = this.authService.currentUser()?.token;
+    return new HttpHeaders({ Authorization: `Bearer ${token}` });
   }
 
   // 1. CONEXIÓN GLOBAL (Para notificaciones)
@@ -27,15 +36,15 @@ export class ChatService {
   // 2. PETICIONES HTTP (REST - La carga pesada)
 
   obtenerMisChats(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/chats`);
+    return this.http.get(`${this.apiUrl}/chats`, { headers: this.getHeaders() });
   }
 
   obtenerMensajes(chatId: string | number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/mensajes/${chatId}`);
+    return this.http.get(`${this.apiUrl}/mensajes/${chatId}`, { headers: this.getHeaders() });
   }
 
   iniciarChat(idRescatista: number): Observable<any> {
-    return this.http.post(`${this.apiUrl}/iniciar`, { idRescatista });
+    return this.http.post(`${this.apiUrl}/iniciar`, { idRescatista }, { headers: this.getHeaders() });
   }
 
   enviarMensaje(chatId: string | number, mensaje: string, imagen?: File): Observable<any> {
@@ -47,7 +56,7 @@ export class ChatService {
       formData.append('imagen', imagen);
     }
     // Recordatorio: Angular calcula el Content-Type automáticamente por el FormData
-    return this.http.post(`${this.apiUrl}/`, formData);
+    return this.http.post(`${this.apiUrl}/`, formData, { headers: this.getHeaders() });
   }
 
   // 3. HABLAR POR SOCKETS (Acciones rápidas)
