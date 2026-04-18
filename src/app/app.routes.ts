@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { rescatistaGuard } from './guards/rescatista.guard';
 
 export const routes: Routes = [
   // Rutas Públicas
@@ -26,6 +27,7 @@ export const routes: Routes = [
   // Rutas Privadas (Panel del Rescatista)
   {
     path: 'panel',
+    canActivate: [rescatistaGuard],
     loadComponent: () => import('./pages/panel-rescatista/panel-rescatista').then(m => m.PanelRescatista),
     children: [
       { 
