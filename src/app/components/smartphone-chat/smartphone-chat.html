@@ -73,7 +73,7 @@
             @for (sol of chatActivo.formularios; track sol.idSolicitud) {
               <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
                 <div class="flex justify-between items-center mb-4">
-                  <span class="text-[10px] font-bold bg-blue-50 text-blue-600 px-2.5 py-1 rounded-full uppercase tracking-wider border border-blue-100">ID Mascota: {{ sol.idMascota }}</span>
+                  <span class="text-[10px] font-bold bg-blue-50 text-blue-600 px-2.5 py-1 rounded-full uppercase tracking-wider border border-blue-100">🐾 {{ getNombreMascota(sol.idMascota) }}</span>
                 </div>
                 
                 <div class="space-y-4">
