@@ -181,6 +181,25 @@
       <img src="assets/parque/campamento-noche.png" alt="Campamento Noche"
            class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
 
+      <div class="absolute inset-0 w-full h-full pointer-events-none overflow-hidden z-[5]">
+        @for (luz of luciernagasCampamento; track $index) {
+          <div class="luciernaga" 
+               [style.left]="luz.left" 
+               [style.bottom]="luz.bottom" 
+               [style.animation-duration]="luz.animationDuration" 
+               [style.animation-delay]="luz.animationDelay">
+          </div>
+        }
+        @for (estrella of estrellasFugaces; track $index) {
+          <div class="estrella-fugaz" 
+               [style.left]="estrella.left" 
+               [style.top]="estrella.top" 
+               [style.animation-duration]="estrella.animationDuration" 
+               [style.animation-delay]="estrella.animationDelay">
+          </div>
+        }
+      </div>
+
       <img src="assets/parque/farola.png"
            class="absolute z-[15] pointer-events-none object-contain drop-shadow-[0_0_45px_rgba(251,191,36,0.8)]
                   h-[30%] md:h-[35%] lg:h-[40%]

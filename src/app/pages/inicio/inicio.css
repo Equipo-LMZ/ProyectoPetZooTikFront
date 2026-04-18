@@ -29,3 +29,40 @@
   75% { transform: translate(40px, 15px) scale(1.3); opacity: 0.9; }
   100% { transform: translate(-15px, -30px) scale(1); opacity: 0; }
 }
+
+.estrella-fugaz {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background-color: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8);
+  animation: caida-estrella infinite linear;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.estrella-fugaz::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 80px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.8), transparent);
+}
+
+@keyframes caida-estrella {
+  0% {
+    transform: translate(0, 0) rotate(-45deg) scale(1);
+    opacity: 1;
+  }
+  10% {
+    transform: translate(-300px, 300px) rotate(-45deg) scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-300px, 300px) rotate(-45deg) scale(0);
+    opacity: 0;
+  }
+}

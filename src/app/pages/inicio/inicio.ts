@@ -48,6 +48,20 @@ export class Inicio implements OnInit, OnDestroy {
     animationDelay: `-${Math.random() * 10}s`
   }));
 
+  estrellasFugaces = Array.from({ length: 15 }, () => ({
+    left: `${20 + Math.random() * 60}%`,
+    top: `${Math.random() * 30}%`,
+    animationDuration: `${Math.random() * 8 + 10}s`,
+    animationDelay: `-${Math.random() * 15}s`
+  }));
+
+  luciernagasCampamento = Array.from({ length: 25 }, () => ({
+    left: `${Math.random() > 0.5 ? Math.random() * 20 : 80 + Math.random() * 20}%`,
+    bottom: `${Math.random() * 60}%`,
+    animationDuration: `${Math.random() * 6 + 6}s`,
+    animationDelay: `-${Math.random() * 10}s`
+  }));
+
   constructor(private router: Router) {
     effect(() => {
       const usuario = this.authService.currentUser();
