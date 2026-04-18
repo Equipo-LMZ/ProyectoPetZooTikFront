@@ -1,6 +1,6 @@
-import { Component, inject, input, output, signal, ChangeDetectorRef} from '@angular/core';
+import { Component, inject, input, output, signal, ChangeDetectorRef } from '@angular/core';
 import { Animal } from '../../interfaces/animal';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AnimalService } from '../../services/animal';
 import { AlertsService } from '../../services/alerts-service';
@@ -17,12 +17,12 @@ export class DetalleMascota {
   private animalService = inject(AnimalService);
   private alertService = inject(AlertsService);
   private cdr = inject(ChangeDetectorRef);
+  private router = inject(Router);
 
   //Signal del animal actual
   animal = signal<Animal | undefined>(undefined);
 
   async ngOnInit() {
-    //obtenemos la id
     const idParam = this.route.snapshot.paramMap.get('id');
     const id = Number(idParam);
 
@@ -31,6 +31,7 @@ export class DetalleMascota {
       this.cdr.detectChanges();
     } else {
       this.alertService.error('Error de Archivo', 'El ID del expediente no es válido.');
+      this.router.navigate(['/mascotas']);
     }
   }
   private async cargarAnimal(id: number) {
@@ -46,11 +47,12 @@ export class DetalleMascota {
         );
       }
     } catch (error) {
-      console.error('Error al consultar el expediente:', error);
-      this.alertService.error(
-        'Fallo de Conexión',
-        'No se pudo establecer comunicación con el archivo central de la Gaceta.',
-      );
+      //se maneja en el services
+      // console.error('Error al consultar el expediente:', error);
+      // this.alertService.error(
+      //   'Fallo de Conexión',
+      //   'No se pudo establecer comunicación con el archivo central de la Gaceta.',
+      // );
     }
   }
 }

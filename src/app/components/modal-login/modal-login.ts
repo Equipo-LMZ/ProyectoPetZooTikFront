@@ -48,8 +48,6 @@ export class ModalLogin {
 
   async intentarLogin() {
     this.cargando.set(true);
-    console.log('Datos a enviar:', this.credenciales);
-
     try {
       await this.authService.login(this.credenciales);
       this.alertsService.success('Login exitoso', 'Has iniciado sesión correctamente.');

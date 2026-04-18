@@ -1,9 +1,19 @@
-import { Component, Input, Output, EventEmitter, inject, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  inject,
+  OnChanges,
+  SimpleChanges,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ChatThread, Mensaje } from '../../interfaces/chat';
 import { ChatService } from '../../services/chat-service';
 import { AudioService } from '../../services/audio.service';
+import { AlertsService } from '../../services/alerts-service';
 
 @Component({
   selector: 'app-smartphone-chat',
@@ -17,6 +27,7 @@ export class SmartphoneChatComponent implements OnChanges {
   private chatService = inject(ChatService);
   private cdr = inject(ChangeDetectorRef);
   private audioService = inject(AudioService);
+  private alertService = inject(AlertsService);
 
   @Input() chatActivo: ChatThread | null = null;
   @Input() conversaciones: ChatThread[] = [];
@@ -27,7 +38,7 @@ export class SmartphoneChatComponent implements OnChanges {
   mostrarPerfil = false;
 
   mensajeForm = this.fb.group({
-    nuevoMensaje: ['']
+    nuevoMensaje: [''],
   });
 
   imagenSeleccionada: File | null = null;
@@ -45,12 +56,14 @@ export class SmartphoneChatComponent implements OnChanges {
 
   get conversacionesFiltradas() {
     if (!this.conversaciones) return [];
-    return this.conversaciones.filter(c => {
+    return this.conversaciones.filter((c) => {
       const nombre = c.nombreCandidato || '';
       const animal = c.animalNombre || '';
       const filtro = this.filtroBusqueda || '';
-      return nombre.toLowerCase().includes(filtro.toLowerCase()) || 
-             animal.toLowerCase().includes(filtro.toLowerCase());
+      return (
+        nombre.toLowerCase().includes(filtro.toLowerCase()) ||
+        animal.toLowerCase().includes(filtro.toLowerCase())
+      );
     });
   }
 
@@ -78,11 +91,14 @@ export class SmartphoneChatComponent implements OnChanges {
     const file = event.target.files[0];
     if (file) {
       if (!file.type.match(/image\/(jpeg|jpg|png|webp)/)) {
-        console.error("Solo se permiten imágenes");
+        this.alertService.error(
+          'Formato no válido',
+          'Solo puedes enviar imágenes JPG, PNG o WebP.',
+        );
         return;
       }
       this.imagenSeleccionada = file;
-      
+
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.imagenPreview = e.target.result;
@@ -112,7 +128,7 @@ export class SmartphoneChatComponent implements OnChanges {
 
   enviarMensaje() {
     const msjTexto = this.mensajeForm.value.nuevoMensaje?.trim() || '';
-    
+
     if ((msjTexto !== '' || this.imagenSeleccionada) && this.chatActivo) {
       this.audioService.playSend();
 
@@ -121,16 +137,16 @@ export class SmartphoneChatComponent implements OnChanges {
         texto: msjTexto,
         esMio: true,
         hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        imagen: this.imagenPreview || undefined
+        imagen: this.imagenPreview || undefined,
       };
-      
+
       this.chatActivo.mensajes.push(nuevo);
-      
+
       const imgFile = this.imagenSeleccionada;
-      
+
       this.mensajeForm.reset();
       this.removerImagen();
-      
+
       const input = document.getElementById('chatInputObj') as HTMLTextAreaElement;
       if (input) input.style.height = 'auto';
 
@@ -138,7 +154,12 @@ export class SmartphoneChatComponent implements OnChanges {
 
       // Enviar al backend
       this.chatService.enviarMensaje(this.chatActivo.id, msjTexto, imgFile || undefined).subscribe({
-        error: (err) => console.error('Error enviando mensaje', err)
+        error: (err) => {
+          this.alertService.error(
+            'Error de envío',
+            'No pudimos entregar tu mensaje. Inténtalo de nuevo más tarde.',
+          );
+        },
       });
     }
   }
@@ -148,7 +169,7 @@ export class SmartphoneChatComponent implements OnChanges {
     if (container) {
       container.scrollTo({
         top: container.scrollHeight,
-        behavior: smooth ? 'smooth' : 'instant'
+        behavior: smooth ? 'smooth' : 'instant',
       });
     }
   }
@@ -166,7 +187,7 @@ export class SmartphoneChatComponent implements OnChanges {
     const oldHeight = textarea.style.height;
     textarea.style.height = 'auto';
     textarea.style.height = Math.min(textarea.scrollHeight, 110) + 'px';
-    
+
     if (oldHeight !== textarea.style.height) {
       this.scrollToBottom();
     }

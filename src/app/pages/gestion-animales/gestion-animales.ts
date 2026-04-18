@@ -72,7 +72,8 @@ export class GestionAnimales implements OnInit {
       this.cdr.detectChanges();
 
     } catch (error) {
-      this.alertsService.error('Error', 'No se pudieron cargar las mascotas');
+      // ya lo hace serive
+      // this.alertsService.error('Error', 'No se pudieron cargar las mascotas');
     }
   }
 
@@ -123,7 +124,8 @@ export class GestionAnimales implements OnInit {
           this.paginaActual--;
         }
       } catch (error) {
-        this.alertsService.error('Error', 'No se pudo eliminar la mascota');
+        // se maneja en service
+        // this.alertsService.error('Error', 'No se pudo eliminar la mascota');
       }
     }
   }
@@ -162,10 +164,11 @@ export class GestionAnimales implements OnInit {
         this.mostrarFormulario = false;
         await this.cargarMascotas();
       } catch (error) {
-        this.alertsService.error(
-          'Error al Guardar',
-          'Revisa la conexión o los campos del formulario.',
-        );
+        // ya lo maneja services
+        // this.alertsService.error(
+        //   'Error al Guardar',
+        //   'Revisa la conexión o los campos del formulario.',
+        // );
       } finally {
         this.guardando = false;
       }
@@ -178,7 +181,7 @@ export class GestionAnimales implements OnInit {
       this.mascotaForm.patchValue({ imagen: file });
       this.mascotaForm.get('imagen')?.updateValueAndValidity();
     } else {
-      this.alertsService.error('Error al cargar el archivo', 'Inténtalo de Nuevo más tarde.');
+      this.alertsService.error('Error de archivo', 'No se pudo cargar la imagen seleccionada.');
     }
   }
 }

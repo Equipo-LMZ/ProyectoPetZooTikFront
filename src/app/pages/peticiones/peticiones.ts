@@ -11,7 +11,6 @@ import { Peticion } from '../../interfaces/peticion-interface';
   templateUrl: './peticiones.html',
   styleUrl: './peticiones.css',
 })
-
 export class Peticiones implements OnInit {
   private rescatistaService = inject(RescatistaService);
   private alertsService = inject(AlertsService);
@@ -34,15 +33,15 @@ export class Peticiones implements OnInit {
       const [resP, resA, resR] = await Promise.all([
         this.rescatistaService.obtenerPeticiones('p'),
         this.rescatistaService.obtenerPeticiones('a'),
-        this.rescatistaService.obtenerPeticiones('r')
+        this.rescatistaService.obtenerPeticiones('r'),
       ]);
-      
+
       const todaLaData = [
         ...(resP.candidacies || []),
         ...(resA.candidacies || []),
-        ...(resR.candidacies || [])
+        ...(resR.candidacies || []),
       ];
-      
+
       this.solicitudes = todaLaData.map((item: any) => {
         let estadoF: 'Pendiente' | 'Aprobada' | 'Rechazada' = 'Pendiente';
         if (item.status === 'a' || item.status === 'A') estadoF = 'Aprobada';
@@ -50,26 +49,31 @@ export class Peticiones implements OnInit {
 
         let urlImagen = 'assets/ui/default-avatar.png';
         if (item.imagen) {
-           urlImagen = item.imagen.startsWith('http') ? item.imagen : `https://api.petzootik.site${item.imagen}`;
+          urlImagen = item.imagen.startsWith('http')
+            ? item.imagen
+            : `https://api.petzootik.site${item.imagen}`;
         }
 
         return {
           id: item.idCandidatura || item.id,
           userId: item.idUsuario || item.userId,
           nombre: item.nombre || `Aspirante #${item.idUsuario || item.userId}`,
-          fecha: item.fechaCreacion ? new Date(item.fechaCreacion).toLocaleDateString() : 'Sin fecha',
+          fecha: item.fechaCreacion
+            ? new Date(item.fechaCreacion).toLocaleDateString()
+            : 'Sin fecha',
           biografia: item.biografia || 'Sin carta de motivos.',
           residencia: item.residencia || 'No especificada',
           imagen: urlImagen,
           estado: estadoF,
           animacionSello: 'none',
-          ya_evaluado: !!item.ya_evaluado
+          ya_evaluado: !!item.ya_evaluado,
         };
       });
 
       this.cdr.detectChanges();
     } catch (error) {
-      this.alertsService.error('Error de conexión', 'No se pudieron cargar las postulaciones.');
+      //service lo maneja
+      // this.alertsService.error('Error de conexión', 'No se pudieron cargar las postulaciones.');
     } finally {
       this.cargando = false;
       this.cdr.detectChanges();
@@ -77,7 +81,7 @@ export class Peticiones implements OnInit {
   }
 
   get solicitudesFiltradas() {
-    return this.solicitudes.filter(s => {
+    return this.solicitudes.filter((s) => {
       if (this.tabFiltro === 'Pendientes') return s.estado === 'Pendiente';
       if (this.tabFiltro === 'Aprobadas') return s.estado === 'Aprobada';
       if (this.tabFiltro === 'Rechazadas') return s.estado === 'Rechazada';
@@ -107,31 +111,31 @@ export class Peticiones implements OnInit {
 
     try {
       await this.rescatistaService.responderPeticion(solicitud.id, true);
-      
+
       solicitud.animacionSello = 'approve';
       solicitud.ya_evaluado = true;
 
       setTimeout(() => {
         solicitud.estado = 'Aprobada';
         solicitud.animacionSello = 'none';
-        
+
         this.solicitudes = [...this.solicitudes];
-        
+
         this.asegurarIndiceValido();
-        this.cdr.detectChanges(); 
-        
+        this.cdr.detectChanges();
+
         this.alertsService.success('Aprobado', 'Voto a favor registrado.');
       }, 1200);
-
     } catch (error) {
-      this.alertsService.error('Error', 'No se pudo aprobar la postulación.');
+      // se maneja en service
+      //this.alertsService.error('Error', 'No se pudo aprobar la postulación.');
       solicitud.animacionSello = 'none';
       solicitud.ya_evaluado = false;
     }
   }
 
   async rechazarPeticion(solicitud: Peticion) {
-   if (solicitud.animacionSello !== 'none' || solicitud.ya_evaluado) return;
+    if (solicitud.animacionSello !== 'none' || solicitud.ya_evaluado) return;
 
     try {
       await this.rescatistaService.responderPeticion(solicitud.id, false);
@@ -142,13 +146,16 @@ export class Peticiones implements OnInit {
       setTimeout(() => {
         solicitud.estado = 'Rechazada';
         solicitud.animacionSello = 'none';
-        
+
         this.solicitudes = [...this.solicitudes];
 
         this.asegurarIndiceValido();
         this.cdr.detectChanges();
       }, 1200);
-
+      this.alertsService.warning(
+        'Postulación Denegada',
+        `Se ha rechazado la solicitud de ${solicitud.nombre}.`,
+      );
     } catch (error) {
       this.alertsService.error('Error', 'Hubo un problema al rechazar la postulación.');
       solicitud.animacionSello = 'none';
