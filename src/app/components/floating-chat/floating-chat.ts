@@ -189,7 +189,8 @@ export class FloatingChatComponent implements OnInit, OnDestroy {
             id: msgId,
             texto: mensaje.contenido,
             esMio: mensaje.user_id === this.authService.currentUser()?.id,
-            hora: new Date(mensaje.fechaEnvio || new Date()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            hora: new Date(mensaje.fechaEnvio || new Date()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            imagen: mensaje.imagen
           };
           chat.mensajes.push(nuevoMsg);
           
@@ -208,10 +209,11 @@ export class FloatingChatComponent implements OnInit, OnDestroy {
       next: (response: any) => {
         if (response && response.data && this.chatActivo) {
           this.chatActivo.mensajes = response.data.map((msg: any) => ({
-            id: msg.id || msg.idMensaje || Date.now(),
+            id: msg.idMensaje || Date.now(),
             texto: msg.contenido,
             esMio: msg.idRemitente === this.authService.currentUser()?.id,
-            hora: new Date(msg.fechaEnvio).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            hora: new Date(msg.fechaEnvio).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            imagen: msg.imagen
           }));
           this.cdr.detectChanges();
         }

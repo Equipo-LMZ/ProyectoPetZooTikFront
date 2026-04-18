@@ -3,6 +3,7 @@ export interface Mensaje {
   texto: string;
   esMio: boolean; // true si lo mandó el rescatista
   hora: string;
+  imagen?: string;
 }
 
 export interface ChatThread {
