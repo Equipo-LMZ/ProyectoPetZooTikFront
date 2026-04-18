@@ -7,7 +7,7 @@ export interface Mensaje {
 }
 
 export interface ChatThread {
-  id: number;
+  id: string;
   nombreCandidato: string;
   animalId: number;
   animalNombre: string;

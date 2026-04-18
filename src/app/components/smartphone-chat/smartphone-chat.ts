@@ -142,6 +142,14 @@ export class SmartphoneChatComponent implements OnChanges {
     }
   }
 
+  getNombreMascota(idMascota: number): string {
+    const id = this.chatActivo?.id ?? '';
+    if (id.includes('_')) {
+      return id.split('_')[1] ?? 'Mascota';
+    }
+    return 'Mascota #' + idMascota;
+  }
+
   autoResize(event: any) {
     const textarea = event.target;
     const oldHeight = textarea.style.height;

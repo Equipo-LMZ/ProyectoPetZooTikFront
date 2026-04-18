@@ -69,7 +69,7 @@ export class ChatService {
     this.socket.emit('salir_chat', chatId);
   }
 
-  marcarComoLeido(chatId: number, miId: number, idDelOtro: number): void {
+  marcarComoLeido(chatId: string | number, miId: number, idDelOtro: number): void {
     this.socket.emit('marcar_leido', {
       chat_id: chatId,
       mi_id: miId,
