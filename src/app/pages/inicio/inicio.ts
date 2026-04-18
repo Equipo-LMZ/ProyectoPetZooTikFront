@@ -7,6 +7,7 @@ import { ModalRegistro } from '../../components/modal-registro/modal-registro';
 import { ModalCandidatura } from '../../components/modal-candidatura/modal-candidatura';
 import { AuthService } from '../../services/auth';
 import { NavbarService } from '../../services/navbar.service';
+import { AudioService } from '../../services/audio.service';
 
 @Component({
   selector: 'app-inicio',
@@ -18,6 +19,7 @@ import { NavbarService } from '../../services/navbar.service';
 export class Inicio implements OnInit, OnDestroy {
   public authService = inject(AuthService);
   private navbarService = inject(NavbarService);
+  private audioService = inject(AudioService);
 
   mostrarHelicoptero = signal<boolean>(true);
   faseAnimacion = signal<number>(0);
@@ -42,6 +44,20 @@ export class Inicio implements OnInit, OnDestroy {
   luciernagas = Array.from({ length: 35 }, () => ({
     left: `${Math.random() * 100}%`,
     bottom: `${Math.random() * 100}%`,
+    animationDuration: `${Math.random() * 6 + 6}s`,
+    animationDelay: `-${Math.random() * 10}s`
+  }));
+
+  estrellasFugaces = Array.from({ length: 15 }, () => ({
+    left: `${20 + Math.random() * 60}%`,
+    top: `${Math.random() * 30}%`,
+    animationDuration: `${Math.random() * 8 + 10}s`,
+    animationDelay: `-${Math.random() * 15}s`
+  }));
+
+  luciernagasCampamento = Array.from({ length: 25 }, () => ({
+    left: `${Math.random() > 0.5 ? Math.random() * 20 : 80 + Math.random() * 20}%`,
+    bottom: `${Math.random() * 60}%`,
     animationDuration: `${Math.random() * 6 + 6}s`,
     animationDelay: `-${Math.random() * 10}s`
   }));
@@ -177,5 +193,12 @@ export class Inicio implements OnInit, OnDestroy {
     this.authService.logout();
     this.sincronizarFase(0);
     this.mostrarHelicoptero.set(true);
+  }
+
+  reproducirSonidoAnimal(event: Event | null, animal: 'cat' | 'dog' | 'canary') {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.audioService.playAnimal(animal);
   }
 }

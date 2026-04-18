@@ -181,6 +181,25 @@
       <img src="assets/parque/campamento-noche.png" alt="Campamento Noche"
            class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
 
+      <div class="absolute inset-0 w-full h-full pointer-events-none overflow-hidden z-[5]">
+        @for (luz of luciernagasCampamento; track $index) {
+          <div class="luciernaga" 
+               [style.left]="luz.left" 
+               [style.bottom]="luz.bottom" 
+               [style.animation-duration]="luz.animationDuration" 
+               [style.animation-delay]="luz.animationDelay">
+          </div>
+        }
+        @for (estrella of estrellasFugaces; track $index) {
+          <div class="estrella-fugaz" 
+               [style.left]="estrella.left" 
+               [style.top]="estrella.top" 
+               [style.animation-duration]="estrella.animationDuration" 
+               [style.animation-delay]="estrella.animationDelay">
+          </div>
+        }
+      </div>
+
       <img src="assets/parque/farola.png"
            class="absolute z-[15] pointer-events-none object-contain drop-shadow-[0_0_45px_rgba(251,191,36,0.8)]
                   h-[25%] md:h-[35%] lg:h-[40%]
@@ -271,7 +290,9 @@
       <div class="group absolute z-30 transition-transform duration-300 hover:scale-110 cursor-default
                   bottom-[22%] md:bottom-[27%] lg:bottom-[27%]
                   left-[60%] md:left-[63%] lg:left-[65%]
-                  w-[16%] md:w-[11%] lg:w-[8%]">
+                  w-[16%] md:w-[11%] lg:w-[8%]"
+           (mouseenter)="reproducirSonidoAnimal(null, 'cat')"
+           (click)="reproducirSonidoAnimal($event, 'cat')">
 
         <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-40">
           <span class="bg-black/80 backdrop-blur-sm text-emerald-400 text-xs font-bold px-3 py-1.5 rounded-full whitespace-nowrap border border-emerald-500/30 drop-shadow-lg uppercase tracking-wider">
@@ -286,7 +307,9 @@
       <div class="group absolute z-20 transition-transform duration-300 hover:scale-110 cursor-default
                   bottom-[9%] md:bottom-[10%] lg:bottom-[15%]
                   right-[55%] md:right-[58%] lg:right-[53%]
-                  w-[14%] md:w-[10%] lg:w-[7%]">
+                  w-[14%] md:w-[10%] lg:w-[7%]"
+           (mouseenter)="reproducirSonidoAnimal(null, 'dog')"
+           (click)="reproducirSonidoAnimal($event, 'dog')">
 
         <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-40">
           <span class="bg-black/80 backdrop-blur-sm text-emerald-400 text-xs font-bold px-3 py-1.5 rounded-full whitespace-nowrap border border-emerald-500/30 drop-shadow-lg uppercase tracking-wider">
@@ -301,7 +324,9 @@
       <div class="group absolute z-30 transition-transform duration-300 hover:scale-125 cursor-default
                   bottom-[31%] md:bottom-[39.5%] lg:bottom-[50%]
                   right-[73%] md:right-[78%] lg:right-[69%]
-                  w-[9%] md:w-[6%] lg:w-[4%]">
+                  w-[9%] md:w-[6%] lg:w-[4%]"
+           (mouseenter)="reproducirSonidoAnimal(null, 'canary')"
+           (click)="reproducirSonidoAnimal($event, 'canary')">
         
         <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-40">
           <span class="bg-black/80 backdrop-blur-sm text-emerald-400 text-xs font-bold px-3 py-1.5 rounded-full whitespace-nowrap border border-emerald-500/30 drop-shadow-lg uppercase tracking-wider">
