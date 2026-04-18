@@ -26,11 +26,6 @@
           
           <div class="relative flex-shrink-0">
             <img [src]="chat.avatar" [alt]="chat.nombreCandidato" class="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm">
-            @if (chat.noLeidos > 0) {
-              <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white animate-pulse">
-                {{ chat.noLeidos }}
-              </span>
-            }
           </div>
 
           <div class="flex-1 min-w-0">

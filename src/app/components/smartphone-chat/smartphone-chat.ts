@@ -25,10 +25,14 @@ export class SmartphoneChatComponent {
   });
 
   get conversacionesFiltradas() {
-    return this.conversaciones.filter(c => 
-      c.nombreCandidato.toLowerCase().includes(this.filtroBusqueda.toLowerCase()) || 
-      c.animalNombre.toLowerCase().includes(this.filtroBusqueda.toLowerCase())
-    );
+    if (!this.conversaciones) return [];
+    return this.conversaciones.filter(c => {
+      const nombre = c.nombreCandidato || '';
+      const animal = c.animalNombre || '';
+      const filtro = this.filtroBusqueda || '';
+      return nombre.toLowerCase().includes(filtro.toLowerCase()) || 
+             animal.toLowerCase().includes(filtro.toLowerCase());
+    });
   }
 
   actualizarFiltro(event: any) {
