@@ -4,6 +4,7 @@ import { ChatThread, Mensaje } from '../../interfaces/chat';
 import { SmartphoneChatComponent } from '../../components/smartphone-chat/smartphone-chat';
 import { ChatService } from '../../services/chat-service';
 import { AuthService } from '../../services/auth';
+import { AnimalService } from '../../services/animal';
 
 @Component({
   selector: 'app-chat',
@@ -21,6 +22,7 @@ export class Chat implements OnInit {
 
   private cdr = inject(ChangeDetectorRef);
   private authService = inject(AuthService);
+  private animalService = inject(AnimalService);
 
   constructor(private chatService: ChatService) {}
 
@@ -41,10 +43,13 @@ export class Chat implements OnInit {
             return {
               id: chatInfo.id || chatInfo.idChat,
               nombreCandidato: chatInfo.nombreCandidato || 'Usuario Desconocido',
+              idAdoptante: chatInfo.idAdoptante,
+              idRescatista: chatInfo.idRescatista,
               animalId: 0, 
-              animalNombre: '', // En un futuro, el nombre del animal se encontrará en el id del chat
+              animalNombre: '', 
               avatar: avatarUrl,
-              mensajes: [] 
+              mensajes: [],
+              formularios: []
             } as ChatThread;
           });
 
@@ -52,6 +57,9 @@ export class Chat implements OnInit {
           this.conversaciones.forEach(chat => {
             this.chatService.unirseSala(chat.id);
           });
+
+          // Obtener solicitudes y cruzarlas
+          this.cargarFormularios();
 
           this.cdr.detectChanges(); 
         }
@@ -77,6 +85,51 @@ export class Chat implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  async cargarFormularios() {
+    try {
+      const solicitudes = await this.animalService.obtenerSolicitudesRecibidas();
+      
+      this.conversaciones.forEach(chat => {
+        if (chat.idAdoptante && chat.idRescatista) {
+          chat.formularios = solicitudes
+            .filter((sol: any) => sol.idUser == chat.idAdoptante && sol.idRescatista == chat.idRescatista)
+            .map((sol: any) => {
+              let rawData = sol.formulario;
+              if (typeof rawData === 'string') {
+                try {
+                  rawData = JSON.parse(rawData);
+                } catch (e) {
+                  console.error('Error parseando formulario', e);
+                  return sol;
+                }
+              }
+
+              // Convertimos a array de campos para la UI
+              if (rawData && typeof rawData === 'object' && !Array.isArray(rawData)) {
+                const formattedFields = [];
+                
+                if (rawData.nombreCompleto) formattedFields.push({ label: 'Nombre Completo', value: rawData.nombreCompleto });
+                if (rawData.direccion) formattedFields.push({ label: 'Dirección', value: rawData.direccion });
+                if (rawData.motivo) formattedFields.push({ label: 'Motivo de adopción', value: rawData.motivo });
+                
+                if (rawData.cuestionario && Array.isArray(rawData.cuestionario)) {
+                  rawData.cuestionario.forEach((q: any) => {
+                     formattedFields.push({ label: q.pregunta || 'Pregunta', value: q.respuesta || '' });
+                  });
+                }
+                
+                sol.formulario = formattedFields;
+              }
+              return sol;
+            });
+        }
+      });
+      this.cdr.detectChanges();
+    } catch (error) {
+      console.error("Error al cargar solicitudes para los chats:", error);
+    }
   }
 
   get conversacionesFiltradas() {

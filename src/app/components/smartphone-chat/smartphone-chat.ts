@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ChatThread, Mensaje } from '../../interfaces/chat';
@@ -11,7 +11,7 @@ import { ChatService } from '../../services/chat-service';
   templateUrl: './smartphone-chat.html',
   styleUrl: './smartphone-chat.css',
 })
-export class SmartphoneChatComponent {
+export class SmartphoneChatComponent implements OnChanges {
   private fb = inject(FormBuilder);
   private chatService = inject(ChatService);
 
@@ -21,10 +21,17 @@ export class SmartphoneChatComponent {
   @Output() abrirVisor = new EventEmitter<ChatThread>();
 
   filtroBusqueda = '';
+  mostrarPerfil = false;
 
   mensajeForm = this.fb.group({
     nuevoMensaje: ['', Validators.required]
   });
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['chatActivo']) {
+      this.mostrarPerfil = false;
+    }
+  }
 
   get conversacionesFiltradas() {
     if (!this.conversaciones) return [];
@@ -46,7 +53,15 @@ export class SmartphoneChatComponent {
   }
 
   cerrarChat() {
+    this.mostrarPerfil = false;
     this.cerrarVisor.emit();
+  }
+
+  togglePerfil() {
+    this.mostrarPerfil = !this.mostrarPerfil;
+    if (this.mostrarPerfil) {
+      setTimeout(() => this.scrollToBottom(), 50);
+    }
   }
 
   enviarMensaje() {
