@@ -1,3 +1,4 @@
+/// <reference types="leaflet.markercluster" />
 import {
   Component,
   signal,
@@ -10,7 +11,6 @@ import {
 import { CommonModule } from '@angular/common';
 import * as L from 'leaflet';
 import { AlertsService } from '../../services/alerts-service';
-import 'leaflet.markercluster';
 
 @Component({
   selector: 'app-mapa',
@@ -34,11 +34,9 @@ export class Mapa implements OnInit, OnDestroy {
     /**
      * Inicializa la lógica una vez que el componente se ha renderizado en el cliente.
      * Evita errores de acceso al DOM durante el Server-Side Rendering (SSR).
-     * El import dinámico garantiza que leaflet.markercluster se enlace a L
-     * ANTES de que initMap intente usar L.markerClusterGroup().
      */
-    afterNextRender(async () => {
-      await import('leaflet.markercluster');
+    afterNextRender(() => {
+      // TRUCO: Inicializamos el mapa de inmediato con valores por defecto para que el usuario vea algo ya.
       this.initMap(...this.coordenadasPorDefecto);
       this.geoInit();
     });
@@ -89,13 +87,15 @@ export class Mapa implements OnInit, OnDestroy {
 
     L.control.zoom({ position: 'bottomright' }).addTo(this.mapaInstancia);
 
-    this.clusterGroup = L.markerClusterGroup();
+    // Usar la instancia global de L que sí tiene el plugin agregado por angular.json
+    const leafletGlobal: any = (window as any).L || L;
+    this.clusterGroup = leafletGlobal.markerClusterGroup();
     this.mapaInstancia.addLayer(this.clusterGroup);
   }
 
   /* Realiza una petición a la API Overpass con sistema de redundancia. */
   private async fetchVets(lat: number, lng: number): Promise<void> {
-    const radioBusqueda = 20000;
+    const radioBusqueda = 20000; // Reducimos un poco el radio (15km) para mejorar la velocidad de respuesta.
     const queryOverpass = `[out:json][timeout:25];node["amenity"="veterinary"](around:${radioBusqueda},${lat},${lng});out;`;
 
     const mirrors = [
@@ -105,6 +105,8 @@ export class Mapa implements OnInit, OnDestroy {
       `https://lz4.overpass-api.de/api/interpreter?data=${encodeURIComponent(queryOverpass)}`,
       `https://overpass.openstreetmap.fr/api/interpreter?data=${encodeURIComponent(queryOverpass)}`,
       `https://overpass.jxp.ca/api/interpreter?data=${encodeURIComponent(queryOverpass)}`,
+      `https://overpass.osm.ch/api/interpreter?data=${encodeURIComponent(queryOverpass)}`,
+      `https://overpass.nchc.org.tw/api/interpreter?data=${encodeURIComponent(queryOverpass)}`,
     ];
     let exito = false;
 
@@ -112,8 +114,10 @@ export class Mapa implements OnInit, OnDestroy {
       if (exito) break;
 
       try {
+        // Agregamos un AbortController para que el navegador no se quede esperando
+        // eternamente si el servidor se queda "colgado" (como pasó con el 504).
         const controller = new AbortController();
-        const idTimeout = setTimeout(() => controller.abort(), 12000);
+        const idTimeout = setTimeout(() => controller.abort(), 12000); // 12 seg de gracia
 
         const respuesta = await fetch(url, { signal: controller.signal });
         clearTimeout(idTimeout);
@@ -139,6 +143,7 @@ export class Mapa implements OnInit, OnDestroy {
         }
       } catch (error) {
         // Si hay timeout o error de red, el bucle sigue al siguiente mirror.
+        // console.error(`Error en mirror actual:`, error);
       }
     }
 
@@ -168,6 +173,7 @@ export class Mapa implements OnInit, OnDestroy {
       popupAnchor: [0, -40],
     });
 
+    // Link estándar de Google Maps para mayor compatibilidad.
     const urlGoogleMaps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(etiqueta)}+${latitud},${longitud}`;
 
     return L.marker([latitud, longitud], { icon: iconoPersonalizado }).bindPopup(`

@@ -2,8 +2,7 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "cli": {
-    "packageManager": "npm",
-    "analytics": "029f4132-ab0f-42bf-ba30-5858d8ab9e54"
+    "packageManager": "npm"
   },
   "newProjectRoot": "projects",
   "projects": {
@@ -26,10 +25,14 @@
               }
             ],
             "styles": [
-              "node_modules/leaflet/dist/leaflet.css",
-              "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "src/styles.css",
-              "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css"
+              "./node_modules/leaflet/dist/leaflet.css",
+              "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
+              "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css"
+            ],
+            "scripts": [
+              "./node_modules/leaflet/dist/leaflet.js",
+              "./node_modules/leaflet.markercluster/dist/leaflet.markercluster.js"
             ]
           },
           "configurations": {
