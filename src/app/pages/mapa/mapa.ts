@@ -8,12 +8,9 @@ import {
   inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-import './leaflet-setup'; // DEBE IR ANTES QUE EL PLUGIN
-import * as L from 'leaflet';
-import 'leaflet.markercluster';
-
 import { AlertsService } from '../../services/alerts-service';
+
+declare const L: any;
 
 @Component({
   selector: 'app-mapa',
@@ -25,9 +22,9 @@ import { AlertsService } from '../../services/alerts-service';
 export class Mapa implements OnInit, OnDestroy {
   private alertsService = inject(AlertsService);
   /**Referencia principal a la instancia del mapa de Leaflet. */
-  private mapaInstancia!: L.Map;
+  private mapaInstancia!: any;
 
-  private clusterGroup!: L.MarkerClusterGroup;
+  private clusterGroup!: any;
 
   /**Estado de carga de la interfaz para la sincronización de datos */
   public cargando = signal<boolean>(true);
@@ -159,7 +156,7 @@ export class Mapa implements OnInit, OnDestroy {
   }
 
   /** Genera y posiciona un marcador con el link de Google Maps */
-  private crearMarker(latitud: number, longitud: number, etiqueta: string): L.Marker {
+  private crearMarker(latitud: number, longitud: number, etiqueta: string): any {
     const estructuraIcono = `
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="fill: #14b8a6; stroke: white; stroke-width: 25px;">
         <path d="M226.5 92.9c14.3 42.9-.3 86.2-32.6 96.8s-70.1-15.6-84.4-58.5s.3-86.2 32.6-96.8s70.1 15.6 84.4 58.5zM100.4 198.6c18.9 32.4 14.3 70.1-10.2 84.1s-59.7-.9-78.5-33.3c-18.9-32.4-14.3-70.1 10.2-84.1s59.7 .9 78.5 33.3zM411.6 198.6c18.9-32.4 54-47.3 78.5-33.3s29.1 51.7 10.2 84.1s-54 47.3-78.5 33.3s-29.1-51.7-10.2-84.1zM318.1 92.9c14.3-42.9 52.1-69.1 84.4-58.5s46.9 53.9 32.6 96.8s-52.1 69.1-84.4 58.5s-46.9-53.9-32.6-96.8zM153.2 246.3c-13.6 5-32.6 17.2-32.6 44.1c0 23 18.2 39.5 28.6 47.1c32.6 23.8 69.2 33.8 106.8 33.8c37.5 0 74.2-9.9 106.8-33.8c10.4-7.6 28.6-24.1 28.6-47.1c0-26.9-19-39.1-32.6-44.1c-13.1-4.8-29.6-7-49.4-7c-25.7 0-51.5 6.9-74.1 16.9c-22.6-10-48.3-16.9-74.1-16.9c-19.8 0-36.2 2.1-49.4 7z"/>
