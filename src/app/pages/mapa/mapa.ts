@@ -10,6 +10,7 @@ import {
 import { CommonModule } from '@angular/common';
 import * as L from 'leaflet';
 import { AlertsService } from '../../services/alerts-service';
+import 'leaflet.markercluster';
 
 @Component({
   selector: 'app-mapa',
