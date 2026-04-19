@@ -1,4 +1,3 @@
-/// <reference types="leaflet.markercluster" />
 import {
   Component,
   signal,
@@ -9,7 +8,11 @@ import {
   inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
+import './leaflet-setup'; // DEBE IR ANTES QUE EL PLUGIN
 import * as L from 'leaflet';
+import 'leaflet.markercluster';
+
 import { AlertsService } from '../../services/alerts-service';
 
 @Component({
@@ -87,9 +90,7 @@ export class Mapa implements OnInit, OnDestroy {
 
     L.control.zoom({ position: 'bottomright' }).addTo(this.mapaInstancia);
 
-    // Usar la instancia global de L que sí tiene el plugin agregado por angular.json
-    const leafletGlobal: any = (window as any).L || L;
-    this.clusterGroup = leafletGlobal.markerClusterGroup();
+    this.clusterGroup = L.markerClusterGroup();
     this.mapaInstancia.addLayer(this.clusterGroup);
   }
 
